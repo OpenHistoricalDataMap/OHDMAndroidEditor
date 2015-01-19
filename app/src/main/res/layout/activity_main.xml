@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+     <!-- <org.osmdroid.views.MapView
+        android:id="@+id/openmapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/> -->
+
+    <RelativeLayout
+        android:id="@+id/ohdmmapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/buttonAddAccept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_add_accept"
+        android:onClick="buttonAddAccept"
+        android:src="@drawable/ic_action_accept"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/buttonAddCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_add_cancel"
+        android:onClick="buttonAddCancel"
+        android:visibility="invisible"
+        android:src="@drawable/ic_action_cancel"
+        android:layout_toRightOf="@+id/buttonAddAccept"/>
+
+    <ImageButton
+        android:id="@+id/buttonAddUndo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_add_undo"
+        android:onClick="buttonAddUndo"
+        android:src="@drawable/ic_action_undo"
+        android:visibility="invisible"
+        android:layout_toRightOf="@+id/buttonAddAccept"/>
+
+    <ImageButton
+        android:id="@+id/buttonEditDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_edit_delete"
+        android:onClick="buttonEditDelete"
+        android:src="@drawable/ic_action_delete"
+        android:visibility="invisible"
+        android:layout_toRightOf="@+id/buttonAddCancel"/>
+
+</RelativeLayout>
