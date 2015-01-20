@@ -7,7 +7,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.Geometry.PolyObjectManager;
 import android.ohdm.de.editor.Geometry.PolyObjectSerializer;
@@ -45,7 +44,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private GeoPoint geoPoint = new GeoPoint(52.4581555, 13.5685014);
     private MapView map;
-    private PolyObject polyObject;
     private PolyObjectManager polyObjectManager;
     private ITileSource tileSource;
 
@@ -223,12 +221,10 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private void startEdit() {
 
-        polyObject = polyObjectManager.getSelectedPolyObject();
-
         stopSelect();
 
-        if (polyObject != null) {
-            polyObject.setEditing(true);
+        if (polyObjectManager.setSelectedObjectEditable(true)) {
+
             map.invalidate();
 
             changeAddButtonsVisibility(View.VISIBLE);
@@ -256,9 +252,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         changeAddButtonsVisibility(View.VISIBLE);
 
-        polyObject = PolyObjectFactory.buildObject(type, map);
-        polyObject.setEditing(true);
-        polyObjectManager.addObject(polyObject);
+        polyObjectManager.createAndAddPolyObject(type);
 
         mode = Mode.ADD;
     }
@@ -266,7 +260,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     private void stopAdd() {
 
         mode = Mode.VIEW;
-        polyObject.setEditing(false);
+        polyObjectManager.setSelectedObjectEditable(false);
         map.invalidate();
         changeAddButtonsVisibility(View.INVISIBLE);
     }
@@ -381,7 +375,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
 
         if (mode == Mode.ADD) {
-            polyObject.addPoint(geoPoint);
+            polyObjectManager.addPointToSelectedPolyObject(geoPoint);
         }
 
         map.invalidate();
@@ -410,7 +404,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     public void buttonAddUndo(View view) {
 
-        polyObject.removeLastPoint();
+        polyObjectManager.removeLastPointFromSelectedPolyObject();
         map.invalidate();
     }
 
@@ -427,7 +421,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         if (mode == Mode.SELECT) {
             polyObjectManager.removeSelectedObject();
         } else if (mode == Mode.ADD) {
-            polyObjectManager.removeObject(polyObject);
+            polyObjectManager.removeSelectedObject();
             stopAdd();
         }
         map.invalidate();

@@ -3,7 +3,10 @@ package android.ohdm.de.editor.Geometry;
 
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectClickListener;
+import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
+import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
 
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ import java.util.List;
 public class PolyObjectManager implements PolyObjectClickListener {
 
     private List<PolyObject> polyObjectList = new ArrayList<PolyObject>();
-    private PolyObject selectedPolyObject = null;
+    private PolyObject activeObject = null;
 
     private MapView map;
 
@@ -26,7 +29,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
         map.getOverlays().add(polyObject.getOverlay());
     }
 
-    public void removeObject(PolyObject polyObject){
+    private void removeObject(PolyObject polyObject){
         map.getOverlays().remove(polyObject.getOverlay());
         polyObjectList.remove(polyObject);
         map.invalidate();
@@ -41,35 +44,51 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
     public void setObjectsSelectable(boolean selectable){
 
-        if(!selectable){
-            selectedPolyObject = null;
-        }
-
         for(PolyObject object : polyObjectList){
             object.setSelected(selectable);
         }
         map.invalidate();
     }
 
-    public PolyObject getSelectedPolyObject(){
-        return selectedPolyObject;
-    }
-
     @Override
     public void onClick(PolyObject polyObject) {
         setObjectsSelectable(false);
-        selectedPolyObject = polyObject;
-        selectedPolyObject.setSelected(true);
+        activeObject = polyObject;
+        activeObject.setSelected(true);
         map.invalidate();
     }
 
     public void removeSelectedObject() {
-        if(selectedPolyObject != null){
-            removeObject(selectedPolyObject);
+        if(activeObject != null){
+            removeObject(activeObject);
         }
     }
 
     public List<PolyObject> getPolyObjectList(){
         return polyObjectList;
+    }
+
+    public boolean setSelectedObjectEditable(boolean editable) {
+
+        if(activeObject != null){
+            activeObject.setEditing(editable);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void createAndAddPolyObject(PolyObjectType type) {
+        activeObject = PolyObjectFactory.buildObject(type, map);
+        activeObject.setEditing(true);
+        addObject(activeObject);
+    }
+    
+    public void addPointToSelectedPolyObject(GeoPoint point){
+        activeObject.addPoint(point);
+    }
+
+    public void removeLastPointFromSelectedPolyObject() {
+        activeObject.removeLastPoint();
     }
 }
