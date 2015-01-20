@@ -271,7 +271,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         changeEditButtonsVisibility(View.INVISIBLE);
 
         polyObjectManager.setObjectsClickable(false);
-        polyObjectManager.setObjectsSelectable(false);
+        polyObjectManager.deselectActiveObject();
     }
 
     private void changeAddButtonsVisibility(int visibility) {

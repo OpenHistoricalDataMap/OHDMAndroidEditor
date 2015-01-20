@@ -42,17 +42,18 @@ public class PolyObjectManager implements PolyObjectClickListener {
         map.invalidate();
     }
 
-    public void setObjectsSelectable(boolean selectable){
+    public void deselectActiveObject(){
 
-        for(PolyObject object : polyObjectList){
-            object.setSelected(selectable);
+        if(activeObject != null) {
+            this.activeObject.setSelected(false);
         }
+
         map.invalidate();
     }
 
     @Override
     public void onClick(PolyObject polyObject) {
-        setObjectsSelectable(false);
+        deselectActiveObject();
         activeObject = polyObject;
         activeObject.setSelected(true);
         map.invalidate();
