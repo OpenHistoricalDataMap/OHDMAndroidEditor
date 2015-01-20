@@ -18,10 +18,10 @@ public class ExPolyPoint extends PolyObject {
     private static final long serialVersionUID = 0L;
 
     private transient ExtendedPolygonOverlay polygon;
-    private List<GeoPoint> points = new ArrayList<GeoPoint>();
     private transient boolean selected = false;
     private transient boolean editing = false;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
+    private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
     ExPolyPoint(Context context){
         super(PolyObjectType.POINT);
