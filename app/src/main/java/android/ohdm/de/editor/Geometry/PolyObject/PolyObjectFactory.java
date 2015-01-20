@@ -17,7 +17,7 @@ public class PolyObjectFactory {
                 polyObject = new PolyLine(view.getContext());
                 break;
             case POINT:
-                polyObject = new PolyPoint(view);
+                polyObject = new ExPolyPoint(view.getContext());
                 break;
             default:
                 throw new NotImplementedException(type+" not implemented");
