@@ -2,54 +2,70 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolygonOverlay;
+import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
+import android.util.Log;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
-import org.osmdroid.bonuspack.overlays.Polygon;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExPolyPoint extends PolyObject {
+public class CornerPoint extends PolyObject{
 
     private static final long serialVersionUID = 0L;
 
-    private transient ExtendedPolygonOverlay polygon;
+    private transient ExtendedPointOverlay point;
     private transient boolean selected = false;
     private transient boolean editing = false;
+    private transient PolyObject polyObject;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
-    ExPolyPoint(Context context){
+    CornerPoint(Context context,PolyObject polyObject){
         super(PolyObjectType.POINT);
+        this.polyObject = polyObject;
         create(context);
+
+        Log.i("CornerPoint","created");
     }
 
     @Override
     protected void create(Context context) {
-        polygon = new ExtendedPolygonOverlay(context);
-        polygon.subscribe(this);
+        point = new ExtendedPointOverlay(context);
+        point.subscribe(this);
 
-        polygon.setFillColor(Color.BLUE);
-        polygon.setStrokeWidth(4);
+        point.setFillColor(Color.BLUE);
+        point.setStrokeWidth(4);
     }
 
     @Override
     public OverlayWithIW getOverlay() {
-        return polygon;
+        return point;
     }
 
     @Override
     public void setPoints(List<GeoPoint> points) {
-        this.points = points;
 
-        if(this.points.size() >= 1) {
-            int lastPoint = this.points.size()-1;
-            int radius = 20;
+        Log.i("CornerPoint","setPoints");
 
-            polygon.setPoints(Polygon.pointsAsCircle(this.points.get(lastPoint), radius));
+        if(this.points.size() >= 2) {
+            GeoPoint oldpoint = this.points.get(this.points.size()-2);
+
+            List<GeoPoint> pointList = polyObject.getPoints();
+
+            for(int i=0; i<pointList.size(); i++){
+                if(pointList.get(i) == oldpoint){
+                    pointList.remove(i);
+                    pointList.add(i,points.get(points.size()-1));
+                    polyObject.setPoints(pointList);
+                    break;
+                }
+            }
         }
+
+        this.points = points;
+        point.setPoints(points);
     }
 
     public List<GeoPoint> getPoints(){
@@ -74,12 +90,12 @@ public class ExPolyPoint extends PolyObject {
 
     @Override
     public boolean isClickable() {
-        return polygon.isClickable();
+        return point.isClickable();
     }
 
     @Override
     public void setClickable(boolean clickable) {
-        polygon.setClickable(clickable);
+        point.setClickable(clickable);
     }
 
     @Override
@@ -87,9 +103,9 @@ public class ExPolyPoint extends PolyObject {
         this.selected = selected;
 
         if(selected){
-            polygon.setFillColor(Color.RED);
+            point.setFillColor(Color.RED);
         }else{
-            polygon.setFillColor(Color.BLUE);
+            point.setFillColor(Color.BLUE);
         }
     }
 
@@ -108,9 +124,10 @@ public class ExPolyPoint extends PolyObject {
         this.editing = editing;
 
         if(editing){
-            polygon.setFillColor(Color.GREEN);
+            point.setFillColor(Color.GREEN);
         }else{
-            polygon.setFillColor(Color.BLUE);
+            point.setFillColor(Color.BLUE);
+            polyObject.setEditing(false);
         }
     }
 
@@ -130,4 +147,5 @@ public class ExPolyPoint extends PolyObject {
     public void remove(PolyObjectClickListener listener) {
         listeners.remove(listener);
     }
+
 }

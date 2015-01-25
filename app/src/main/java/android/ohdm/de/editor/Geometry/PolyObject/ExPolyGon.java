@@ -2,7 +2,9 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
 import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolygonOverlay;
+import android.util.Log;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
@@ -19,12 +21,12 @@ public class ExPolyGon extends PolyObject {
     private transient Context context;
     private transient MapView view;
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
-    private List<ExPolyPoint> cornerPoints = new ArrayList<ExPolyPoint>();
+    private transient List<CornerPoint> cornerPoints = new ArrayList<CornerPoint>();
     private transient boolean selected = false;
     private transient boolean editing = false;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
 
-    ExPolyGon(MapView view){
+    ExPolyGon(MapView view) {
         super(PolyObjectType.POLYGON);
         this.context = view.getContext();
         this.view = view;
@@ -51,15 +53,15 @@ public class ExPolyGon extends PolyObject {
         polygon.setPoints(points);
     }
 
-    public List<GeoPoint> getPoints(){
+    public List<GeoPoint> getPoints() {
         return this.points;
     }
 
     @Override
     public void removeLastPoint() {
-        if(!points.isEmpty()){
-            points.remove(points.size()-1);
-            ExPolyPoint removePoint = cornerPoints.get(cornerPoints.size()-1);
+        if (!points.isEmpty()) {
+            points.remove(points.size() - 1);
+            CornerPoint removePoint = cornerPoints.get(cornerPoints.size() - 1);
             view.getOverlays().remove(removePoint.getOverlay());
             cornerPoints.remove(removePoint);
         }
@@ -71,12 +73,18 @@ public class ExPolyGon extends PolyObject {
         points.add(geoPoint);
         polygon.setPoints(this.points);
 
-        ExPolyPoint polyPoint = new ExPolyPoint(context);
+        CornerPoint cornerPoint = new CornerPoint(context,this);
+
         List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
         pointPoints.add(geoPoint);
-        polyPoint.setPoints(pointPoints);
-        cornerPoints.add(polyPoint);
-        view.getOverlays().add(polyPoint.getOverlay());
+        cornerPoint.setPoints(pointPoints);
+
+        cornerPoint.setClickable(true);
+        cornerPoint.subscribe(listeners.get(listeners.size()-1));
+
+        cornerPoints.add(cornerPoint);
+
+        view.getOverlays().add(cornerPoint.getOverlay());
     }
 
     @Override
@@ -93,9 +101,9 @@ public class ExPolyGon extends PolyObject {
     public void setSelected(boolean selected) {
         this.selected = selected;
 
-        if(selected){
+        if (selected) {
             polygon.setFillColor(Color.RED);
-        }else{
+        } else {
             polygon.setFillColor(Color.BLUE);
         }
     }
@@ -114,17 +122,17 @@ public class ExPolyGon extends PolyObject {
     public void setEditing(boolean editing) {
         this.editing = editing;
 
-        if(editing){
+        if (editing) {
             polygon.setFillColor(Color.GREEN);
 
-            for(ExPolyPoint point: this.cornerPoints){
+            for (CornerPoint point : this.cornerPoints) {
                 view.getOverlays().add(point.getOverlay());
             }
 
-        }else{
+        } else {
             polygon.setFillColor(Color.BLUE);
 
-            for(ExPolyPoint point : cornerPoints){
+            for (CornerPoint point : cornerPoints) {
                 view.getOverlays().remove(point.getOverlay());
             }
         }
@@ -132,7 +140,7 @@ public class ExPolyGon extends PolyObject {
 
     @Override
     public void onClick() {
-        for(PolyObjectClickListener listener : listeners){
+        for (PolyObjectClickListener listener : listeners) {
             listener.onClick(this);
         }
     }

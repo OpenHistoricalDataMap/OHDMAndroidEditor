@@ -42,7 +42,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static Mode mode = Mode.VIEW;
 
-    private GeoPoint geoPoint = new GeoPoint(52.4581555, 13.5685014);
+//    private GeoPoint geoPoint = new GeoPoint(52.4581555, 13.5685014);
+    private GeoPoint geoPoint = new GeoPoint(52.49688, 13.52400);
     private MapView map;
     private PolyObjectManager polyObjectManager;
     private ITileSource tileSource;
