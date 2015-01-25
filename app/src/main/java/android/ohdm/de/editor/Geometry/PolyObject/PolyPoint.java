@@ -2,10 +2,9 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolygonOverlay;
+import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
-import org.osmdroid.bonuspack.overlays.Polygon;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class PolyPoint extends PolyObject {
 
     private static final long serialVersionUID = 0L;
 
-    private transient ExtendedPolygonOverlay polygon;
+    private transient ExtendedPointOverlay point;
     private transient boolean selected = false;
     private transient boolean editing = false;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
@@ -28,28 +27,22 @@ public class PolyPoint extends PolyObject {
 
     @Override
     protected void create(Context context) {
-        polygon = new ExtendedPolygonOverlay(context);
-        polygon.subscribe(this);
+        point = new ExtendedPointOverlay(context);
+        point.subscribe(this);
 
-        polygon.setFillColor(Color.BLUE);
-        polygon.setStrokeWidth(4);
+        point.setFillColor(Color.BLUE);
+        point.setStrokeWidth(4);
     }
 
     @Override
     public OverlayWithIW getOverlay() {
-        return polygon;
+        return point;
     }
 
     @Override
     public void setPoints(List<GeoPoint> points) {
         this.points = points;
-
-        if(this.points.size() >= 1) {
-            int lastPoint = this.points.size()-1;
-            int radius = 20;
-
-            polygon.setPoints(Polygon.pointsAsCircle(this.points.get(lastPoint), radius));
-        }
+        point.setPoints(this.points);
     }
 
     public List<GeoPoint> getPoints(){
@@ -74,12 +67,12 @@ public class PolyPoint extends PolyObject {
 
     @Override
     public boolean isClickable() {
-        return polygon.isClickable();
+        return point.isClickable();
     }
 
     @Override
     public void setClickable(boolean clickable) {
-        polygon.setClickable(clickable);
+        point.setClickable(clickable);
     }
 
     @Override
@@ -87,9 +80,9 @@ public class PolyPoint extends PolyObject {
         this.selected = selected;
 
         if(selected){
-            polygon.setFillColor(Color.RED);
+            point.setFillColor(Color.RED);
         }else{
-            polygon.setFillColor(Color.BLUE);
+            point.setFillColor(Color.BLUE);
         }
     }
 
@@ -108,9 +101,9 @@ public class PolyPoint extends PolyObject {
         this.editing = editing;
 
         if(editing){
-            polygon.setFillColor(Color.GREEN);
+            point.setFillColor(Color.GREEN);
         }else{
-            polygon.setFillColor(Color.BLUE);
+            point.setFillColor(Color.BLUE);
         }
     }
 

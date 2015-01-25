@@ -34,8 +34,6 @@ public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClic
 
     @Override
     public void setPoints(final List<GeoPoint> points) {
-        super.setPoints(points);
-
         if (points.size() >= 1) {
             super.setPoints(Polygon.pointsAsCircle(points.get(points.size() - 1), 20));
         }

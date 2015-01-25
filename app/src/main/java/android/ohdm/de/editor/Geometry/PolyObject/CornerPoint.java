@@ -26,8 +26,6 @@ public class CornerPoint extends PolyObject{
         super(PolyObjectType.POINT);
         this.polyObject = polyObject;
         create(context);
-
-        Log.i("CornerPoint","created");
     }
 
     @Override
