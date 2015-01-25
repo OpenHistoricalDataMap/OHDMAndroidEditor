@@ -14,6 +14,10 @@ public class PolyPoint extends PolyObject {
 
     private static final long serialVersionUID = 0L;
 
+    private static final int FILL_COLOR = Color.argb(128,0,0,255);
+    private static final int FILL_COLOR_SELECTED = Color.argb(128,255,0,0);
+    private static final int FILL_COLOR_EDIT = Color.argb(128,0,255,0);
+
     private transient ExtendedPointOverlay point;
     private transient boolean selected = false;
     private transient boolean editing = false;
@@ -30,7 +34,7 @@ public class PolyPoint extends PolyObject {
         point = new ExtendedPointOverlay(context);
         point.subscribe(this);
 
-        point.setFillColor(Color.BLUE);
+        point.setFillColor(FILL_COLOR);
         point.setStrokeWidth(4);
     }
 
@@ -80,9 +84,9 @@ public class PolyPoint extends PolyObject {
         this.selected = selected;
 
         if(selected){
-            point.setFillColor(Color.RED);
+            point.setFillColor(FILL_COLOR_SELECTED);
         }else{
-            point.setFillColor(Color.BLUE);
+            point.setFillColor(FILL_COLOR);
         }
     }
 
@@ -101,9 +105,9 @@ public class PolyPoint extends PolyObject {
         this.editing = editing;
 
         if(editing){
-            point.setFillColor(Color.GREEN);
+            point.setFillColor(FILL_COLOR_EDIT);
         }else{
-            point.setFillColor(Color.BLUE);
+            point.setFillColor(FILL_COLOR);
         }
     }
 

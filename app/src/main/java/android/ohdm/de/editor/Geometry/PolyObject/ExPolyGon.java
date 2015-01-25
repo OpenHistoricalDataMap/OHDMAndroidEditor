@@ -2,9 +2,7 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
 import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolygonOverlay;
-import android.util.Log;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
@@ -16,6 +14,10 @@ import java.util.List;
 public class ExPolyGon extends PolyObject {
 
     private static final long serialVersionUID = 0L;
+
+    private static final int FILL_COLOR = Color.argb(128,0,0,255);
+    private static final int FILL_COLOR_SELECTED = Color.argb(128,255,0,0);
+    private static final int FILL_COLOR_EDIT = Color.argb(128,0,255,0);
 
     private transient ExtendedPolygonOverlay polygon;
     private transient Context context;
@@ -37,7 +39,7 @@ public class ExPolyGon extends PolyObject {
     protected void create(Context context) {
         polygon = new ExtendedPolygonOverlay(context);
         polygon.subscribe(this);
-        polygon.setFillColor(Color.BLUE);
+        polygon.setFillColor(FILL_COLOR);
         polygon.setStrokeWidth(4);
         polygon.setPoints(points);
     }
@@ -102,9 +104,9 @@ public class ExPolyGon extends PolyObject {
         this.selected = selected;
 
         if (selected) {
-            polygon.setFillColor(Color.RED);
+            polygon.setFillColor(FILL_COLOR_SELECTED);
         } else {
-            polygon.setFillColor(Color.BLUE);
+            polygon.setFillColor(FILL_COLOR);
         }
     }
 
@@ -123,14 +125,14 @@ public class ExPolyGon extends PolyObject {
         this.editing = editing;
 
         if (editing) {
-            polygon.setFillColor(Color.GREEN);
+            polygon.setFillColor(FILL_COLOR_EDIT);
 
             for (CornerPoint point : this.cornerPoints) {
                 view.getOverlays().add(point.getOverlay());
             }
 
         } else {
-            polygon.setFillColor(Color.BLUE);
+            polygon.setFillColor(FILL_COLOR);
 
             for (CornerPoint point : cornerPoints) {
                 view.getOverlays().remove(point.getOverlay());
