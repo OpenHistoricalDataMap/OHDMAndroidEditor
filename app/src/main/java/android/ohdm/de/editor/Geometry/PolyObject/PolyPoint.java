@@ -1,12 +1,12 @@
 package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedMarkerOverlay;
-import android.ohdm.de.editor.R;
+import android.graphics.Color;
+import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolygonOverlay;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
+import org.osmdroid.bonuspack.overlays.Polygon;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,41 +15,40 @@ public class PolyPoint extends PolyObject {
 
     private static final long serialVersionUID = 0L;
 
-    private transient ExtendedMarkerOverlay marker;
-    private List<GeoPoint> points = new ArrayList<GeoPoint>();
-    private transient MapView context;
-
-    private transient boolean selected;
-    private transient boolean editing;
-
+    private transient ExtendedPolygonOverlay polygon;
+    private transient boolean selected = false;
+    private transient boolean editing = false;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
+    private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
-    public PolyPoint(MapView mapView){
+    PolyPoint(Context context){
         super(PolyObjectType.POINT);
-        this.context = mapView;
-        create(context.getContext());
+        create(context);
     }
 
     @Override
-    protected void create(Context context1) {
+    protected void create(Context context) {
+        polygon = new ExtendedPolygonOverlay(context);
+        polygon.subscribe(this);
 
-        marker = new ExtendedMarkerOverlay(this.context);
-        marker.setIcon(context.getResources().getDrawable(R.drawable.ic_action_new));
-        marker.setTitle("marker");
-        marker.subscribe(this);
+        polygon.setFillColor(Color.BLUE);
+        polygon.setStrokeWidth(4);
     }
 
     @Override
     public OverlayWithIW getOverlay() {
-        return marker;
+        return polygon;
     }
 
     @Override
     public void setPoints(List<GeoPoint> points) {
         this.points = points;
 
-        if(this.points.size()>0){
-            marker.setPosition(points.get(points.size() - 1));
+        if(this.points.size() >= 1) {
+            int lastPoint = this.points.size()-1;
+            int radius = 20;
+
+            polygon.setPoints(Polygon.pointsAsCircle(this.points.get(lastPoint), radius));
         }
     }
 
@@ -59,26 +58,28 @@ public class PolyPoint extends PolyObject {
 
     @Override
     public void removeLastPoint() {
-        if(points.size()>1){
+        if(!points.isEmpty()){
             points.remove(points.size()-1);
-            marker.setPosition(points.get(points.size() - 1));
         }
+
+        setPoints(this.points);
     }
 
     @Override
     public void addPoint(GeoPoint geoPoint) {
         points.add(geoPoint);
-        marker.setPosition(geoPoint);
+
+        setPoints(this.points);
     }
 
     @Override
     public boolean isClickable() {
-        return marker.isClickable();
+        return polygon.isClickable();
     }
 
     @Override
     public void setClickable(boolean clickable) {
-        marker.setClickable(clickable);
+        polygon.setClickable(clickable);
     }
 
     @Override
@@ -86,9 +87,9 @@ public class PolyPoint extends PolyObject {
         this.selected = selected;
 
         if(selected){
-            marker.setIcon(context.getResources().getDrawable(R.drawable.ic_action_edit));
+            polygon.setFillColor(Color.RED);
         }else{
-            marker.setIcon(context.getResources().getDrawable(R.drawable.ic_action_accept));
+            polygon.setFillColor(Color.BLUE);
         }
     }
 
@@ -107,9 +108,9 @@ public class PolyPoint extends PolyObject {
         this.editing = editing;
 
         if(editing){
-            marker.setIcon(context.getResources().getDrawable(R.drawable.ic_action_new));
+            polygon.setFillColor(Color.GREEN);
         }else{
-            marker.setIcon(context.getResources().getDrawable(R.drawable.ic_action_accept));
+            polygon.setFillColor(Color.BLUE);
         }
     }
 
