@@ -50,7 +50,7 @@ public class ExtendedPolygonOverlay extends Polygon implements ExtendedOverlayCl
 
     private void notifyListeners(){
         for(ExtendedOverlayClickListener listener : listeners){
-            listener.onClick();
+            listener.onClick(this);
         }
     }
 

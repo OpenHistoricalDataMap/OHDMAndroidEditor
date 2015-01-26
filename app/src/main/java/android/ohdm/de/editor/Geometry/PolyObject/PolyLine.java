@@ -111,7 +111,7 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     @Override
-    public void onClick() {
+    public void onClick(Object clickObject) {
         for(PolyObjectClickListener listener : listeners){
             listener.onClick(this);
         }
@@ -125,5 +125,10 @@ public class PolyLine extends PolyObject implements Serializable {
     @Override
     public void remove(PolyObjectClickListener listener) {
         listeners.remove(listener);
+    }
+
+    @Override
+    public void removeSelectedCornerPoint() {
+        //TODO
     }
 }

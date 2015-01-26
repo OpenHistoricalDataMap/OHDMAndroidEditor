@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static Mode mode = Mode.VIEW;
 
-//    private GeoPoint geoPoint = new GeoPoint(52.4581555, 13.5685014);
+    //    private GeoPoint geoPoint = new GeoPoint(52.4581555, 13.5685014);
     private GeoPoint geoPoint = new GeoPoint(52.49688, 13.52400);
     private MapView map;
     private PolyObjectManager polyObjectManager;
@@ -213,7 +213,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
 
-            Log.i(TAG,"get data: "+polyObjectId);
+            Log.i(TAG, "get data: " + polyObjectId);
 
             DownloadPolyObjectTask downloadPolyObjectTask = new DownloadPolyObjectTask();
             downloadPolyObjectTask.execute(polyObjectId);
@@ -222,10 +222,13 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private void startEdit() {
 
-        stopSelect();
+        changeEditButtonsVisibility(View.INVISIBLE);
 
-        if (polyObjectManager.setSelectedObjectEditable(true)) {
+        polyObjectManager.setObjectsClickable(false);
 
+        polyObjectManager.setSelectedObjectEditable(true);
+
+        if(polyObjectManager.isSelectedObjectEditable()) {
             map.invalidate();
 
             changeAddButtonsVisibility(View.VISIBLE);
@@ -261,7 +264,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     private void stopAdd() {
 
         mode = Mode.VIEW;
-        polyObjectManager.setSelectedObjectEditable(false);
+        polyObjectManager.setActiveObjectEditable(false);
+        polyObjectManager.deselectActiveObject();
         map.invalidate();
         changeAddButtonsVisibility(View.INVISIBLE);
     }
@@ -338,7 +342,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(getApplicationContext(),R.string.async_download_start,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.async_download_start, Toast.LENGTH_SHORT).show();
         }
 
         protected Long doInBackground(Integer... params) {
@@ -360,11 +364,11 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         protected void onPostExecute(Long result) {
 
-            if(result == 0) {
+            if (result == 0) {
                 Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
                 Log.i("DownloadPolyObjectTask", "done");
-            }else{
-                Toast.makeText(getApplicationContext(),R.string.async_download_error, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -422,8 +426,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         if (mode == Mode.SELECT) {
             polyObjectManager.removeSelectedObject();
         } else if (mode == Mode.ADD) {
-            polyObjectManager.removeSelectedObject();
-            stopAdd();
+            polyObjectManager.removeSelectedCornerPoint();
         }
         map.invalidate();
     }

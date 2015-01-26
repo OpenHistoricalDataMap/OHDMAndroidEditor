@@ -108,7 +108,12 @@ public class PolyGon extends PolyObject {
     }
 
     @Override
-    public void onClick() {
+    public void removeSelectedCornerPoint() {
+        //TODO
+    }
+
+    @Override
+    public void onClick(Object clickObject) {
         for(PolyObjectClickListener listener : listeners){
             listener.onClick(this);
         }

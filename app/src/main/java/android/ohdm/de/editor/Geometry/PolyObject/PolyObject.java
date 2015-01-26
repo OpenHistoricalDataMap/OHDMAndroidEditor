@@ -48,4 +48,6 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     public abstract boolean isEditing();
 
     public abstract void setEditing(boolean editing);
+
+    public abstract void removeSelectedCornerPoint();
 }

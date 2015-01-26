@@ -45,7 +45,8 @@ public class PolyObjectManager implements PolyObjectClickListener {
     public void deselectActiveObject(){
 
         if(activeObject != null) {
-            this.activeObject.setSelected(false);
+            activeObject.setSelected(false);
+            activeObject = null;
         }
 
         map.invalidate();
@@ -69,13 +70,26 @@ public class PolyObjectManager implements PolyObjectClickListener {
         return polyObjectList;
     }
 
-    public boolean setSelectedObjectEditable(boolean editable) {
+    public void setActiveObjectEditable(boolean editable) {
 
         if(activeObject != null){
-            activeObject.setEditing(editable);
-            return true;
+                activeObject.setEditing(editable);
         }
+    }
 
+    public void setSelectedObjectEditable(boolean editable) {
+
+        if(activeObject != null){
+            if(activeObject.isSelected()) {
+                activeObject.setEditing(editable);
+            }
+        }
+    }
+
+    public boolean isSelectedObjectEditable(){
+        if(activeObject != null){
+            return activeObject.isEditing();
+        }
         return false;
     }
 
@@ -91,5 +105,9 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
     public void removeLastPointFromSelectedPolyObject() {
         activeObject.removeLastPoint();
+    }
+
+    public void removeSelectedCornerPoint() {
+        activeObject.removeSelectedCornerPoint();
     }
 }

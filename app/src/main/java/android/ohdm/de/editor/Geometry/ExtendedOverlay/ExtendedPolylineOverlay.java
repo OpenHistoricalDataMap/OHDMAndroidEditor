@@ -63,7 +63,7 @@ public class ExtendedPolylineOverlay extends Polyline implements ExtendedOverlay
 
     private void notifyListeners(){
         for(ExtendedOverlayClickListener listener : listeners){
-            listener.onClick();
+            listener.onClick(this);
         }
     }
 

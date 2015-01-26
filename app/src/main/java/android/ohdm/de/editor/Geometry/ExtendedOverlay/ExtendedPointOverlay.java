@@ -14,13 +14,14 @@ import java.util.List;
 
 public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClickPublisher {
 
+    private static final int FILL_COLOR = Color.argb(128, 0, 0, 255);
     private boolean clickable = false;
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
 
     public ExtendedPointOverlay(Context context) {
         super(context);
-        setFillColor(Color.BLUE);
+        setFillColor(FILL_COLOR);
         setStrokeWidth(4);
     }
 
@@ -56,7 +57,7 @@ public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClic
 
     private void notifyListeners() {
         for (ExtendedOverlayClickListener listener : listeners) {
-            listener.onClick();
+            listener.onClick(this);
         }
     }
 
