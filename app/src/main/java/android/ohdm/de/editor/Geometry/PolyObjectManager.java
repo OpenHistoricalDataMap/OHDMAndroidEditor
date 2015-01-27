@@ -24,7 +24,9 @@ public class PolyObjectManager implements PolyObjectClickListener {
     }
 
     public void addObject(PolyObject polyObject){
+
         polyObject.subscribe(this);
+
         polyObjectList.add(polyObject);
         map.getOverlays().add(polyObject.getOverlay());
     }

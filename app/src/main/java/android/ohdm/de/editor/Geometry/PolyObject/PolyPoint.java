@@ -3,12 +3,14 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 import android.content.Context;
 import android.graphics.Color;
 import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
+import android.ohdm.de.editor.Geometry.TagDates;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PolyPoint extends PolyObject {
 
@@ -131,5 +133,15 @@ public class PolyPoint extends PolyObject {
     @Override
     public void removeSelectedCornerPoint() {
         //TODO
+    }
+
+    @Override
+    public void setTag(TagDates tag, String value) {
+
+    }
+
+    @Override
+    public Map<TagDates, String> getTags() {
+        return null;
     }
 }

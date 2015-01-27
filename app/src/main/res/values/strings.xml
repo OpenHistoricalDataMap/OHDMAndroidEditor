@@ -23,6 +23,7 @@
     <string name="button_add_undo">undo</string>
     <string name="button_add_cancel">cancel</string>
     <string name="button_edit_delete">delete</string>
+    <string name="button_add_data">object data</string>
 
     <string name="dialog_name">cancel</string>
     <string name="dialog_edittext">ID of Polyobject</string>

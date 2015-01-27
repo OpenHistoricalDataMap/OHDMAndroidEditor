@@ -2,12 +2,14 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedOverlayClickListener;
+import android.ohdm.de.editor.Geometry.TagDates;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public abstract class PolyObject implements ExtendedOverlayClickListener, PolyObjectClickPublisher, Serializable {
 
@@ -50,4 +52,8 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     public abstract void setEditing(boolean editing);
 
     public abstract void removeSelectedCornerPoint();
+
+    public abstract void setTag(TagDates tag,String value);
+
+    public abstract Map<TagDates,String> getTags();
 }

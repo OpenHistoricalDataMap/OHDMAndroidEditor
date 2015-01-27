@@ -54,4 +54,14 @@
         android:visibility="invisible"
         android:layout_toRightOf="@+id/buttonAddCancel"/>
 
+    <ImageButton
+        android:id="@+id/buttonAddData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_add_data"
+        android:onClick="buttonAddData"
+        android:src="@drawable/ic_action_labels"
+        android:visibility="invisible"
+        android:layout_toRightOf="@+id/buttonEditDelete"/>
+
 </RelativeLayout>

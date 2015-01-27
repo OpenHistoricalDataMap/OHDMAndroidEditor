@@ -3,6 +3,7 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 import android.content.Context;
 import android.graphics.Color;
 import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolylineOverlay;
+import android.ohdm.de.editor.Geometry.TagDates;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
@@ -10,13 +11,13 @@ import org.osmdroid.util.GeoPoint;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PolyLine extends PolyObject implements Serializable {
 
     private static final long serialVersionUID = 4209360273818925922L;
 
     private transient ExtendedPolylineOverlay polyline;
-    //private Context context;
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
     private transient boolean selected = false;
@@ -24,7 +25,6 @@ public class PolyLine extends PolyObject implements Serializable {
 
     public PolyLine(Context context){
         super(PolyObjectType.POLYLINE);
-        //this.context = context;
         create(context);
     }
 
@@ -130,5 +130,15 @@ public class PolyLine extends PolyObject implements Serializable {
     @Override
     public void removeSelectedCornerPoint() {
         //TODO
+    }
+
+    @Override
+    public void setTag(TagDates tag, String value) {
+
+    }
+
+    @Override
+    public Map<TagDates, String> getTags() {
+        return null;
     }
 }

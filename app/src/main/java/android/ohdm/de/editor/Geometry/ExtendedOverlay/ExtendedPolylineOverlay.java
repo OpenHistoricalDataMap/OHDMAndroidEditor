@@ -27,14 +27,6 @@ public class ExtendedPolylineOverlay extends Polyline implements ExtendedOverlay
         Log.i("ExtendedPolyLineOverlay","created!");
     }
 
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
     public boolean isClickable() {
         return clickable;
     }
@@ -51,6 +43,7 @@ public class ExtendedPolylineOverlay extends Polyline implements ExtendedOverlay
 
         final Projection pj = mapView.getProjection();
         GeoPoint eventPos = (GeoPoint) pj.fromPixels((int)event.getX(), (int)event.getY());
+        //TODO: tolerance erhöhen damit es einfacher zu klicken ist?
         double tolerance = mPaint.getStrokeWidth();
         boolean tapped = isCloseTo(eventPos, tolerance, mapView);
 

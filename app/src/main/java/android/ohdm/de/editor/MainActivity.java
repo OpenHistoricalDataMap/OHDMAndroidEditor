@@ -176,6 +176,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
                 if (mode == Mode.SELECT) {
                     stopSelect();
+                } else if (mode == Mode.ADD) {
+                    stopAdd();
                 } else {
                     startSelectObject();
                 }
@@ -228,7 +230,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         polyObjectManager.setSelectedObjectEditable(true);
 
-        if(polyObjectManager.isSelectedObjectEditable()) {
+        if (polyObjectManager.isSelectedObjectEditable()) {
             map.invalidate();
 
             changeAddButtonsVisibility(View.VISIBLE);
@@ -239,11 +241,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     private void startSelectObject() {
 
         changeEditButtonsVisibility(View.VISIBLE);
-
-        if (mode == Mode.ADD) {
-            stopAdd();
-        }
-
         mode = Mode.SELECT;
         polyObjectManager.setObjectsClickable(true);
     }
@@ -283,10 +280,12 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         ImageButton buttonAddAccept = (ImageButton) findViewById(R.id.buttonAddAccept);
         ImageButton buttonAddUndo = (ImageButton) findViewById(R.id.buttonAddUndo);
         ImageButton buttonAddDelete = (ImageButton) findViewById(R.id.buttonEditDelete);
+        ImageButton buttonAddData = (ImageButton) findViewById(R.id.buttonAddData);
 
         buttonAddAccept.setVisibility(visibility);
         buttonAddUndo.setVisibility(visibility);
         buttonAddDelete.setVisibility(visibility);
+        buttonAddData.setVisibility(visibility);
     }
 
     private void changeEditButtonsVisibility(int visibility) {
@@ -399,11 +398,15 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     public void buttonAddAccept(View view) {
 
-        if (mode == Mode.ADD) {
-            stopAdd();
-            mode = Mode.VIEW;
-        } else if (mode == Mode.SELECT) {
-            startEdit();
+        switch (mode) {
+            case ADD:
+                stopAdd();
+                break;
+            case SELECT:
+                startEdit();
+                break;
+            default:
+                Log.e(TAG, "Illegal mode");
         }
     }
 
@@ -429,5 +432,11 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             polyObjectManager.removeSelectedCornerPoint();
         }
         map.invalidate();
+    }
+
+    public void buttonAddData(View view){
+
+        Toast.makeText(this,"not yet implemented",Toast.LENGTH_SHORT).show();
+
     }
 }

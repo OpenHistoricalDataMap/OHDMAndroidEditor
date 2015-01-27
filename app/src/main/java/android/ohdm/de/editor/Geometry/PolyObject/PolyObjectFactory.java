@@ -11,7 +11,7 @@ public class PolyObjectFactory {
 
         switch (type){
             case POLYGON:
-                polyObject = new ExPolyGon(view);
+                polyObject = new PolyGon(view);
                 break;
             case POLYLINE:
                 polyObject = new PolyLine(view.getContext());
