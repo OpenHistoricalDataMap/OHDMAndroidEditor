@@ -24,14 +24,13 @@
     <string name="button_add_cancel">cancel</string>
     <string name="button_edit_delete">delete</string>
     <string name="button_add_data">object data</string>
-
     <string name="dialog_name">cancel</string>
     <string name="dialog_edittext">ID of Polyobject</string>
-
     <string name="async_download_error">sorry, but the object could not be loaded</string>
     <string name="async_download_done">object is loaded!</string>
     <string name="async_download_start">loading Object...</string>
-
     <string name="map_location_error">location error</string>
     <string name="location_service_started">location service started</string>
+    <string name="title_activity_edit_poly_object_data">Edit data</string>
+
 </resources>

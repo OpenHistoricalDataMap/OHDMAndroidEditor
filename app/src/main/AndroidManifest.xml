@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.ohdm.de.editor" >
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="android.ohdm.de.editor.MainActivity"
+            android:name="android.ohdm.de.ohdmviewer.MainActivity"
             android:label="@string/app_name_short" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,10 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="android.ohdm.de.editor.GetPolyobjectByIdActivity"
+            android:name="android.ohdm.de.ohdmviewer.GetPolyobjectByIdActivity"
             android:theme="@android:style/Theme.Holo.Dialog" />
+        <activity
+            android:name="android.ohdm.de.ohdmviewer.EditPolyObjectDataActivity"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:label="@string/title_activity_edit_poly_object_data" >
+        </activity>
     </application>
 
 </manifest>
