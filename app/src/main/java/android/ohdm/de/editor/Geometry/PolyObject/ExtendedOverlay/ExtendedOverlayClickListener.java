@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.Geometry.ExtendedOverlay;
+package android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay;
 
 public interface ExtendedOverlayClickListener {
 

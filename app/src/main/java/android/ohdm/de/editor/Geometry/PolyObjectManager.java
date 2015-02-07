@@ -5,15 +5,20 @@ import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectClickListener;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
+import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PolyObjectManager implements PolyObjectClickListener {
 
+    private static final String TAG = "PolyObjectManager";
     private List<PolyObject> polyObjectList = new ArrayList<PolyObject>();
     private PolyObject activeObject = null;
 
@@ -50,7 +55,6 @@ public class PolyObjectManager implements PolyObjectClickListener {
             activeObject.setSelected(false);
             activeObject = null;
         }
-
         map.invalidate();
     }
 
@@ -99,6 +103,45 @@ public class PolyObjectManager implements PolyObjectClickListener {
         activeObject = PolyObjectFactory.buildObject(type, map);
         activeObject.setEditing(true);
         addObject(activeObject);
+    }
+
+    public HashMap<TagDates,String> getSelectedPolyObjectTags(){
+        if(activeObject != null){
+            return activeObject.getTags();
+        }
+
+        return new HashMap<TagDates, String>();
+    }
+
+    public void setSelectedPolyObjectTags(HashMap<TagDates,String> tags){
+        if(activeObject != null){
+            activeObject.setTags(tags);
+        }else{
+            Log.d(TAG,"no active object");
+        }
+    }
+
+    public UUID getSelectedPolyObjectId(){
+        if(activeObject != null){
+            return activeObject.getId();
+        }
+        return null;
+    }
+
+    public void selectPolyObjectByInternId(UUID id){
+
+        for(PolyObject polyObject: polyObjectList){
+            if(polyObject.getId().equals(id)){
+                activeObject = polyObject;
+                activeObject.setSelected(true);
+                map.invalidate();
+                return;
+            }else{
+                Log.d(TAG,polyObject.getId().toString()+" != "+id.toString());
+            }
+        }
+
+        Log.d(TAG,"no polyobject found");
     }
     
     public void addPointToSelectedPolyObject(GeoPoint point){

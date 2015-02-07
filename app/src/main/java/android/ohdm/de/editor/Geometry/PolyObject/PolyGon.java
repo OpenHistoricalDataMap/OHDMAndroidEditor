@@ -2,10 +2,9 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolygonOverlay;
+import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
+import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPolygonOverlay;
 import android.ohdm.de.editor.Geometry.TagDates;
-import android.util.Log;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class PolyGon extends PolyObject {
 
@@ -34,13 +34,14 @@ public class PolyGon extends PolyObject {
     private transient boolean editing = false;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
 
-    private Map<TagDates,String> tags = new HashMap<TagDates, String>();
+    private HashMap<TagDates,String> tags = new HashMap<TagDates, String>();
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
     PolyGon(MapView view) {
         super(PolyObjectType.POLYGON);
         this.context = view.getContext();
         this.view = view;
+        internId = UUID.randomUUID();
         create(context);
     }
 
@@ -133,11 +134,6 @@ public class PolyGon extends PolyObject {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean isClickable() {
-        return polygon.isClickable();
     }
 
     @Override
@@ -245,9 +241,12 @@ public class PolyGon extends PolyObject {
     }
 
     @Override
-    public Map<TagDates, String> getTags() {
+    public HashMap<TagDates, String> getTags() {
         return tags;
     }
 
-
+    @Override
+    public void setTags(HashMap<TagDates, String> tags) {
+        this.tags = tags;
+    }
 }

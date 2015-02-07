@@ -51,20 +51,19 @@ public class PolyObjectSerializer {
                 switch (loadedObject.getType()) {
                     case POLYLINE:
                         polyObject = PolyObjectFactory.buildObject(PolyObjectType.POLYLINE, map);
-                        polyObject.setPoints(loadedObject.getPoints());
-                        polyObjectManager.addObject(polyObject);
                         break;
                     case POLYGON:
                         polyObject = PolyObjectFactory.buildObject(PolyObjectType.POLYGON, map);
-                        polyObject.setPoints(loadedObject.getPoints());
-                        polyObjectManager.addObject(polyObject);
                         break;
                     case POINT:
                         polyObject = PolyObjectFactory.buildObject(PolyObjectType.POINT, map);
-                        polyObject.setPoints(loadedObject.getPoints());
-                        polyObjectManager.addObject(polyObject);
                         break;
                 }
+
+                polyObject.setPoints(loadedObject.getPoints());
+                polyObject.setTags(loadedObject.getTags());
+                polyObject.setId(loadedObject.getId());
+                polyObjectManager.addObject(polyObject);
             }
 
         } catch (IOException e) {

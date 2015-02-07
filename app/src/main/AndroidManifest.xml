@@ -26,9 +26,13 @@
             android:name="android.ohdm.de.ohdmviewer.GetPolyobjectByIdActivity"
             android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
-            android:name="android.ohdm.de.ohdmviewer.EditPolyObjectDataActivity"
-            android:theme="@android:style/Theme.Holo.Dialog"
+            android:name="android.ohdm.de.ohdmviewer.ShowPolyObjectDataActivity"
             android:label="@string/title_activity_edit_poly_object_data" >
+        </activity>
+        <activity
+            android:name="android.ohdm.de.ohdmviewer.EditPolyObjectData"
+            android:label="@string/title_activity_edit_poly_object_data"
+            android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>
     </application>
 

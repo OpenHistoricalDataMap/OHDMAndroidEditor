@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <Button
+        android:id="@+id/buttonEditOk"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:onClick="buttonShowOk"
+        android:text="@android:string/ok" />
+
+    <Button
+        android:id="@+id/buttonEditCancel"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:onClick="buttonShowCancel"
+        android:layout_toRightOf="@+id/buttonEditOk"
+        android:text="@android:string/cancel" />
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:onClick="buttonShowAdd"
+        android:layout_toRightOf="@+id/buttonEditCancel"
+        android:text="@string/action_add" />
+
+</LinearLayout>

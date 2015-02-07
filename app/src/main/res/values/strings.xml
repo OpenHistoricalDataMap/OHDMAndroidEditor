@@ -32,5 +32,7 @@
     <string name="map_location_error">location error</string>
     <string name="location_service_started">location service started</string>
     <string name="title_activity_edit_poly_object_data">Edit data</string>
+    <string name="edit_polyobject_data_key">key</string>
+    <string name="edit_polyobject_data_value">value</string>
 
 </resources>

@@ -2,15 +2,16 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPointOverlay;
+import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
 import android.ohdm.de.editor.Geometry.TagDates;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public class PolyPoint extends PolyObject {
 
@@ -24,10 +25,12 @@ public class PolyPoint extends PolyObject {
     private transient boolean selected = false;
     private transient boolean editing = false;
     private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
+
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
     PolyPoint(Context context){
         super(PolyObjectType.POINT);
+        this.internId = UUID.randomUUID();
         create(context);
     }
 
@@ -69,11 +72,6 @@ public class PolyPoint extends PolyObject {
         points.add(geoPoint);
 
         setPoints(this.points);
-    }
-
-    @Override
-    public boolean isClickable() {
-        return point.isClickable();
     }
 
     @Override
@@ -136,12 +134,12 @@ public class PolyPoint extends PolyObject {
     }
 
     @Override
-    public void setTag(TagDates tag, String value) {
-
+    public HashMap<TagDates, String> getTags() {
+        return null;
     }
 
     @Override
-    public Map<TagDates, String> getTags() {
-        return null;
+    public void setTags(HashMap<TagDates, String> tags) {
+        //TODO
     }
 }

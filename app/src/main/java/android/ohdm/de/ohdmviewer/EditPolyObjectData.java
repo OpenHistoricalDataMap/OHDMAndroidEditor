@@ -1,15 +1,19 @@
 package android.ohdm.de.ohdmviewer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.ohdm.de.editor.R;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
-public class EditPolyObjectDataActivity extends Activity {
+public class EditPolyObjectData extends Activity {
+
+    private static final String DATA_KEY = "data_key";
+    private static final String DATA_VALUE = "data_value";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,22 @@ public class EditPolyObjectDataActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void buttonEditOk(View view){
-        Toast.makeText(this,"not implemented yet",Toast.LENGTH_SHORT).show();
+    public void buttonEditOk(View view) {
+
+        TextView textViewKey = (TextView)findViewById(R.id.polyobject_data_key);
+        TextView textViewValue = (TextView)findViewById(R.id.polyobject_data_value);
+
+        Intent resultData = new Intent();
+        resultData.putExtra(DATA_KEY, textViewKey.getText().toString());
+        resultData.putExtra(DATA_VALUE, textViewValue.getText().toString());
+        setResult(Activity.RESULT_OK, resultData);
+
+        finish();
     }
 
-    public void buttonEditCancel(View view){
-        Toast.makeText(this,"not implemented yet",Toast.LENGTH_SHORT).show();
+    public void buttonEditCancel(View view) {
+
+        finish();
+
     }
 }

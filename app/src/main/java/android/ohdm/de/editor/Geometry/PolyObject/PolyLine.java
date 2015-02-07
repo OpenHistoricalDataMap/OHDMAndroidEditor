@@ -2,7 +2,7 @@ package android.ohdm.de.editor.Geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.ExtendedOverlay.ExtendedPolylineOverlay;
+import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPolylineOverlay;
 import android.ohdm.de.editor.Geometry.TagDates;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
@@ -10,8 +10,9 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public class PolyLine extends PolyObject implements Serializable {
 
@@ -25,6 +26,7 @@ public class PolyLine extends PolyObject implements Serializable {
 
     public PolyLine(Context context){
         super(PolyObjectType.POLYLINE);
+        this.internId = UUID.randomUUID();
         create(context);
     }
 
@@ -66,11 +68,6 @@ public class PolyLine extends PolyObject implements Serializable {
     public void addPoint(GeoPoint geoPoint) {
         points.add(geoPoint);
         polyline.setPoints(this.points);
-    }
-
-    @Override
-    public boolean isClickable() {
-        return polyline.isClickable();
     }
 
     @Override
@@ -133,12 +130,12 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     @Override
-    public void setTag(TagDates tag, String value) {
-
+    public HashMap<TagDates, String> getTags() {
+        return null;
     }
 
     @Override
-    public Map<TagDates, String> getTags() {
-        return null;
+    public void setTags(HashMap<TagDates, String> tags) {
+        //TODO
     }
 }

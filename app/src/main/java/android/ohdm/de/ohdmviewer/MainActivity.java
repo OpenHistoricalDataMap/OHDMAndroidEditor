@@ -10,10 +10,10 @@ import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.Geometry.PolyObjectManager;
 import android.ohdm.de.editor.Geometry.PolyObjectSerializer;
+import android.ohdm.de.editor.Geometry.TagDates;
 import android.ohdm.de.editor.JSONReader;
 import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.WMSTileSource;
-import android.ohdm.de.ohdmviewer.GetPolyobjectByIdActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,11 +34,17 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static final String TAG = "MainActivity";
-    private static final int DIALOG_REQUEST_CODE = 1747;
+    private static final int ID_DIALOG_REQUEST_CODE = 1747;
+    private static final int DATA_DIALOG_REQUEST_CODE = 1748;
     private static final String EXTRA_POLYOBJECTID = "polyobjectid";
+    public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
+    public static final String MAP_DATA = "map_data";
 
     private enum Mode {
         ADD, SELECT, EDIT, VIEW
@@ -46,7 +52,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static Mode mode = Mode.VIEW;
 
-    //    private GeoPoint geoPoint = new GeoPoint(52.4581555, 13.5685014);
     private GeoPoint geoPoint = new GeoPoint(52.49688, 13.52400);
     private MapView map;
     private PolyObjectManager polyObjectManager;
@@ -96,8 +101,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         rl.addView(osmv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT));
-
-        //this.setContentView(rl);
 
         osmv.setBuiltInZoomControls(true);
         osmv.setClickable(true);
@@ -205,7 +208,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             case R.id.action_getpolyobjectbyid:
 
                 Intent intent = new Intent(this, GetPolyobjectByIdActivity.class);
-                startActivityForResult(intent, DIALOG_REQUEST_CODE);
+                startActivityForResult(intent, ID_DIALOG_REQUEST_CODE);
 
                 return true;
         }
@@ -215,7 +218,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_REQUEST_CODE) {
+
+        if (resultCode == Activity.RESULT_OK && requestCode == ID_DIALOG_REQUEST_CODE) {
 
             int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
 
@@ -223,6 +227,14 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             DownloadPolyObjectTask downloadPolyObjectTask = new DownloadPolyObjectTask();
             downloadPolyObjectTask.execute(polyObjectId);
+
+        }else if(resultCode == Activity.RESULT_OK && requestCode == DATA_DIALOG_REQUEST_CODE){
+
+            UUID selectedObjectId = (UUID)data.getSerializableExtra(EXTRA_SELECTED_POLYOBJECT_INTERNID);
+            polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
+
+            HashMap<TagDates,String> resultMap = (HashMap)data.getSerializableExtra(MAP_DATA);
+            polyObjectManager.setSelectedPolyObjectTags(resultMap);
         }
     }
 
@@ -440,7 +452,15 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     public void buttonAddData(View view){
 
-        Intent intent = new Intent(this, EditPolyObjectDataActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(this, ShowPolyObjectDataActivity.class);
+        Bundle extras = new Bundle();
+        extras.putSerializable(MAP_DATA,polyObjectManager.getSelectedPolyObjectTags());
+
+        Log.d(TAG,"selected polyobject intern id:"+polyObjectManager.getSelectedPolyObjectId().toString());
+
+        extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID,polyObjectManager.getSelectedPolyObjectId());
+        intent.putExtras(extras);
+
+        startActivityForResult(intent, DATA_DIALOG_REQUEST_CODE);
     }
 }

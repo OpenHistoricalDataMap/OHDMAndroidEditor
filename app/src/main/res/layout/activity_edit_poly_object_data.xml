@@ -3,24 +3,31 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ScrollView
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/polyobject_data_key"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView" >
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:hint="@string/edit_polyobject_data_key" />
 
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/listView" />
-
-    </ScrollView>
+    <EditText
+        android:id="@+id/polyobject_data_value"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:hint="@string/edit_polyobject_data_value" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/buttonEditOk"
+            android:id="@+id/buttonIdOk"
             android:layout_width="0dp"
             android:layout_weight=".5"
             android:layout_height="wrap_content"
@@ -32,7 +39,7 @@
             android:layout_weight=".5"
             android:layout_height="wrap_content"
             android:onClick="buttonEditCancel"
-            android:layout_toRightOf="@+id/buttonEditOk"
+            android:layout_toRightOf="@+id/buttonIdOk"
             android:text="@android:string/cancel" />
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package android.ohdm.de.editor.Geometry;
 
 public enum TagDates {
+    id,
     highway,
     description,
     postal_code,
