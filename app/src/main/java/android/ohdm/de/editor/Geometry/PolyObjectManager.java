@@ -121,7 +121,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
         }
     }
 
-    public UUID getSelectedPolyObjectId(){
+    public UUID getSelectedPolyObjectInternId(){
         if(activeObject != null){
             return activeObject.getId();
         }

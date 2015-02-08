@@ -456,9 +456,9 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         Bundle extras = new Bundle();
         extras.putSerializable(MAP_DATA,polyObjectManager.getSelectedPolyObjectTags());
 
-        Log.d(TAG,"selected polyobject intern id:"+polyObjectManager.getSelectedPolyObjectId().toString());
+        Log.d(TAG,"selected polyobject intern id:"+polyObjectManager.getSelectedPolyObjectInternId().toString());
 
-        extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID,polyObjectManager.getSelectedPolyObjectId());
+        extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID,polyObjectManager.getSelectedPolyObjectInternId());
         intent.putExtras(extras);
 
         startActivityForResult(intent, DATA_DIALOG_REQUEST_CODE);

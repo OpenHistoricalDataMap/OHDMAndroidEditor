@@ -30,7 +30,7 @@ public class PolyObjectSerializer {
             os.close();
 
         } catch (IOException e) {
-            Log.e(TAG, "seriaizing: " + e.toString());
+            Log.e(TAG, "serializing: " + e.toString());
         }
     }
 

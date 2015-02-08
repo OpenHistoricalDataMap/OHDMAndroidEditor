@@ -22,10 +22,6 @@ public class PolyPoint extends PolyObject {
     private static final int FILL_COLOR_EDIT = Color.argb(128,0,255,0);
 
     private transient ExtendedPointOverlay point;
-    private transient boolean selected = false;
-    private transient boolean editing = false;
-    private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
-
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
     PolyPoint(Context context){
@@ -91,16 +87,6 @@ public class PolyPoint extends PolyObject {
     }
 
     @Override
-    public boolean isSelected() {
-        return selected;
-    }
-
-    @Override
-    public boolean isEditing() {
-        return editing;
-    }
-
-    @Override
     public void setEditing(boolean editing) {
         this.editing = editing;
 
@@ -119,27 +105,7 @@ public class PolyPoint extends PolyObject {
     }
 
     @Override
-    public void subscribe(PolyObjectClickListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void remove(PolyObjectClickListener listener) {
-        listeners.remove(listener);
-    }
-
-    @Override
     public void removeSelectedCornerPoint() {
-        //TODO
-    }
-
-    @Override
-    public HashMap<TagDates, String> getTags() {
-        return null;
-    }
-
-    @Override
-    public void setTags(HashMap<TagDates, String> tags) {
         //TODO
     }
 }

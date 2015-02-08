@@ -8,14 +8,20 @@ import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public abstract class PolyObject implements ExtendedOverlayClickListener, PolyObjectClickPublisher, Serializable {
 
-    PolyObjectType type = null;
-    UUID internId;
+    protected transient boolean selected = false;
+    protected transient boolean editing = false;
+    protected transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
+
+    protected HashMap<TagDates,String> tags = new HashMap<TagDates, String>();
+    protected PolyObjectType type = null;
+    protected UUID internId;
 
     public PolyObject(PolyObjectType type){
         this.type = type;
@@ -41,17 +47,17 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     public abstract void setSelected(boolean selected);
 
-    public abstract boolean isSelected();
-
-    public abstract boolean isEditing();
-
     public abstract void setEditing(boolean editing);
 
     public abstract void removeSelectedCornerPoint();
 
-    public abstract HashMap<TagDates,String> getTags();
+    public HashMap<TagDates, String> getTags() {
+        return tags;
+    }
 
-    public abstract void setTags(HashMap<TagDates,String> tags);
+    public void setTags(HashMap<TagDates, String> tags) {
+        this.tags = tags;
+    }
 
     public void setId(UUID id){
         this.internId = id;
@@ -60,4 +66,21 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     public UUID getId(){
         return this.internId;
     }
+
+    public void subscribe(PolyObjectClickListener listener) {
+        listeners.add(listener);
+    }
+
+    public void remove(PolyObjectClickListener listener) {
+        listeners.remove(listener);
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public boolean isEditing() {
+        return editing;
+    }
+
 }

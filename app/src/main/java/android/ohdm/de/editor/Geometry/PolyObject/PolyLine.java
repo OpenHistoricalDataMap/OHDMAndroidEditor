@@ -19,10 +19,8 @@ public class PolyLine extends PolyObject implements Serializable {
     private static final long serialVersionUID = 4209360273818925922L;
 
     private transient ExtendedPolylineOverlay polyline;
+
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
-    private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
-    private transient boolean selected = false;
-    private transient boolean editing = false;
 
     public PolyLine(Context context){
         super(PolyObjectType.POLYLINE);
@@ -87,16 +85,6 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     @Override
-    public boolean isSelected() {
-        return selected;
-    }
-
-    @Override
-    public boolean isEditing() {
-        return editing;
-    }
-
-    @Override
     public void setEditing(boolean editing) {
         this.editing = editing;
 
@@ -115,27 +103,7 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     @Override
-    public void subscribe(PolyObjectClickListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void remove(PolyObjectClickListener listener) {
-        listeners.remove(listener);
-    }
-
-    @Override
     public void removeSelectedCornerPoint() {
-        //TODO
-    }
-
-    @Override
-    public HashMap<TagDates, String> getTags() {
-        return null;
-    }
-
-    @Override
-    public void setTags(HashMap<TagDates, String> tags) {
         //TODO
     }
 }

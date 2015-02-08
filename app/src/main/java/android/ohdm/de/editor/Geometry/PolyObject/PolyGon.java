@@ -25,24 +25,18 @@ public class PolyGon extends PolyObject {
     private static final int FILL_COLOR_EDIT = Color.argb(128, 0, 255, 0);
 
     private transient ExtendedPolygonOverlay polygon;
-    private transient Context context;
     private transient MapView view;
     private transient List<ExtendedPointOverlay> cornerPoints = new ArrayList<ExtendedPointOverlay>();
     private transient ExtendedPointOverlay activeCornerPoint;
     private transient Map<ExtendedPointOverlay,GeoPoint> pointOverlayMap= new HashMap<ExtendedPointOverlay,GeoPoint>();
-    private transient boolean selected = false;
-    private transient boolean editing = false;
-    private transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
 
-    private HashMap<TagDates,String> tags = new HashMap<TagDates, String>();
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
     PolyGon(MapView view) {
         super(PolyObjectType.POLYGON);
-        this.context = view.getContext();
         this.view = view;
         internId = UUID.randomUUID();
-        create(context);
+        create(view.getContext());
     }
 
     @Override
@@ -65,7 +59,7 @@ public class PolyGon extends PolyObject {
         polygon.setPoints(points);
 
         for(GeoPoint point : this.points){
-            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(context);
+            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(view.getContext());
 
             List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
             pointPoints.add(point);
@@ -104,7 +98,7 @@ public class PolyGon extends PolyObject {
             points.add(geoPoint);
             polygon.setPoints(this.points);
 
-            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(context);
+            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(view.getContext());
 
             List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
             pointPoints.add(geoPoint);
@@ -167,16 +161,6 @@ public class PolyGon extends PolyObject {
     }
 
     @Override
-    public boolean isSelected() {
-        return selected;
-    }
-
-    @Override
-    public boolean isEditing() {
-        return editing;
-    }
-
-    @Override
     public void setEditing(boolean editing) {
         this.editing = editing;
 
@@ -224,29 +208,5 @@ public class PolyGon extends PolyObject {
                 listener.onClick(this);
             }
         }
-    }
-
-    @Override
-    public void subscribe(PolyObjectClickListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void remove(PolyObjectClickListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void setTag(TagDates tag,String value){
-        tags.put(tag,value);
-    }
-
-    @Override
-    public HashMap<TagDates, String> getTags() {
-        return tags;
-    }
-
-    @Override
-    public void setTags(HashMap<TagDates, String> tags) {
-        this.tags = tags;
     }
 }
