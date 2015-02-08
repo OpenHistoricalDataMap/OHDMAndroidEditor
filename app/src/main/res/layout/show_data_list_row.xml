@@ -23,6 +23,7 @@
         android:layout_height="fill_parent" />
 
     <ImageButton
+        android:onClick="buttonEditDataRowDelete"
         android:layout_width="0dip"
         android:layout_weight="0.1"
         android:src="@drawable/ic_action_delete"

@@ -99,20 +99,49 @@ public class ShowPolyObjectDataActivity extends Activity {
             String dataKey = data.getStringExtra(DATA_KEY);
             String dataValue = data.getStringExtra(DATA_VALUE);
 
-            ListView listView = (ListView) findViewById(R.id.listView);
-
             polyObjectData.put(TagDates.valueOf(dataKey), dataValue);
-            HashMapAdapter adapter = new HashMapAdapter(polyObjectData);
-            adapter.notifyDataSetChanged();
-            listView.setAdapter(adapter);
-            listView.invalidate();
+            updateAdapterAndRefreshView();
         }
     }
-
 
     public void buttonShowAdd(View view) {
 
         Intent intent = new Intent(this, EditPolyObjectData.class);
         startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);
+    }
+
+    public void buttonEditDataRowDelete(View view){
+
+        Map.Entry<TagDates,String> item = getItemFromRow(view);
+
+        if(item != null) {
+            polyObjectData.remove(item.getKey());
+            updateAdapterAndRefreshView();
+        }
+    }
+
+    private void updateAdapterAndRefreshView(){
+        ListView listView = (ListView) findViewById(R.id.listView);
+        HashMapAdapter adapter = new HashMapAdapter(polyObjectData);
+
+        adapter.notifyDataSetChanged();
+
+        listView.setAdapter(adapter);
+        listView.invalidate();
+    }
+
+    private Map.Entry<TagDates,String> getItemFromRow(View rowView){
+        ListView listView = (ListView) findViewById(R.id.listView);
+
+        for(int i=0; i< listView.getChildCount();i++){
+            if(listView.getChildAt(i).equals(rowView.getParent())){
+                int offset = listView.getFirstVisiblePosition();
+                Map.Entry<TagDates,String> item = (Map.Entry)listView.getItemAtPosition(i + offset);
+
+                return item;
+            }
+        }
+
+        return null;
     }
 }
