@@ -9,16 +9,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 
 public class EditPolyObjectData extends Activity {
-
-    private static final String DATA_KEY = "data_key";
-    private static final String DATA_VALUE = "data_value";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_poly_object_data);
+
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            String extra_value = bundle.getString(ShowPolyObjectDataActivity.DATA_VALUE);
+            String extra_key = bundle.getString(ShowPolyObjectDataActivity.DATA_KEY);
+
+            TextView textViewKey = (TextView)findViewById(R.id.polyobject_data_key);
+            TextView textViewValue = (TextView)findViewById(R.id.polyobject_data_value);
+
+            textViewKey.setText(extra_key);
+            textViewValue.setText(extra_value);
+        }
     }
 
 
@@ -50,8 +62,8 @@ public class EditPolyObjectData extends Activity {
         TextView textViewValue = (TextView)findViewById(R.id.polyobject_data_value);
 
         Intent resultData = new Intent();
-        resultData.putExtra(DATA_KEY, textViewKey.getText().toString());
-        resultData.putExtra(DATA_VALUE, textViewValue.getText().toString());
+        resultData.putExtra(ShowPolyObjectDataActivity.DATA_KEY, textViewKey.getText().toString());
+        resultData.putExtra(ShowPolyObjectDataActivity.DATA_VALUE, textViewValue.getText().toString());
         setResult(Activity.RESULT_OK, resultData);
 
         finish();

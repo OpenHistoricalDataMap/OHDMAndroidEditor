@@ -21,8 +21,8 @@ public class ShowPolyObjectDataActivity extends Activity {
     private static final String TAG = "EditPolyObjectDataActivity";
     private static final int EDIT_DATA_REQUEST_CODE = 1749;
 
-    private static final String DATA_KEY = "data_key";
-    private static final String DATA_VALUE = "data_value";
+    public static final String DATA_KEY = "data_key";
+    public static final String DATA_VALUE = "data_value";
 
     private HashMap<TagDates, String> polyObjectData = new HashMap<TagDates, String>();
     private UUID polyObjectInternId;
@@ -128,6 +128,15 @@ public class ShowPolyObjectDataActivity extends Activity {
 
         listView.setAdapter(adapter);
         listView.invalidate();
+    }
+
+    public void buttonEditDataRow(View view){
+        Map.Entry<TagDates,String> item = getItemFromRow(view);
+
+        Intent intent = new Intent(this, EditPolyObjectData.class);
+        intent.putExtra(DATA_KEY,item.getKey().toString());
+        intent.putExtra(DATA_VALUE,item.getValue());
+        startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);
     }
 
     private Map.Entry<TagDates,String> getItemFromRow(View rowView){
