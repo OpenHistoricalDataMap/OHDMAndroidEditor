@@ -233,7 +233,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             UUID selectedObjectId = (UUID)data.getSerializableExtra(EXTRA_SELECTED_POLYOBJECT_INTERNID);
             polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
 
-            HashMap<TagDates,String> resultMap = (HashMap)data.getSerializableExtra(MAP_DATA);
+            HashMap<String,String> resultMap = (HashMap)data.getSerializableExtra(MAP_DATA);
             polyObjectManager.setSelectedPolyObjectTags(resultMap);
         }
     }

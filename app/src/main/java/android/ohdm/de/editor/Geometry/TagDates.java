@@ -7,10 +7,9 @@ public enum TagDates {
     postal_code,
     name,
     old_name,
-    test1,
-    test2,
-    test3,
-    test4,
-    test5,
+    area,
+    railway,
+    public_transport,
+    way_area,
     test6
 }

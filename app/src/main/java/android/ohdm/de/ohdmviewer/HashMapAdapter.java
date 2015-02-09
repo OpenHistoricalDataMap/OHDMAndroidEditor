@@ -16,7 +16,7 @@ public class HashMapAdapter extends BaseAdapter {
 
     ArrayList data;
 
-    public HashMapAdapter(HashMap<TagDates,String> mapData){
+    public HashMapAdapter(HashMap<String,String> mapData){
         data = new ArrayList();
         data.addAll(mapData.entrySet());
     }
@@ -27,7 +27,7 @@ public class HashMapAdapter extends BaseAdapter {
     }
 
     @Override
-    public Map.Entry<TagDates, String> getItem(int i) {
+    public Map.Entry<String, String> getItem(int i) {
         return (Map.Entry)data.get(i);
     }
 
@@ -46,9 +46,9 @@ public class HashMapAdapter extends BaseAdapter {
             result = convertView;
         }
 
-        Map.Entry<TagDates, String> item = getItem(position);
+        Map.Entry<String, String> item = getItem(position);
 
-        ((TextView) result.findViewById(R.id.item_key)).setText(item.getKey().toString());
+        ((TextView) result.findViewById(R.id.item_key)).setText(item.getKey());
         ((TextView) result.findViewById(R.id.item_value)).setText(item.getValue());
 
         return result;

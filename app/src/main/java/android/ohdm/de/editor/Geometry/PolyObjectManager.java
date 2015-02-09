@@ -105,15 +105,15 @@ public class PolyObjectManager implements PolyObjectClickListener {
         addObject(activeObject);
     }
 
-    public HashMap<TagDates,String> getSelectedPolyObjectTags(){
+    public HashMap<String,String> getSelectedPolyObjectTags(){
         if(activeObject != null){
             return activeObject.getTags();
         }
 
-        return new HashMap<TagDates, String>();
+        return new HashMap<String, String>();
     }
 
-    public void setSelectedPolyObjectTags(HashMap<TagDates,String> tags){
+    public void setSelectedPolyObjectTags(HashMap<String,String> tags){
         if(activeObject != null){
             activeObject.setTags(tags);
         }else{

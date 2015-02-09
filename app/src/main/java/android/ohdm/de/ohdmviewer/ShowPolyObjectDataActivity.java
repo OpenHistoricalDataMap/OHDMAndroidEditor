@@ -24,7 +24,7 @@ public class ShowPolyObjectDataActivity extends Activity {
     public static final String DATA_KEY = "data_key";
     public static final String DATA_VALUE = "data_value";
 
-    private HashMap<TagDates, String> polyObjectData = new HashMap<TagDates, String>();
+    private HashMap<String, String> polyObjectData = new HashMap<String, String>();
     private UUID polyObjectInternId;
 
     @Override
@@ -72,8 +72,8 @@ public class ShowPolyObjectDataActivity extends Activity {
 
         Intent resultData = new Intent();
 
-        for(Map.Entry<TagDates,String> entry : polyObjectData.entrySet()){
-            Log.d(TAG, entry.getKey().toString() + " : " + entry.getValue());
+        for(Map.Entry<String,String> entry : polyObjectData.entrySet()){
+            Log.d(TAG, entry.getKey() + " : " + entry.getValue());
         }
 
         resultData.putExtra(MainActivity.MAP_DATA, polyObjectData);
@@ -99,7 +99,7 @@ public class ShowPolyObjectDataActivity extends Activity {
             String dataKey = data.getStringExtra(DATA_KEY);
             String dataValue = data.getStringExtra(DATA_VALUE);
 
-            polyObjectData.put(TagDates.valueOf(dataKey), dataValue);
+            polyObjectData.put(dataKey, dataValue);
             updateAdapterAndRefreshView();
         }
     }
@@ -112,7 +112,7 @@ public class ShowPolyObjectDataActivity extends Activity {
 
     public void buttonEditDataRowDelete(View view){
 
-        Map.Entry<TagDates,String> item = getItemFromRow(view);
+        Map.Entry<String,String> item = getItemFromRow(view);
 
         if(item != null) {
             polyObjectData.remove(item.getKey());
@@ -131,7 +131,7 @@ public class ShowPolyObjectDataActivity extends Activity {
     }
 
     public void buttonEditDataRow(View view){
-        Map.Entry<TagDates,String> item = getItemFromRow(view);
+        Map.Entry<String,String> item = getItemFromRow(view);
 
         Intent intent = new Intent(this, EditPolyObjectData.class);
         intent.putExtra(DATA_KEY,item.getKey().toString());
@@ -139,13 +139,13 @@ public class ShowPolyObjectDataActivity extends Activity {
         startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);
     }
 
-    private Map.Entry<TagDates,String> getItemFromRow(View rowView){
+    private Map.Entry<String,String> getItemFromRow(View rowView){
         ListView listView = (ListView) findViewById(R.id.listView);
 
         for(int i=0; i< listView.getChildCount();i++){
             if(listView.getChildAt(i).equals(rowView.getParent())){
                 int offset = listView.getFirstVisiblePosition();
-                Map.Entry<TagDates,String> item = (Map.Entry)listView.getItemAtPosition(i + offset);
+                Map.Entry<String,String> item = (Map.Entry)listView.getItemAtPosition(i + offset);
 
                 return item;
             }

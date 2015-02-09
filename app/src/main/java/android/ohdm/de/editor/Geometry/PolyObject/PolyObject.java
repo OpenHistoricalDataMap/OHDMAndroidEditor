@@ -19,7 +19,7 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     protected transient boolean editing = false;
     protected transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
 
-    protected HashMap<TagDates,String> tags = new HashMap<TagDates, String>();
+    protected HashMap<String,String> tags = new HashMap<String, String>();
     protected PolyObjectType type = null;
     protected UUID internId;
 
@@ -51,11 +51,11 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     public abstract void removeSelectedCornerPoint();
 
-    public HashMap<TagDates, String> getTags() {
+    public HashMap<String, String> getTags() {
         return tags;
     }
 
-    public void setTags(HashMap<TagDates, String> tags) {
+    public void setTags(HashMap<String, String> tags) {
         this.tags = tags;
     }
 

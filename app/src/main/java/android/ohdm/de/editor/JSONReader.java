@@ -23,6 +23,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class JSONReader {
@@ -30,6 +32,8 @@ public class JSONReader {
     private static final String TAG = "JSONReader";
     private static final String OHDMAPI = "http://141.45.146.152:8080/OhdmApi/geographicObject/";
     private static final String GEOMETRICOBJECT = "geometricObjects";
+    private static final String TAGDATES = "tagDates";
+    private static final String TAGS = "tags";
 
     private static final String MULTILINESTRING = "multilinestring";
     private static final String MULTIPOINT = "multipoint";
@@ -41,6 +45,7 @@ public class JSONReader {
         PolyObject polyObject = null;
         PolyObjectType type;
         List<GeoPoint> geoPoints;
+        HashMap<String,String> tagDates;
 
         JSONObject jsonObject = getJSONObject(OHDMAPI + id);
 
@@ -48,16 +53,20 @@ public class JSONReader {
 
             try {
 
-                JSONArray object = jsonObject.getJSONArray(GEOMETRICOBJECT);
+                JSONArray geometricObject = jsonObject.getJSONArray(GEOMETRICOBJECT);
+                JSONArray tagDatesObject = jsonObject.getJSONArray(TAGDATES);
 
                 //TODO: können auch mehrere Geometrien sein
-                JSONObject geom = (JSONObject) object.get(0);
+                JSONObject geom = (JSONObject) geometricObject.get(0);
+                JSONObject tags = (JSONObject) tagDatesObject.get(0);
 
                 type = getPolyObjectType(geom);
                 geoPoints = getGeoPoints(geom);
+                tagDates = getTagDates((JSONObject)tags.get(TAGS));
 
                 polyObject = PolyObjectFactory.buildObject(type, mapView);
                 polyObject.setPoints(geoPoints);
+                polyObject.setTags(tagDates);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -65,6 +74,26 @@ public class JSONReader {
         }
 
         return polyObject;
+    }
+
+    private static HashMap<String,String> getTagDates(JSONObject tags) {
+
+        Iterator<String> keys = tags.keys();
+        HashMap<String,String> parsedTagDates = new HashMap<String,String>();
+
+        while(keys.hasNext()){
+            String key = keys.next();
+
+            try {
+                String value = tags.getString(key);
+                Log.d(TAG,"key: "+key+", value: "+value);
+                parsedTagDates.put(key,value);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return parsedTagDates;
     }
 
     private static JSONObject getJSONObject(String objectUrl) {
@@ -106,7 +135,7 @@ public class JSONReader {
 
     private static PolyObjectType getPolyObjectType(JSONObject geom) {
 
-        PolyObjectType type = PolyObjectType.POINT;
+        PolyObjectType type = null;
 
         try {
             if (!geom.get(MULTIPOLYGON).toString().equals("null")) {
@@ -122,7 +151,7 @@ public class JSONReader {
             e.printStackTrace();
         }
 
-        Log.i(TAG, "Type is: " + type.toString());
+        if(type!=null)Log.i(TAG, "Type is: " + type.toString());
 
         return type;
 
