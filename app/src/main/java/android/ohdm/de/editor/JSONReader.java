@@ -41,13 +41,13 @@ public class JSONReader {
 
     public static PolyObject getPolyObjectById(int objectId, MapView mapView) {
 
-        String id = String.valueOf(objectId);
         PolyObject polyObject = null;
         PolyObjectType type;
         List<GeoPoint> geoPoints;
         HashMap<String,String> tagDates;
+        ApiConnect apiConnect = new ApiConnect(OHDMAPI);
 
-        JSONObject jsonObject = getJSONObject(OHDMAPI + id);
+        JSONObject jsonObject = apiConnect.getJSONObjectById(objectId);
 
         if(jsonObject != null) {
 
@@ -94,43 +94,6 @@ public class JSONReader {
         }
 
         return parsedTagDates;
-    }
-
-    private static JSONObject getJSONObject(String objectUrl) {
-
-        JSONObject geoObject = null;
-
-        try {
-            URL url = new URL(objectUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type",
-                    "application/json; charset=utf-8");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            in.close();
-
-            try {
-
-                geoObject = new JSONObject(response.toString());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return geoObject;
     }
 
     private static PolyObjectType getPolyObjectType(JSONObject geom) {

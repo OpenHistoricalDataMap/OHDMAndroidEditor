@@ -1,4 +1,7 @@
 .gradle
+gradle.bat
+gradle/wrapper
+gradlew
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -7,3 +10,4 @@
 TODO
 TODO~
 *.log
+*.iml
