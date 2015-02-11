@@ -12,6 +12,7 @@ import android.ohdm.de.editor.Geometry.PolyObjectManager;
 import android.ohdm.de.editor.Geometry.PolyObjectSerializer;
 import android.ohdm.de.editor.Geometry.TagDates;
 import android.ohdm.de.editor.JSONReader;
+import android.ohdm.de.editor.JSONWriter;
 import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.WMSTileSource;
 import android.os.AsyncTask;
@@ -367,6 +368,9 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             if (loadedPolyObject != null) {
 
                 map.getController().setCenter(loadedPolyObject.getPoints().get(0));
+
+                //TODO remove
+                JSONWriter.createJSONObjectFromPolyObject(loadedPolyObject);
 
                 polyObjectManager.addObject(loadedPolyObject);
             } else {
