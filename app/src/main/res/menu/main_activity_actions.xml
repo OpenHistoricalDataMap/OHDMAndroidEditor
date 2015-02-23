@@ -41,6 +41,13 @@
     </item>
 
     <!-- select the time layer -->
+    <item android:id="@+id/action_sync"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/action_sync"
+        android:showAsAction="ifRoom">
+    </item>
+
+    <!-- select the time layer -->
     <item android:id="@+id/action_time"
         android:icon="@drawable/ic_action_map"
         android:title="@string/action_time"
@@ -60,7 +67,7 @@
         android:title="@string/action_settings"
         android:showAsAction="never" />
 
-    <!-- Settings, should always be in the overflow -->
+    <!-- Get an PolyObject form Server by ID -->
     <item android:id="@+id/action_getpolyobjectbyid"
         android:title="@string/item_get_polyobjectbyid"
         android:showAsAction="never" />

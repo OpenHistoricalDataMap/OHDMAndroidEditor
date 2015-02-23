@@ -11,6 +11,7 @@
     <string name="stop_track">stop track</string>
     <string name="action_edit">Edit</string>
     <string name="action_add">Add</string>
+    <string name="action_sync">Sync</string>
     <string name="item_add_point">add point</string>
     <string name="item_add_line">add line</string>
     <string name="item_add_polygon">add polygon</string>
@@ -29,6 +30,9 @@
     <string name="async_download_error">sorry, but the object could not be loaded</string>
     <string name="async_download_done">object is loaded!</string>
     <string name="async_download_start">loading Object...</string>
+    <string name="async_upload_error">sorry, but the object could not be uploaded</string>
+    <string name="async_upload_done">object successfully uploaded!</string>
+    <string name="async_upload_start">uploading Object...</string>
     <string name="map_location_error">location error</string>
     <string name="location_service_started">location service started</string>
     <string name="title_activity_edit_poly_object_data">Edit data</string>

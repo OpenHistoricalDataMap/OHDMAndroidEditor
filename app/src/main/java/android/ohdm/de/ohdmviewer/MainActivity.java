@@ -10,9 +10,7 @@ import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.Geometry.PolyObjectManager;
 import android.ohdm.de.editor.Geometry.PolyObjectSerializer;
-import android.ohdm.de.editor.Geometry.TagDates;
 import android.ohdm.de.editor.JSONReader;
-import android.ohdm.de.editor.JSONWriter;
 import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.WMSTileSource;
 import android.os.AsyncTask;
@@ -75,8 +73,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
         map.getOverlays().add(0, mapEventsOverlay);
-
-        Log.i(TAG, "created!");
 
         location();
     }
@@ -210,6 +206,13 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
                 Intent intent = new Intent(this, GetPolyobjectByIdActivity.class);
                 startActivityForResult(intent, ID_DIALOG_REQUEST_CODE);
+
+                return true;
+
+            case R.id.action_sync:
+
+                UploadPolyObjectTask uploadPolyObjectTask = new UploadPolyObjectTask();
+                uploadPolyObjectTask.execute();
 
                 return true;
         }
@@ -353,6 +356,34 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         return new GeoPoint(lat, lon);
     }
 
+    private class UploadPolyObjectTask extends AsyncTask<Integer, Integer, Long> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(getApplicationContext(), R.string.async_upload_start, Toast.LENGTH_SHORT).show();
+        }
+
+        protected Long doInBackground(Integer... params) {
+
+            if(!polyObjectManager.writeActivePolyObject()){
+                return -1L;
+            }
+
+            return 0L;
+        }
+
+        protected void onPostExecute(Long result) {
+
+            if (result == 0) {
+                Toast.makeText(getApplicationContext(), R.string.async_upload_done, Toast.LENGTH_SHORT).show();
+                Log.i("UploadPolyObjectTask", "done");
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.async_upload_error, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private class DownloadPolyObjectTask extends AsyncTask<Integer, Integer, Long> {
 
         @Override
@@ -368,9 +399,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             if (loadedPolyObject != null) {
 
                 map.getController().setCenter(loadedPolyObject.getPoints().get(0));
-
-                //TODO remove
-                JSONWriter.createJSONObjectFromPolyObject(loadedPolyObject);
 
                 polyObjectManager.addObject(loadedPolyObject);
             } else {

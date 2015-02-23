@@ -5,6 +5,7 @@ import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectClickListener;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
+import android.ohdm.de.editor.JSONWriter;
 import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
@@ -154,5 +155,16 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
     public void removeSelectedCornerPoint() {
         activeObject.removeSelectedCornerPoint();
+    }
+
+    public boolean writeActivePolyObject(){
+
+        if (activeObject != null){
+            JSONWriter.writePolyObject(activeObject);
+            return true;
+        }else{
+            Log.d(TAG,"no active polyobject to write");
+            return false;
+        }
     }
 }
