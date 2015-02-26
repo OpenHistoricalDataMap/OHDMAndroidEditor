@@ -79,10 +79,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private MapView createMapView() {
 
-        String server_adress = "http://141.45.146.152/cgi-bin/mapserv?map=%2Fmapserver%2Fmapdata%" +
-                "2Fberlin.map&&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=ima" +
-                "ge%2Fpng&TRANSPARENT=true&LAYERS=postcode&TILED=true&WIDTH=256&HE" +
-                "IGHT=256&CRS=EPSG%3A3857&STYLES&BBOX=";
+        String server_adress = "http://141.45.94.68/cgi-bin/mapserv?map=%2Fmapserver%2Fmapdata%2Fberlin.map&&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=postcode&TILED=true&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES&BBOX=";
 
         // Setup base map
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.ohdmmapview); //new RelativeLayout(this);
@@ -232,12 +229,12 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             DownloadPolyObjectTask downloadPolyObjectTask = new DownloadPolyObjectTask();
             downloadPolyObjectTask.execute(polyObjectId);
 
-        }else if(resultCode == Activity.RESULT_OK && requestCode == DATA_DIALOG_REQUEST_CODE){
+        } else if (resultCode == Activity.RESULT_OK && requestCode == DATA_DIALOG_REQUEST_CODE) {
 
-            UUID selectedObjectId = (UUID)data.getSerializableExtra(EXTRA_SELECTED_POLYOBJECT_INTERNID);
+            UUID selectedObjectId = (UUID) data.getSerializableExtra(EXTRA_SELECTED_POLYOBJECT_INTERNID);
             polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
 
-            HashMap<String,String> resultMap = (HashMap)data.getSerializableExtra(MAP_DATA);
+            HashMap<String, String> resultMap = (HashMap) data.getSerializableExtra(MAP_DATA);
             polyObjectManager.setSelectedPolyObjectTags(resultMap);
         }
     }
@@ -366,7 +363,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         protected Long doInBackground(Integer... params) {
 
-            if(!polyObjectManager.writeActivePolyObject()){
+            if (!polyObjectManager.writeActivePolyObject()) {
                 return -1L;
             }
 
@@ -482,15 +479,15 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         map.invalidate();
     }
 
-    public void buttonAddData(View view){
+    public void buttonAddData(View view) {
 
         Intent intent = new Intent(this, ShowPolyObjectDataActivity.class);
         Bundle extras = new Bundle();
-        extras.putSerializable(MAP_DATA,polyObjectManager.getSelectedPolyObjectTags());
+        extras.putSerializable(MAP_DATA, polyObjectManager.getSelectedPolyObjectTags());
 
-        Log.d(TAG,"selected polyobject intern id:"+polyObjectManager.getSelectedPolyObjectInternId().toString());
+        Log.d(TAG, "selected polyobject intern id:" + polyObjectManager.getSelectedPolyObjectInternId().toString());
 
-        extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID,polyObjectManager.getSelectedPolyObjectInternId());
+        extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID, polyObjectManager.getSelectedPolyObjectInternId());
         intent.putExtras(extras);
 
         startActivityForResult(intent, DATA_DIALOG_REQUEST_CODE);

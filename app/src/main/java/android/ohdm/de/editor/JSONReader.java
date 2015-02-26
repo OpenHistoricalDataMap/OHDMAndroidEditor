@@ -30,7 +30,6 @@ import java.util.List;
 public class JSONReader {
 
     private static final String TAG = "JSONReader";
-    private static final String OHDMAPI = "http://141.45.146.152:8080/OhdmApi/geographicObject/";
     private static final String GEOMETRICOBJECT = "geometricObjects";
     private static final String TAGDATES = "tagDates";
     private static final String TAGS = "tags";
@@ -45,7 +44,7 @@ public class JSONReader {
         PolyObjectType type;
         List<GeoPoint> geoPoints;
         HashMap<String,String> tagDates;
-        ApiConnect apiConnect = new ApiConnect(OHDMAPI);
+        ApiConnect apiConnect = new ApiConnect(JSONWriter.OHDMAPI);
 
         JSONObject jsonObject = apiConnect.getJSONObjectById(objectId);
 

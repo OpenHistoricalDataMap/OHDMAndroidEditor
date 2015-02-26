@@ -1,6 +1,7 @@
 package android.ohdm.de.editor;
 
 import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,9 @@ import java.net.URL;
 
 public class ApiConnect {
 
-    String serverUrl;
+    private final static String TAG = "ApiConnect";
+
+    private String serverUrl;
 
     ApiConnect(String serverUrl) {
 
@@ -35,6 +38,22 @@ public class ApiConnect {
                     con.getOutputStream());
             out.write(polyObject.toString());
             out.close();
+
+            //get response
+            Log.d(TAG,String.valueOf(con.getResponseCode()));
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            in.close();
+
+            Log.d(TAG,response.toString());
 
         } catch (IOException ex) {
             ex.printStackTrace();

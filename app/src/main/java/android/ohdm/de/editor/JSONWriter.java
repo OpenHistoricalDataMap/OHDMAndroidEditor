@@ -22,7 +22,7 @@ public class JSONWriter {
 
     private static final String TAG = "JSONWriter";
 
-    private static final String OHDMAPI = "http://141.45.146.152:8080/OhdmApi/geographicObject/";
+    public static final String OHDMAPI = "http://141.45.227.142:8081/OhdmApi/geographicObject/";
 
     private static final String TAGS = "tags";
     private static final String GEOMETRICOBJECT = "geometricObjects";
@@ -52,21 +52,24 @@ public class JSONWriter {
         JSONObject geometry = createGeometryObject(polyObject);
         JSONObject tags = createTagDatesObject(polyObject);
         JSONObject tagDates = new JSONObject();
-        JSONObject valid = new JSONObject();
+//        JSONObject valid = new JSONObject();
         JSONObject validDates = createValidDatesObject();
 
         JSONArray geometryArray = new JSONArray();
         JSONArray tagDatesArray = new JSONArray();
 
         try {
-            valid.put(VALID,validDates);
+//            valid.put(VALID,validDates);
 
             tagDates.put(TAGS, tags);
+            tagDates.put(VALID,validDates);
             tagDatesArray.put(0, tagDates);
-            tagDatesArray.put(1, valid);
+//            tagDatesArray.put(1, valid);
 
+            //jsonObject mit geometry und valid
+            geometry.put(VALID,validDates);
             geometryArray.put(0, geometry);
-            geometryArray.put(1, valid);
+//            geometryArray.put(1, valid);
 
             jsonObject.put(TAGDATES, tagDatesArray);
             jsonObject.put(GEOMETRICOBJECT, geometryArray);
