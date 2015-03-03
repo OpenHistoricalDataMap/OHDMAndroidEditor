@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         double longitude = 13.52400;
         double latitude = 52.49688;
         GeoPoint startGeoPoint;
@@ -179,7 +180,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         switch (item.getItemId()) {
             case R.id.menuItemLocate:
 
-                Toast.makeText(getApplicationContext(), "not implemented yes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.not_implemented, Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.menuItemAddLine:
@@ -259,8 +260,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         if (resultCode == Activity.RESULT_OK && requestCode == ID_DIALOG_REQUEST_CODE) {
 
             int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
-
-            Log.i(TAG, "get data: " + polyObjectId);
 
             DownloadPolyObjectTask downloadPolyObjectTask = new DownloadPolyObjectTask();
             downloadPolyObjectTask.execute(polyObjectId);
@@ -406,7 +405,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             if (result == 0) {
                 Toast.makeText(getApplicationContext(), R.string.async_upload_done, Toast.LENGTH_SHORT).show();
-                Log.i("UploadPolyObjectTask", "done");
             } else {
                 Toast.makeText(getApplicationContext(), R.string.async_upload_error, Toast.LENGTH_SHORT).show();
             }
@@ -431,7 +429,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
                 polyObjectManager.addObject(loadedPolyObject);
             } else {
-                Log.i(TAG, "could not read polyobject from server");
+                Log.e(TAG, "could not read polyobject from server");
                 return -1L;
             }
 
@@ -442,7 +440,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             if (result == 0) {
                 Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
-                Log.i("DownloadPolyObjectTask", "done");
             } else {
                 Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
             }
@@ -516,8 +513,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         Intent intent = new Intent(this, ShowPolyObjectDataActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(MAP_DATA, polyObjectManager.getSelectedPolyObjectTags());
-
-        Log.d(TAG, "selected polyobject intern id:" + polyObjectManager.getSelectedPolyObjectInternId().toString());
 
         extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID, polyObjectManager.getSelectedPolyObjectInternId());
         intent.putExtras(extras);

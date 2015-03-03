@@ -38,5 +38,6 @@
     <string name="title_activity_edit_poly_object_data">Edit data</string>
     <string name="edit_polyobject_data_key">key</string>
     <string name="edit_polyobject_data_value">value</string>
+    <string name="not_implemented">not implemented yet</string>
 
 </resources>

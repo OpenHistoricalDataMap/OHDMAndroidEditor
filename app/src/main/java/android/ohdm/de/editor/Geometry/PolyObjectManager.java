@@ -71,6 +71,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
         if(activeObject != null){
             removeObject(activeObject);
         }
+        activeObject = null;
     }
 
     public List<PolyObject> getPolyObjectList(){
