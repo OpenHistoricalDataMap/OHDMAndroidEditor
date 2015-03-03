@@ -2,7 +2,6 @@ package android.ohdm.de.ohdmviewer;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.ohdm.de.editor.Geometry.TagDates;
 import android.ohdm.de.editor.R;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +17,7 @@ import java.util.UUID;
 
 public class ShowPolyObjectDataActivity extends Activity {
 
-    private static final String TAG = "EditPolyObjectDataActivity";
+    private static final String TAG = "EditPolyObjectData";
     private static final int EDIT_DATA_REQUEST_CODE = 1749;
 
     public static final String DATA_KEY = "data_key";
@@ -106,7 +105,7 @@ public class ShowPolyObjectDataActivity extends Activity {
 
     public void buttonShowAdd(View view) {
 
-        Intent intent = new Intent(this, EditPolyObjectData.class);
+        Intent intent = new Intent(this, EditPolyObjectDataActivity.class);
         startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);
     }
 
@@ -133,7 +132,7 @@ public class ShowPolyObjectDataActivity extends Activity {
     public void buttonEditDataRow(View view){
         Map.Entry<String,String> item = getItemFromRow(view);
 
-        Intent intent = new Intent(this, EditPolyObjectData.class);
+        Intent intent = new Intent(this, EditPolyObjectDataActivity.class);
         intent.putExtra(DATA_KEY,item.getKey().toString());
         intent.putExtra(DATA_VALUE,item.getValue());
         startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);

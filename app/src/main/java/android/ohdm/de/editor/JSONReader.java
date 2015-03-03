@@ -113,8 +113,6 @@ public class JSONReader {
             e.printStackTrace();
         }
 
-        if(type!=null)Log.i(TAG, "Type is: " + type.toString());
-
         return type;
 
     }
@@ -211,7 +209,6 @@ public class JSONReader {
 
         for (Point point : points) {
             GeoPoint geoPoint = new GeoPoint(point.getY(),point.getX(),point.getZ());
-            Log.i(TAG,"read point: "+geoPoint.toString());
             geoPoints.add(geoPoint);
         }
 

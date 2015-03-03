@@ -17,14 +17,12 @@ public class ExtendedPolylineOverlay extends Polyline implements ExtendedOverlay
 
     private static final long serialVersionUID = 4209360273818925922L;
 
-    private boolean editable = false;
     private boolean clickable = false;
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
 
     public ExtendedPolylineOverlay(Context context){
         super(context);
-        Log.i("ExtendedPolyLineOverlay","created!");
     }
 
     public boolean isClickable() {

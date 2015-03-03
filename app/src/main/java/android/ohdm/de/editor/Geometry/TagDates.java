@@ -10,6 +10,5 @@ public enum TagDates {
     area,
     railway,
     public_transport,
-    way_area,
-    test6
+    way_area
 }

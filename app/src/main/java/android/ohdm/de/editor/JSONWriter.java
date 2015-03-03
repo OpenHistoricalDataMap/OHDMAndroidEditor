@@ -52,24 +52,18 @@ public class JSONWriter {
         JSONObject geometry = createGeometryObject(polyObject);
         JSONObject tags = createTagDatesObject(polyObject);
         JSONObject tagDates = new JSONObject();
-//        JSONObject valid = new JSONObject();
         JSONObject validDates = createValidDatesObject();
 
         JSONArray geometryArray = new JSONArray();
         JSONArray tagDatesArray = new JSONArray();
 
         try {
-//            valid.put(VALID,validDates);
-
             tagDates.put(TAGS, tags);
             tagDates.put(VALID,validDates);
             tagDatesArray.put(0, tagDates);
-//            tagDatesArray.put(1, valid);
 
-            //jsonObject mit geometry und valid
             geometry.put(VALID,validDates);
             geometryArray.put(0, geometry);
-//            geometryArray.put(1, valid);
 
             jsonObject.put(TAGDATES, tagDatesArray);
             jsonObject.put(GEOMETRICOBJECT, geometryArray);
@@ -162,7 +156,7 @@ public class JSONWriter {
 
         for (int i = 0; i < geoPoints.size(); i++) {
             GeoPoint geoPoint = geoPoints.get(i);
-            //TODO: hier konvertierungsfehler
+            //TODO: hier konvertierungsfehler?
             Point point = new Point(geoPoint.getLongitude(), geoPoint.getLatitude(), geoPoint.getAltitude());
             points[i] = point;
         }

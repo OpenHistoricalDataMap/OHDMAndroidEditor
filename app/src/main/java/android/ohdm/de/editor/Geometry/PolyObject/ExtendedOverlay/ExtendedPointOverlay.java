@@ -47,7 +47,6 @@ public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClic
 
         if (tapped) {
             if (isClickable()) {
-                Log.i("ExtendedPointOverlay", "clicked");
                 notifyListeners();
             }
         }

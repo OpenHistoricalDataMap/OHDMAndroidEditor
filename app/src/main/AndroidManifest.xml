@@ -30,7 +30,7 @@
             android:label="@string/title_activity_edit_poly_object_data" >
         </activity>
         <activity
-            android:name="android.ohdm.de.ohdmviewer.EditPolyObjectData"
+            android:name="android.ohdm.de.ohdmviewer.EditPolyObjectDataActivity"
             android:label="@string/title_activity_edit_poly_object_data"
             android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>

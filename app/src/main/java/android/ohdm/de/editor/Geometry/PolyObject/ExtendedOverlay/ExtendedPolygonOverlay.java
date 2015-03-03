@@ -15,15 +15,12 @@ public class ExtendedPolygonOverlay extends Polygon implements ExtendedOverlayCl
 
     private static final long serialVersionUID = 0L;
 
-    private boolean editable = false;
     private boolean clickable = false;
-    private boolean clicked = false;
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
 
     public ExtendedPolygonOverlay(Context context){
         super(context);
-        Log.i("ExtendedPolygonOverlay", "created!");
     }
 
     public boolean isClickable() {

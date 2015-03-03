@@ -1,5 +1,7 @@
 package android.ohdm.de.editor;
 
+import android.util.Log;
+
 import org.osmdroid.ResourceProxy.string;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
@@ -66,12 +68,14 @@ public class WMSTileSource extends OnlineTileSourceBase {
         stringBuffer.append(",");
         stringBuffer.append(newTile.north);
 
+        Log.d("WMSTileServer",stringBuffer.toString());
+
         return stringBuffer.toString();
 
     }
 
     /**
-     * A simple class for holding the NSEW lat and lon values.
+     * A simple class for holding the NEW lat and lon values.
      */
     class BoundingBox {
         double north;
@@ -119,7 +123,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         double value = tileX / Math.pow(2.0, zoom) * 360.0 - 180;
 
         // apply the shift to get the EPSG longitude
-        return value * ORIGIN_SHIFT / 180.0;
+        return value;// * ORIGIN_SHIFT / 180.0;
 
     }
 
@@ -140,7 +144,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         value = Math.log(Math.tan((90 + value) * Math.PI / 360.0)) / (Math.PI / 180.0);
 
         // apply the shift to get the EPSG latitude
-        return value * ORIGIN_SHIFT / 180.0;
+        return value ;//* ORIGIN_SHIFT / 180.0;
 
     }
 

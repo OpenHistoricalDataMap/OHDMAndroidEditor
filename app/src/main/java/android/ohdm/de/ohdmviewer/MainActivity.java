@@ -42,6 +42,12 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     private static final int ID_DIALOG_REQUEST_CODE = 1747;
     private static final int DATA_DIALOG_REQUEST_CODE = 1748;
     private static final String EXTRA_POLYOBJECTID = "polyobjectid";
+    private static final String WMS_SERVER_ADDRESS = "http://141.45.94.68/cgi-bin/mapserv?map=%2Fmapserver%2Fmapdata%2Fohdm.map&&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=administrative&TILED=true&WIDTH=256&HEIGHT=256&CRS=EPSG%3A4326&STYLES&BBOX=";
+    private static final String BUNDLE_MAP_ZOOMLEVEL = "map_zoom_level";
+    private static final String BUNDLE_MAP_WMS = "map_wms_overlay";
+    private static final String BUNDLE_MAP_LONGITUDE = "map_position_lon";
+    private static final String BUNDLE_MAP_LATITUDE = "map_position_lat";
+
     public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
     public static final String MAP_DATA = "map_data";
 
@@ -51,25 +57,35 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static Mode mode = Mode.VIEW;
 
-    private GeoPoint geoPoint = new GeoPoint(52.49688, 13.52400);
     private MapView map;
     private PolyObjectManager polyObjectManager;
-    private ITileSource tileSource;
+    private ITileSource wmsTileSource;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        double longitude = 13.52400;
+        double latitude = 52.49688;
+        GeoPoint startGeoPoint;
+        int zoomlevel = 16;
+        boolean isWmsOverlayActive = false;
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
-        map = createMapView();
+        if (savedInstanceState != null) {
+            zoomlevel = savedInstanceState.getInt(BUNDLE_MAP_ZOOMLEVEL);
+            isWmsOverlayActive = savedInstanceState.getBoolean(BUNDLE_MAP_WMS);
+            longitude = savedInstanceState.getDouble(BUNDLE_MAP_LONGITUDE);
+            latitude = savedInstanceState.getDouble(BUNDLE_MAP_LATITUDE);
+        }
+        startGeoPoint = new GeoPoint(latitude, longitude);
+
+        map = createMapView(zoomlevel, startGeoPoint, isWmsOverlayActive);
 
         mode = Mode.VIEW;
 
         polyObjectManager = PolyObjectSerializer.deserialize(map);
-
-        //TODO: just here because location() is buggy
-//        map.getController().setCenter(geoPoint);
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
         map.getOverlays().add(0, mapEventsOverlay);
@@ -77,19 +93,21 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         location();
     }
 
-    private MapView createMapView() {
+    private MapView createMapView(int zoomlevel, GeoPoint geoPoint, boolean isWmsOverlayActive) {
 
-        String server_adress = "http://141.45.94.68/cgi-bin/mapserv?map=%2Fmapserver%2Fmapdata%2Fberlin.map&&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=postcode&TILED=true&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES&BBOX=";
+        wmsTileSource = new WMSTileSource("wmsserver", null, 3, 18, 256, ".png",
+                new String[]{WMS_SERVER_ADDRESS});
 
         // Setup base map
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ohdmmapview); //new RelativeLayout(this);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ohdmmapview);
 
         MapTileProviderBasic tileProvider = new MapTileProviderBasic(getApplicationContext());
 
-        tileSource = new WMSTileSource("wmsserver", null, 3, 18, 256, ".png",
-                new String[]{server_adress});
-
-        tileProvider.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+        if (!isWmsOverlayActive) {
+            tileProvider.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+        } else {
+            tileProvider.setTileSource(wmsTileSource);
+        }
 
         MapView osmv = new MapView(this, 256, new DefaultResourceProxyImpl(this), tileProvider);
 
@@ -99,13 +117,32 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         osmv.setBuiltInZoomControls(true);
         osmv.setClickable(true);
         osmv.setMultiTouchControls(true);
-        osmv.getController().setZoom(16);
+        osmv.getController().setZoom(zoomlevel);
         osmv.getController().setCenter(geoPoint);
 
-        osmv.getTileProvider().clearTileCache();
+//        osmv.getTileProvider().clearTileCache();
 
         return osmv;
     }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+
+        super.onSaveInstanceState(state);
+
+        boolean isWmsOverlayActive = false;
+
+        if (map.getTileProvider().getTileSource().equals(wmsTileSource)) {
+            isWmsOverlayActive = true;
+        }
+
+        state.putBoolean(BUNDLE_MAP_WMS, isWmsOverlayActive);
+        state.putDouble(BUNDLE_MAP_LONGITUDE, map.getMapCenter().getLongitude());
+        state.putDouble(BUNDLE_MAP_LATITUDE, map.getMapCenter().getLatitude());
+        state.putInt(BUNDLE_MAP_ZOOMLEVEL, map.getZoomLevel());
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -142,8 +179,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         switch (item.getItemId()) {
             case R.id.menuItemLocate:
 
-                Log.i(TAG, "setCenter: " + geoPoint.toDoubleString());
-                map.getController().setCenter(geoPoint);
+                Toast.makeText(getApplicationContext(), "not implemented yes", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.menuItemAddLine:
@@ -194,7 +230,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             case R.id.menuItemLayerOHDM:
 
-                map.getTileProvider().setTileSource(tileSource);
+                map.getTileProvider().setTileSource(wmsTileSource);
                 map.invalidate();
 
                 return true;
@@ -324,7 +360,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                makeUseOfNewLocation(location);
+                //geoPoint = createGeoPointFromLocation(location);
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -338,10 +374,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         };
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-    }
-
-    private void makeUseOfNewLocation(Location location) {
-        geoPoint = createGeoPointFromLocation(location);
     }
 
     private GeoPoint createGeoPointFromLocation(Location location) {

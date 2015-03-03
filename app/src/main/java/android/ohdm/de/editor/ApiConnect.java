@@ -17,12 +17,13 @@ public class ApiConnect {
 
     private final static String TAG = "ApiConnect";
 
+    private final static int RESPONSE_OK = 201;
+
     private String serverUrl;
 
     ApiConnect(String serverUrl) {
 
         this.serverUrl = serverUrl;
-
     }
 
     public void putPolyObject(JSONObject polyObject) {
