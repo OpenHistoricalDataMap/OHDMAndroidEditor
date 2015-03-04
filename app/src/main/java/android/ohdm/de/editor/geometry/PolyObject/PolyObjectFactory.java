@@ -14,7 +14,7 @@ public class PolyObjectFactory {
                 polyObject = new PolyGon(view);
                 break;
             case POLYLINE:
-                polyObject = new PolyLine(view.getContext());
+                polyObject = new PolyLine(view);
                 break;
             case POINT:
                 polyObject = new PolyPoint(view.getContext());
