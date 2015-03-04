@@ -1,6 +1,8 @@
 package android.ohdm.de.editor.geometry;
 
 
+import android.ohdm.de.editor.activities.MainActivity;
+import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectClickListener;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class PolyObjectManager implements PolyObjectClickListener {
 
     private static final String TAG = "PolyObjectManager";
+
     private List<PolyObject> polyObjectList = new ArrayList<PolyObject>();
     private PolyObject activeObject = null;
 
@@ -154,13 +157,14 @@ public class PolyObjectManager implements PolyObjectClickListener {
     }
 
     public void removeSelectedCornerPoint() {
-        activeObject.removeSelectedCornerPoint();
+        activeObject.removeSelectedEditPoint();
     }
 
     public boolean writeActivePolyObject(){
 
         if (activeObject != null){
-            JSONWriter.writePolyObject(activeObject);
+            ApiConnect apiConnect = new ApiConnect(MainActivity.OHDMAPI_SERVER_ADDRESS);
+            apiConnect.putPolyObject(JSONWriter.createJSONObjectFromPolyObject(activeObject));
             return true;
         }else{
             Log.d(TAG,"no active polyobject to write");

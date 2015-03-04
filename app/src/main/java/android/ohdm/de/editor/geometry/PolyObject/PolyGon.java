@@ -25,8 +25,8 @@ public class PolyGon extends PolyObject {
 
     private transient ExtendedPolygonOverlay polygon;
     private transient MapView view;
-    private transient List<ExtendedPointOverlay> cornerPoints = new ArrayList<ExtendedPointOverlay>();
-    private transient ExtendedPointOverlay activeCornerPoint;
+    private transient List<ExtendedPointOverlay> editPoints = new ArrayList<ExtendedPointOverlay>();
+    private transient ExtendedPointOverlay activeEditPoint;
     private transient Map<ExtendedPointOverlay,GeoPoint> pointOverlayMap= new HashMap<ExtendedPointOverlay,GeoPoint>();
 
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
@@ -58,18 +58,18 @@ public class PolyGon extends PolyObject {
         polygon.setPoints(points);
 
         for(GeoPoint point : this.points){
-            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(view.getContext());
+            ExtendedPointOverlay editPoint = new ExtendedPointOverlay(view.getContext());
 
             List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
             pointPoints.add(point);
-            cornerPoint.setPoints(pointPoints);
+            editPoint.setPoints(pointPoints);
 
-            cornerPoint.setClickable(true);
-            cornerPoint.subscribe(this);
+            editPoint.setClickable(true);
+            editPoint.subscribe(this);
 
-            cornerPoints.add(cornerPoint);
+            editPoints.add(editPoint);
 
-            pointOverlayMap.put(cornerPoint,point);
+            pointOverlayMap.put(editPoint,point);
         }
     }
 
@@ -81,10 +81,10 @@ public class PolyGon extends PolyObject {
     public void removeLastPoint() {
         if (!points.isEmpty()) {
             points.remove(points.size() - 1);
-            ExtendedPointOverlay removePoint = cornerPoints.get(cornerPoints.size() - 1);
+            ExtendedPointOverlay removePoint = editPoints.get(editPoints.size() - 1);
             view.getOverlays().remove(removePoint);
-            cornerPoints.remove(removePoint);
-            deselectActiveCornerPoint();
+            editPoints.remove(removePoint);
+            deselectActiveEditPoint();
         }
         polygon.setPoints(this.points);
     }
@@ -92,41 +92,45 @@ public class PolyGon extends PolyObject {
     @Override
     public void addPoint(GeoPoint geoPoint) {
 
-        if (activeCornerPoint == null) {
+        if (activeEditPoint == null) {
 
             points.add(geoPoint);
             polygon.setPoints(this.points);
 
-            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(view.getContext());
-
-            List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
-            pointPoints.add(geoPoint);
-            cornerPoint.setPoints(pointPoints);
-
-            cornerPoint.setClickable(true);
-            cornerPoint.subscribe(this);
-
-            cornerPoints.add(cornerPoint);
-
-            pointOverlayMap.put(cornerPoint,geoPoint);
-
-            view.getOverlays().add(cornerPoint);
+            createAndAddEditPoint(geoPoint);
         } else {
-            List<GeoPoint> activeCornerPointPoints = activeCornerPoint.getPoints();
+            List<GeoPoint> activeCornerPointPoints = activeEditPoint.getPoints();
             activeCornerPointPoints.add(geoPoint);
-            activeCornerPoint.setPoints(activeCornerPointPoints);
+            activeEditPoint.setPoints(activeCornerPointPoints);
 
-            GeoPoint oldPoint = pointOverlayMap.get(activeCornerPoint);
+            GeoPoint oldPoint = pointOverlayMap.get(activeEditPoint);
 
             for(int i=0; i<points.size(); i++){
                 if(points.get(i) == oldPoint){
-                    pointOverlayMap.put(activeCornerPoint,geoPoint);
+                    pointOverlayMap.put(activeEditPoint,geoPoint);
                     points.set(i,geoPoint);
                     polygon.setPoints(this.points);
                     break;
                 }
             }
         }
+    }
+
+    private void createAndAddEditPoint(GeoPoint geoPoint){
+        ExtendedPointOverlay editPoint = new ExtendedPointOverlay(view.getContext());
+
+        List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
+        pointPoints.add(geoPoint);
+        editPoint.setPoints(pointPoints);
+
+        editPoint.setClickable(true);
+        editPoint.subscribe(this);
+
+        editPoints.add(editPoint);
+
+        pointOverlayMap.put(editPoint,geoPoint);
+
+        view.getOverlays().add(editPoint);
     }
 
     @Override
@@ -146,16 +150,16 @@ public class PolyGon extends PolyObject {
     }
 
     @Override
-    public void removeSelectedCornerPoint() {
-        if(activeCornerPoint != null){
-            view.getOverlays().remove(activeCornerPoint);
-            cornerPoints.remove(activeCornerPoint);
+    public void removeSelectedEditPoint() {
+        if(activeEditPoint != null){
+            view.getOverlays().remove(activeEditPoint);
+            editPoints.remove(activeEditPoint);
 
-            GeoPoint removePoint = pointOverlayMap.get(activeCornerPoint);
+            GeoPoint removePoint = pointOverlayMap.get(activeEditPoint);
             points.remove(removePoint);
 
             polygon.setPoints(points);
-            activeCornerPoint = null;
+            activeEditPoint = null;
         }
     }
 
@@ -166,25 +170,25 @@ public class PolyGon extends PolyObject {
         if (editing) {
             polygon.setFillColor(FILL_COLOR_EDIT);
 
-            for (ExtendedPointOverlay point : this.cornerPoints) {
+            for (ExtendedPointOverlay point : this.editPoints) {
                 view.getOverlays().add(point);
             }
 
         } else {
             polygon.setFillColor(FILL_COLOR);
 
-            for (ExtendedPointOverlay point : cornerPoints) {
+            for (ExtendedPointOverlay point : this.editPoints) {
                 view.getOverlays().remove(point);
             }
 
-            deselectActiveCornerPoint();
+            deselectActiveEditPoint();
         }
     }
 
-    private void deselectActiveCornerPoint() {
-        if (activeCornerPoint != null) {
-            activeCornerPoint.setFillColor(FILL_COLOR);
-            activeCornerPoint = null;
+    private void deselectActiveEditPoint() {
+        if (activeEditPoint != null) {
+            activeEditPoint.setFillColor(FILL_COLOR);
+            activeEditPoint = null;
             view.invalidate();
         }
     }
@@ -194,12 +198,12 @@ public class PolyGon extends PolyObject {
 
         if (clickObject instanceof ExtendedPointOverlay) {
 
-            if(activeCornerPoint == (ExtendedPointOverlay)clickObject){
-                deselectActiveCornerPoint();
-            }else{
-                deselectActiveCornerPoint();
-                activeCornerPoint = (ExtendedPointOverlay) clickObject;
-                activeCornerPoint.setFillColor(FILL_COLOR_EDIT);
+            deselectActiveEditPoint();
+
+            if(activeEditPoint != (ExtendedPointOverlay)clickObject){
+                deselectActiveEditPoint();
+                activeEditPoint = (ExtendedPointOverlay) clickObject;
+                activeEditPoint.setFillColor(FILL_COLOR_EDIT);
                 view.invalidate();
             }
         } else {

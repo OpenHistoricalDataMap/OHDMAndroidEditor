@@ -33,15 +33,12 @@ public class JSONReader {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
-    public static PolyObject getPolyObjectById(int objectId, MapView mapView) {
+    public static PolyObject getPolyObjectFromJSONObject(JSONObject jsonObject, MapView mapView) {
 
         PolyObject polyObject = null;
         PolyObjectType type;
         List<GeoPoint> geoPoints;
         HashMap<String,String> tagDates;
-        ApiConnect apiConnect = new ApiConnect(JSONWriter.OHDMAPI);
-
-        JSONObject jsonObject = apiConnect.getJSONObjectById(objectId);
 
         if(jsonObject != null) {
 

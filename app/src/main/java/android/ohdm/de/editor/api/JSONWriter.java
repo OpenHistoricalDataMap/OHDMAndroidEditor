@@ -22,8 +22,6 @@ public class JSONWriter {
 
     private static final String TAG = "JSONWriter";
 
-    public static final String OHDMAPI = "http://141.45.227.142:8081/OhdmApi/geographicObject/";
-
     private static final String TAGS = "tags";
     private static final String GEOMETRICOBJECT = "geometricObjects";
     private static final String TAGDATES = "tagDates";
@@ -38,14 +36,7 @@ public class JSONWriter {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
-    public static void writePolyObject(PolyObject polyObject){
-
-        ApiConnect apiConnect = new ApiConnect(OHDMAPI);
-        apiConnect.putPolyObject(createJSONObjectFromPolyObject(polyObject));
-
-    }
-
-    private static JSONObject createJSONObjectFromPolyObject(PolyObject polyObject) {
+    public static JSONObject createJSONObjectFromPolyObject(PolyObject polyObject) {
 
         JSONObject jsonObject = new JSONObject();
 

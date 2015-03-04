@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPolylineOverlay;
-import android.view.View;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
@@ -25,9 +24,11 @@ public class PolyLine extends PolyObject implements Serializable {
     private static final int FILL_COLOR_SELECTED = Color.argb(128, 255, 0, 0);
     private static final int FILL_COLOR_EDIT = Color.argb(128, 0, 255, 0);
 
+    private static final int LINE_WIDTH = 4;
+
     private transient ExtendedPolylineOverlay polyline;
-    private transient List<ExtendedPointOverlay> cornerPoints = new ArrayList<ExtendedPointOverlay>();
-    private transient ExtendedPointOverlay activeCornerPoint;
+    private transient List<ExtendedPointOverlay> editPoints = new ArrayList<ExtendedPointOverlay>();
+    private transient ExtendedPointOverlay activeEditPoint;
     private transient Map<ExtendedPointOverlay,GeoPoint> pointOverlayMap= new HashMap<ExtendedPointOverlay,GeoPoint>();
     private transient MapView view;
 
@@ -47,7 +48,7 @@ public class PolyLine extends PolyObject implements Serializable {
         polyline.subscribe(this);
 
         polyline.setColor(FILL_COLOR);
-        polyline.setWidth(4);
+        polyline.setWidth(LINE_WIDTH);
         polyline.setPoints(points);
     }
 
@@ -62,18 +63,18 @@ public class PolyLine extends PolyObject implements Serializable {
         polyline.setPoints(points);
 
         for(GeoPoint point : this.points){
-            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(view.getContext());
+            ExtendedPointOverlay editPoint = new ExtendedPointOverlay(view.getContext());
 
             List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
             pointPoints.add(point);
-            cornerPoint.setPoints(pointPoints);
+            editPoint.setPoints(pointPoints);
 
-            cornerPoint.setClickable(true);
-            cornerPoint.subscribe(this);
+            editPoint.setClickable(true);
+            editPoint.subscribe(this);
 
-            cornerPoints.add(cornerPoint);
+            editPoints.add(editPoint);
 
-            pointOverlayMap.put(cornerPoint,point);
+            pointOverlayMap.put(editPoint,point);
         }
     }
 
@@ -85,9 +86,9 @@ public class PolyLine extends PolyObject implements Serializable {
     public void removeLastPoint() {
         if(!points.isEmpty()){
             points.remove(points.size()-1);
-            ExtendedPointOverlay removePoint = cornerPoints.get(cornerPoints.size() - 1);
+            ExtendedPointOverlay removePoint = editPoints.get(editPoints.size() - 1);
             view.getOverlays().remove(removePoint);
-            cornerPoints.remove(removePoint);
+            editPoints.remove(removePoint);
             deselectActiveCornerPoint();
         }
         polyline.setPoints(this.points);
@@ -96,41 +97,45 @@ public class PolyLine extends PolyObject implements Serializable {
     @Override
     public void addPoint(GeoPoint geoPoint) {
 
-        if (activeCornerPoint == null) {
+        if (activeEditPoint == null) {
 
             points.add(geoPoint);
             polyline.setPoints(this.points);
 
-            ExtendedPointOverlay cornerPoint = new ExtendedPointOverlay(view.getContext());
-
-            List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
-            pointPoints.add(geoPoint);
-            cornerPoint.setPoints(pointPoints);
-
-            cornerPoint.setClickable(true);
-            cornerPoint.subscribe(this);
-
-            cornerPoints.add(cornerPoint);
-
-            pointOverlayMap.put(cornerPoint,geoPoint);
-
-            view.getOverlays().add(cornerPoint);
+            createAndAddEditPoint(geoPoint);
         } else {
-            List<GeoPoint> activeCornerPointPoints = activeCornerPoint.getPoints();
+            List<GeoPoint> activeCornerPointPoints = activeEditPoint.getPoints();
             activeCornerPointPoints.add(geoPoint);
-            activeCornerPoint.setPoints(activeCornerPointPoints);
+            activeEditPoint.setPoints(activeCornerPointPoints);
 
-            GeoPoint oldPoint = pointOverlayMap.get(activeCornerPoint);
+            GeoPoint oldPoint = pointOverlayMap.get(activeEditPoint);
 
             for(int i=0; i<points.size(); i++){
                 if(points.get(i) == oldPoint){
-                    pointOverlayMap.put(activeCornerPoint,geoPoint);
+                    pointOverlayMap.put(activeEditPoint,geoPoint);
                     points.set(i,geoPoint);
                     polyline.setPoints(this.points);
                     break;
                 }
             }
         }
+    }
+
+    private void createAndAddEditPoint(GeoPoint geoPoint) {
+        ExtendedPointOverlay editPoint = new ExtendedPointOverlay(view.getContext());
+
+        List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
+        pointPoints.add(geoPoint);
+        editPoint.setPoints(pointPoints);
+
+        editPoint.setClickable(true);
+        editPoint.subscribe(this);
+
+        editPoints.add(editPoint);
+
+        pointOverlayMap.put(editPoint,geoPoint);
+
+        view.getOverlays().add(editPoint);
     }
 
     @Override
@@ -156,14 +161,14 @@ public class PolyLine extends PolyObject implements Serializable {
         if (editing) {
             polyline.setColor(FILL_COLOR_EDIT);
 
-            for (ExtendedPointOverlay point : this.cornerPoints) {
+            for (ExtendedPointOverlay point : this.editPoints) {
                 view.getOverlays().add(point);
             }
 
         } else {
             polyline.setColor(FILL_COLOR);
 
-            for (ExtendedPointOverlay point : cornerPoints) {
+            for (ExtendedPointOverlay point : editPoints) {
                 view.getOverlays().remove(point);
             }
 
@@ -172,24 +177,24 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     private void deselectActiveCornerPoint() {
-        if (activeCornerPoint != null) {
-            activeCornerPoint.setFillColor(FILL_COLOR);
-            activeCornerPoint = null;
+        if (activeEditPoint != null) {
+            activeEditPoint.setFillColor(FILL_COLOR);
+            activeEditPoint = null;
             view.invalidate();
         }
     }
 
     @Override
-    public void removeSelectedCornerPoint() {
-        if(activeCornerPoint != null){
-            view.getOverlays().remove(activeCornerPoint);
-            cornerPoints.remove(activeCornerPoint);
+    public void removeSelectedEditPoint() {
+        if(activeEditPoint != null){
+            view.getOverlays().remove(activeEditPoint);
+            editPoints.remove(activeEditPoint);
 
-            GeoPoint removePoint = pointOverlayMap.get(activeCornerPoint);
+            GeoPoint removePoint = pointOverlayMap.get(activeEditPoint);
             points.remove(removePoint);
 
             polyline.setPoints(points);
-            activeCornerPoint = null;
+            activeEditPoint = null;
         }
     }
 
@@ -198,12 +203,12 @@ public class PolyLine extends PolyObject implements Serializable {
 
         if (clickObject instanceof ExtendedPointOverlay) {
 
-            if(activeCornerPoint == (ExtendedPointOverlay)clickObject){
+            if(activeEditPoint == (ExtendedPointOverlay)clickObject){
                 deselectActiveCornerPoint();
             }else{
                 deselectActiveCornerPoint();
-                activeCornerPoint = (ExtendedPointOverlay) clickObject;
-                activeCornerPoint.setFillColor(FILL_COLOR_EDIT);
+                activeEditPoint = (ExtendedPointOverlay) clickObject;
+                activeEditPoint.setFillColor(FILL_COLOR_EDIT);
                 view.invalidate();
             }
         } else {

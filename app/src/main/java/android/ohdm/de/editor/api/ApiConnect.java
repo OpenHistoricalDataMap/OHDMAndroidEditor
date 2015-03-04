@@ -20,7 +20,7 @@ public class ApiConnect {
 
     private String serverUrl;
 
-    ApiConnect(String serverUrl) {
+    public ApiConnect(String serverUrl) {
 
         this.serverUrl = serverUrl;
     }

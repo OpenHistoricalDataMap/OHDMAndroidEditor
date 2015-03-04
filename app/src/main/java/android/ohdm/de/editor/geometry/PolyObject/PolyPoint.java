@@ -103,7 +103,7 @@ public class PolyPoint extends PolyObject {
     }
 
     @Override
-    public void removeSelectedCornerPoint() {
-        //TODO
+    public void removeSelectedEditPoint() {
+        //nothing to do here...
     }
 }

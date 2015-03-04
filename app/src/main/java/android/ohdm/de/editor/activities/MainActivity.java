@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
@@ -24,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.bonuspack.overlays.MapEventsOverlay;
 import org.osmdroid.bonuspack.overlays.MapEventsReceiver;
@@ -50,6 +52,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
     public static final String MAP_DATA = "map_data";
+    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
 
     private enum Mode {
         ADD, SELECT, EDIT, VIEW
@@ -421,7 +424,11 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         protected Long doInBackground(Integer... params) {
 
-            PolyObject loadedPolyObject = JSONReader.getPolyObjectById(params[0], map);
+
+            ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
+            JSONObject jsonObject = apiConnect.getJSONObjectById(params[0]);
+
+            PolyObject loadedPolyObject = JSONReader.getPolyObjectFromJSONObject(jsonObject, map);
 
             if (loadedPolyObject != null) {
 

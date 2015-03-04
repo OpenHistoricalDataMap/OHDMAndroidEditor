@@ -48,7 +48,7 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     public abstract void setEditing(boolean editing);
 
-    public abstract void removeSelectedCornerPoint();
+    public abstract void removeSelectedEditPoint();
 
     public HashMap<String, String> getTags() {
         return tags;
