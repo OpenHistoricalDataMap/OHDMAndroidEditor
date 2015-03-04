@@ -1,10 +1,9 @@
-package android.ohdm.de.editor.Geometry.PolyObject;
+package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
-import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPolygonOverlay;
-import android.ohdm.de.editor.Geometry.TagDates;
+import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
+import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPolygonOverlay;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;

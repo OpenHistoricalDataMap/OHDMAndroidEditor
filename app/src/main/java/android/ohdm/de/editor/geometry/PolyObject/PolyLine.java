@@ -1,16 +1,14 @@
-package android.ohdm.de.editor.Geometry.PolyObject;
+package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedPolylineOverlay;
-import android.ohdm.de.editor.Geometry.TagDates;
+import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPolylineOverlay;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 

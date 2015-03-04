@@ -1,11 +1,11 @@
-package android.ohdm.de.editor.Geometry;
+package android.ohdm.de.editor.geometry;
 
 
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectClickListener;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
-import android.ohdm.de.editor.JSONWriter;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectClickListener;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
+import android.ohdm.de.editor.api.JSONWriter;
 import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
@@ -14,7 +14,6 @@ import org.osmdroid.views.MapView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class PolyObjectManager implements PolyObjectClickListener {

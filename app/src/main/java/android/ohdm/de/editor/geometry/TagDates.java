@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.Geometry;
+package android.ohdm.de.editor.geometry;
 
 public enum TagDates {
     id,

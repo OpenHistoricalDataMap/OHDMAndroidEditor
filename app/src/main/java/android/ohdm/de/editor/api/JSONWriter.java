@@ -1,6 +1,6 @@
-package android.ohdm.de.editor;
+package android.ohdm.de.editor.api;
 
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.util.Log;
 
 import org.json.JSONArray;

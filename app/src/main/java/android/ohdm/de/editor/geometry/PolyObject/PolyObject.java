@@ -1,8 +1,7 @@
-package android.ohdm.de.editor.Geometry.PolyObject;
+package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.content.Context;
-import android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay.ExtendedOverlayClickListener;
-import android.ohdm.de.editor.Geometry.TagDates;
+import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedOverlayClickListener;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;

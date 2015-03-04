@@ -1,7 +1,6 @@
-package android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay;
+package android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import org.osmdroid.bonuspack.overlays.Polyline;

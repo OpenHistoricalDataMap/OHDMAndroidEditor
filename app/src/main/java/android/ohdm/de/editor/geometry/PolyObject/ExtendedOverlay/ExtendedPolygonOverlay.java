@@ -1,28 +1,25 @@
-package android.ohdm.de.editor.Geometry.PolyObject.ExtendedOverlay;
+package android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import org.osmdroid.bonuspack.overlays.Polygon;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClickPublisher {
+public class ExtendedPolygonOverlay extends Polygon implements ExtendedOverlayClickPublisher, Serializable {
 
-    private static final int FILL_COLOR = Color.argb(128, 0, 0, 255);
+    private static final long serialVersionUID = 0L;
+
     private boolean clickable = false;
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
 
-    public ExtendedPointOverlay(Context context) {
+    public ExtendedPolygonOverlay(Context context){
         super(context);
-        setFillColor(FILL_COLOR);
-        setStrokeWidth(4);
     }
 
     public boolean isClickable() {
@@ -34,18 +31,11 @@ public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClic
     }
 
     @Override
-    public void setPoints(final List<GeoPoint> points) {
-        if (points.size() >= 1) {
-            super.setPoints(Polygon.pointsAsCircle(points.get(points.size() - 1), 5));
-        }
-    }
-
-    @Override
-    public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView) {
+    public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView){
 
         boolean tapped = super.contains(event);
 
-        if (tapped) {
+        if(tapped) {
             if (isClickable()) {
                 notifyListeners();
             }
@@ -54,8 +44,8 @@ public class ExtendedPointOverlay extends Polygon implements ExtendedOverlayClic
         return tapped;
     }
 
-    private void notifyListeners() {
-        for (ExtendedOverlayClickListener listener : listeners) {
+    private void notifyListeners(){
+        for(ExtendedOverlayClickListener listener : listeners){
             listener.onClick(this);
         }
     }

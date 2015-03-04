@@ -1,8 +1,8 @@
-package android.ohdm.de.editor;
+package android.ohdm.de.editor.api;
 
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -16,11 +16,6 @@ import org.postgis.MultiPolygon;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;

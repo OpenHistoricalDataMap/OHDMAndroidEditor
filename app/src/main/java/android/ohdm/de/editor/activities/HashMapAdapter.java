@@ -1,6 +1,5 @@
-package android.ohdm.de.ohdmviewer;
+package android.ohdm.de.editor.activities;
 
-import android.ohdm.de.editor.Geometry.TagDates;
 import android.ohdm.de.editor.R;
 import android.view.LayoutInflater;
 import android.view.View;

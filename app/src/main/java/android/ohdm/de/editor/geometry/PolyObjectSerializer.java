@@ -1,9 +1,9 @@
-package android.ohdm.de.editor.Geometry;
+package android.ohdm.de.editor.geometry;
 
 import android.content.Context;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectFactory;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.util.Log;
 
 import org.osmdroid.views.MapView;

@@ -1,4 +1,4 @@
-package android.ohdm.de.ohdmviewer;
+package android.ohdm.de.editor.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObject;
-import android.ohdm.de.editor.Geometry.PolyObject.PolyObjectType;
-import android.ohdm.de.editor.Geometry.PolyObjectManager;
-import android.ohdm.de.editor.Geometry.PolyObjectSerializer;
-import android.ohdm.de.editor.JSONReader;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
+import android.ohdm.de.editor.geometry.PolyObjectManager;
+import android.ohdm.de.editor.geometry.PolyObjectSerializer;
+import android.ohdm.de.editor.api.JSONReader;
 import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.WMSTileSource;
 import android.os.AsyncTask;

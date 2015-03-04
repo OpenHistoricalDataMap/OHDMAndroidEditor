@@ -1,4 +1,4 @@
-package android.ohdm.de.ohdmviewer;
+package android.ohdm.de.editor.activities;
 
 import android.app.Activity;
 import android.content.Intent;

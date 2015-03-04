@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="android.ohdm.de.ohdmviewer.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name_short" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,14 +23,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="android.ohdm.de.ohdmviewer.GetPolyobjectByIdActivity"
+            android:name=".activities.GetPolyobjectByIdActivity"
             android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
-            android:name="android.ohdm.de.ohdmviewer.ShowPolyObjectDataActivity"
+            android:name=".activities.ShowPolyObjectDataActivity"
             android:label="@string/title_activity_edit_poly_object_data" >
         </activity>
         <activity
-            android:name="android.ohdm.de.ohdmviewer.EditPolyObjectDataActivity"
+            android:name=".activities.EditPolyObjectDataActivity"
             android:label="@string/title_activity_edit_poly_object_data"
             android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>

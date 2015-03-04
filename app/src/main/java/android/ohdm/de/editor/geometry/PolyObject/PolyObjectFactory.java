@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.Geometry.PolyObject;
+package android.ohdm.de.editor.geometry.PolyObject;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.osmdroid.views.MapView;

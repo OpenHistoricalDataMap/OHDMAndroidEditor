@@ -1,4 +1,4 @@
-package android.ohdm.de.ohdmviewer;
+package android.ohdm.de.editor.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,9 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 
 public class EditPolyObjectDataActivity extends Activity {
