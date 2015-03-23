@@ -28,7 +28,8 @@
     <string name="dialog_name">cancel</string>
     <string name="dialog_edittext">ID of Polyobject</string>
     <string name="no_real_id_error">sorry, but the ID of Polyobject was not correct</string>
-    <string name="async_download_error">sorry, but the object could not be loaded</string>
+    <string name="async_download_error_server">sorry, but the object could not be loaded (server error)</string>
+    <string name="async_download_error">sorry, but the object could not be loaded (intern error)</string>
     <string name="async_download_done">object is loaded!</string>
     <string name="async_download_start">loading Object...</string>
     <string name="async_upload_error">sorry, but the object could not be uploaded</string>

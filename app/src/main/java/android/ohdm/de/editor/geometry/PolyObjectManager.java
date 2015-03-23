@@ -164,8 +164,14 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
         if (activeObject != null){
             ApiConnect apiConnect = new ApiConnect(MainActivity.OHDMAPI_SERVER_ADDRESS);
-            apiConnect.putPolyObject(JSONWriter.createJSONObjectFromPolyObject(activeObject));
-            return true;
+
+            int resposeCode = apiConnect.putPolyObject(JSONWriter.createJSONObjectFromPolyObject(activeObject));
+
+            if(resposeCode == ApiConnect.UPLOAD_RESPONSE_OK) {
+                return true;
+            }else{
+                return false;
+            }
         }else{
             Log.d(TAG,"no active polyobject to write");
             return false;

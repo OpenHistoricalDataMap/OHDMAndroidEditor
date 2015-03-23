@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.ohdm.de.editor.api.ApiConnect;
+import android.ohdm.de.editor.api.ApiException;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
@@ -25,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.bonuspack.overlays.MapEventsOverlay;
@@ -512,7 +514,17 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
 
             ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
-            JSONObject jsonObject = apiConnect.getJSONObjectById(params[0]);
+            JSONObject jsonObject = null;
+
+            try {
+                jsonObject = apiConnect.getJSONObjectById(params[0]);
+            } catch (JSONException e) {
+                Log.e(TAG, "could not read polyobject from server: "+e.toString());
+                return -1L;
+            } catch (ApiException e){
+                Log.e(TAG,e.toString());
+                return -2L;
+            }
 
             PolyObject loadedPolyObject = JSONReader.getPolyObjectFromJSONObject(jsonObject, map);
 
@@ -521,6 +533,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
                 map.getController().setCenter(loadedPolyObject.getPoints().get(0));
 
                 polyObjectManager.addObject(loadedPolyObject);
+
             } else {
                 Log.e(TAG, "could not read polyobject from server");
                 return -1L;
@@ -533,7 +546,9 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             if (result == 0) {
                 Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
-            } else {
+            } else if(result == -2){
+                Toast.makeText(getApplicationContext(), R.string.async_download_error_server, Toast.LENGTH_SHORT).show();
+            } else{
                 Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
             }
         }
