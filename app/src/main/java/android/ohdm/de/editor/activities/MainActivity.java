@@ -274,6 +274,14 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             HashMap<String, String> resultMap = (HashMap) data.getSerializableExtra(MAP_DATA);
             polyObjectManager.setSelectedPolyObjectTags(resultMap);
+
+        }else if (resultCode == Activity.RESULT_CANCELED && requestCode == ID_DIALOG_REQUEST_CODE){
+
+            int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
+
+            if(polyObjectId == -1){
+                Toast.makeText(getApplicationContext(), R.string.no_real_id_error, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -387,72 +395,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         return new GeoPoint(lat, lon);
     }
 
-    private class UploadPolyObjectTask extends AsyncTask<Integer, Integer, Long> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Toast.makeText(getApplicationContext(), R.string.async_upload_start, Toast.LENGTH_SHORT).show();
-        }
-
-        protected Long doInBackground(Integer... params) {
-
-            if (!polyObjectManager.writeActivePolyObject()) {
-                return -1L;
-            }
-
-            return 0L;
-        }
-
-        protected void onPostExecute(Long result) {
-
-            if (result == 0) {
-                Toast.makeText(getApplicationContext(), R.string.async_upload_done, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.async_upload_error, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private class DownloadPolyObjectTask extends AsyncTask<Integer, Integer, Long> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Toast.makeText(getApplicationContext(), R.string.async_download_start, Toast.LENGTH_SHORT).show();
-        }
-
-        protected Long doInBackground(Integer... params) {
-
-
-            ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
-            JSONObject jsonObject = apiConnect.getJSONObjectById(params[0]);
-
-            PolyObject loadedPolyObject = JSONReader.getPolyObjectFromJSONObject(jsonObject, map);
-
-            if (loadedPolyObject != null) {
-
-                map.getController().setCenter(loadedPolyObject.getPoints().get(0));
-
-                polyObjectManager.addObject(loadedPolyObject);
-            } else {
-                Log.e(TAG, "could not read polyobject from server");
-                return -1L;
-            }
-
-            return 0L;
-        }
-
-        protected void onPostExecute(Long result) {
-
-            if (result == 0) {
-                Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     /*
     Tap-Listeners
      */
@@ -526,4 +468,75 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         startActivityForResult(intent, DATA_DIALOG_REQUEST_CODE);
     }
+
+    /**
+     * AsyncTasks
+     */
+
+    private class UploadPolyObjectTask extends AsyncTask<Integer, Integer, Long> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(getApplicationContext(), R.string.async_upload_start, Toast.LENGTH_SHORT).show();
+        }
+
+        protected Long doInBackground(Integer... params) {
+
+            if (!polyObjectManager.writeActivePolyObject()) {
+                return -1L;
+            }
+
+            return 0L;
+        }
+
+        protected void onPostExecute(Long result) {
+
+            if (result == 0) {
+                Toast.makeText(getApplicationContext(), R.string.async_upload_done, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.async_upload_error, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class DownloadPolyObjectTask extends AsyncTask<Integer, Integer, Long> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(getApplicationContext(), R.string.async_download_start, Toast.LENGTH_SHORT).show();
+        }
+
+        protected Long doInBackground(Integer... params) {
+
+
+            ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
+            JSONObject jsonObject = apiConnect.getJSONObjectById(params[0]);
+
+            PolyObject loadedPolyObject = JSONReader.getPolyObjectFromJSONObject(jsonObject, map);
+
+            if (loadedPolyObject != null) {
+
+                map.getController().setCenter(loadedPolyObject.getPoints().get(0));
+
+                polyObjectManager.addObject(loadedPolyObject);
+            } else {
+                Log.e(TAG, "could not read polyobject from server");
+                return -1L;
+            }
+
+            return 0L;
+        }
+
+        protected void onPostExecute(Long result) {
+
+            if (result == 0) {
+                Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }

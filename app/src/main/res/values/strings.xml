@@ -27,6 +27,7 @@
     <string name="button_add_data">object data</string>
     <string name="dialog_name">cancel</string>
     <string name="dialog_edittext">ID of Polyobject</string>
+    <string name="no_real_id_error">sorry, but the ID of Polyobject was not correct</string>
     <string name="async_download_error">sorry, but the object could not be loaded</string>
     <string name="async_download_done">object is loaded!</string>
     <string name="async_download_start">loading Object...</string>
