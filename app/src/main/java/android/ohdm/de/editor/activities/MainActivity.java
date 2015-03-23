@@ -6,15 +6,16 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.ohdm.de.editor.OHDMMapView;
+import android.ohdm.de.editor.R;
+import android.ohdm.de.editor.WMSTileSource;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.api.ApiException;
+import android.ohdm.de.editor.api.JSONReader;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
 import android.ohdm.de.editor.geometry.PolyObjectSerializer;
-import android.ohdm.de.editor.api.JSONReader;
-import android.ohdm.de.editor.R;
-import android.ohdm.de.editor.WMSTileSource;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,12 +36,11 @@ import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class MainActivity extends Activity implements MapEventsReceiver {
+public class MainActivity extends Activity implements MapEventsReceiver{
 
     private static final String TAG = "MainActivity";
     private static final int ID_DIALOG_REQUEST_CODE = 1747;
@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static Mode mode = Mode.VIEW;
 
-    private MapView map;
+    private OHDMMapView map;
     private PolyObjectManager polyObjectManager;
     private ITileSource wmsTileSource;
 
@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         location();
     }
 
-    private MapView createMapView(int zoomlevel, GeoPoint geoPoint, boolean isWmsOverlayActive) {
+    private OHDMMapView createMapView(int zoomlevel, GeoPoint geoPoint, boolean isWmsOverlayActive) {
 
         wmsTileSource = new WMSTileSource("wmsserver", null, 3, 18, 256, ".png",
                 new String[]{WMS_SERVER_ADDRESS});
@@ -115,7 +115,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             tileProvider.setTileSource(wmsTileSource);
         }
 
-        MapView osmv = new MapView(this, 256, new DefaultResourceProxyImpl(this), tileProvider);
+        OHDMMapView osmv = new OHDMMapView(this, 256, new DefaultResourceProxyImpl(this), tileProvider);
 
         rl.addView(osmv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT));
@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         osmv.setClickable(true);
         osmv.setMultiTouchControls(true);
         osmv.getController().setZoom(zoomlevel);
-        osmv.getController().setCenter(geoPoint);
+        osmv.getController().setCenter(geoPoint);;
 
 //        osmv.getTileProvider().clearTileCache();
 
@@ -175,7 +175,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     }
 
     /**
-     * Bei Klick auf die Menu-Eintraege reagieren
+     * menu click handler
      */
     @Override
     public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
@@ -405,9 +405,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         if (mode == Mode.ADD) {
             polyObjectManager.addPointToSelectedPolyObject(geoPoint);
+            map.invalidate();
         }
-
-        map.invalidate();
 
         return true;
     }
@@ -535,7 +534,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
                 polyObjectManager.addObject(loadedPolyObject);
 
             } else {
-                Log.e(TAG, "could not read polyobject from server");
+                Log.e(TAG, "could not create polyobject");
                 return -1L;
             }
 

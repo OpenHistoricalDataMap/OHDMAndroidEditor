@@ -1,12 +1,11 @@
 package android.ohdm.de.editor.geometry;
 
 import android.content.Context;
+import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.util.Log;
-
-import org.osmdroid.views.MapView;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,7 +19,7 @@ public class PolyObjectSerializer {
     private static final String TAG = "PolyObjectSerializer";
     private static final String SER_KEY = "de.ohdm.editor.ser";
 
-    public static void serialize(PolyObjectManager polyObjectManager, MapView mapView) {
+    public static void serialize(PolyObjectManager polyObjectManager, OHDMMapView mapView) {
 
         try {
             FileOutputStream fos = mapView.getContext().openFileOutput(SER_KEY, Context.MODE_PRIVATE);
@@ -34,7 +33,7 @@ public class PolyObjectSerializer {
         }
     }
 
-    public static PolyObjectManager deserialize(MapView map) {
+    public static PolyObjectManager deserialize(OHDMMapView map) {
 
         PolyObjectManager polyObjectManager = new PolyObjectManager(map);
 

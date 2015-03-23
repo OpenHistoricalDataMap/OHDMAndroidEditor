@@ -2,12 +2,13 @@ package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.ohdm.de.editor.OHDMMapView;
+import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.EditPoint;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPolylineOverlay;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,14 +28,15 @@ public class PolyLine extends PolyObject implements Serializable {
     private static final int LINE_WIDTH = 4;
 
     private transient ExtendedPolylineOverlay polyline;
-    private transient List<ExtendedPointOverlay> editPoints = new ArrayList<ExtendedPointOverlay>();
-    private transient ExtendedPointOverlay activeEditPoint;
-    private transient Map<ExtendedPointOverlay,GeoPoint> pointOverlayMap= new HashMap<ExtendedPointOverlay,GeoPoint>();
-    private transient MapView view;
+    private transient OHDMMapView view;
+
+    private transient List<EditPoint> editPoints = new ArrayList<EditPoint>();
+    private transient EditPoint activeEditPoint;
+    private transient Map<EditPoint,GeoPoint> pointOverlayMap= new HashMap<EditPoint,GeoPoint>();
 
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
-    public PolyLine(MapView view){
+    public PolyLine(OHDMMapView view){
         super(PolyObjectType.POLYLINE);
         this.internId = UUID.randomUUID();
         this.view = view;
@@ -63,7 +65,7 @@ public class PolyLine extends PolyObject implements Serializable {
         polyline.setPoints(points);
 
         for(GeoPoint point : this.points){
-            ExtendedPointOverlay editPoint = new ExtendedPointOverlay(view.getContext());
+            EditPoint editPoint = new EditPoint(view);
 
             List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
             pointPoints.add(point);
@@ -86,7 +88,7 @@ public class PolyLine extends PolyObject implements Serializable {
     public void removeLastPoint() {
         if(!points.isEmpty()){
             points.remove(points.size()-1);
-            ExtendedPointOverlay removePoint = editPoints.get(editPoints.size() - 1);
+            EditPoint removePoint = editPoints.get(editPoints.size() - 1);
             view.getOverlays().remove(removePoint);
             editPoints.remove(removePoint);
             deselectActiveCornerPoint();
@@ -122,7 +124,7 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     private void createAndAddEditPoint(GeoPoint geoPoint) {
-        ExtendedPointOverlay editPoint = new ExtendedPointOverlay(view.getContext());
+        EditPoint editPoint = new EditPoint(view);
 
         List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
         pointPoints.add(geoPoint);
@@ -161,14 +163,15 @@ public class PolyLine extends PolyObject implements Serializable {
         if (editing) {
             polyline.setColor(FILL_COLOR_EDIT);
 
-            for (ExtendedPointOverlay point : this.editPoints) {
+            for (EditPoint point : this.editPoints) {
+                point.setPoints(point.getPoints());
                 view.getOverlays().add(point);
             }
 
         } else {
             polyline.setColor(FILL_COLOR);
 
-            for (ExtendedPointOverlay point : editPoints) {
+            for (EditPoint point : editPoints) {
                 view.getOverlays().remove(point);
             }
 
@@ -178,7 +181,7 @@ public class PolyLine extends PolyObject implements Serializable {
 
     private void deselectActiveCornerPoint() {
         if (activeEditPoint != null) {
-            activeEditPoint.setFillColor(FILL_COLOR);
+            activeEditPoint.setFillColor(EditPoint.FILL_COLOR);
             activeEditPoint = null;
             view.invalidate();
         }
@@ -201,13 +204,13 @@ public class PolyLine extends PolyObject implements Serializable {
     @Override
     public void onClick(Object clickObject) {
 
-        if (clickObject instanceof ExtendedPointOverlay) {
+        if (clickObject instanceof EditPoint) {
 
-            if(activeEditPoint == (ExtendedPointOverlay)clickObject){
+            if(activeEditPoint == (EditPoint)clickObject){
                 deselectActiveCornerPoint();
             }else{
                 deselectActiveCornerPoint();
-                activeEditPoint = (ExtendedPointOverlay) clickObject;
+                activeEditPoint = (EditPoint) clickObject;
                 activeEditPoint.setFillColor(FILL_COLOR_EDIT);
                 view.invalidate();
             }

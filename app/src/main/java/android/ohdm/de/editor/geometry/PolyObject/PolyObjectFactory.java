@@ -1,11 +1,12 @@
 package android.ohdm.de.editor.geometry.PolyObject;
 
+import android.ohdm.de.editor.OHDMMapView;
+
 import org.apache.commons.lang3.NotImplementedException;
-import org.osmdroid.views.MapView;
 
 public class PolyObjectFactory {
 
-    public static PolyObject buildObject(PolyObjectType type,MapView view){
+    public static PolyObject buildObject(PolyObjectType type,OHDMMapView view){
 
         PolyObject polyObject = null;
 

@@ -91,7 +91,7 @@ public class ApiConnect {
             Log.d(TAG,"response code: "+String.valueOf(responseCode));
 
             if(responseCode == DOWNLOAD_RESPONSE_NOT_FOUND || responseCode == DOWNLOAD_RESPONSE_ERROR) {
-                Log.d(TAG,"ApiException");
+                Log.d(TAG,"ApiException: "+String.valueOf(responseCode));
                 throw new ApiException(String.valueOf(responseCode));
             }
 

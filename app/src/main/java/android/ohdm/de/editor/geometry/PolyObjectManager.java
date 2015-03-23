@@ -1,6 +1,7 @@
 package android.ohdm.de.editor.geometry;
 
 
+import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.activities.MainActivity;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
@@ -25,9 +26,9 @@ public class PolyObjectManager implements PolyObjectClickListener {
     private List<PolyObject> polyObjectList = new ArrayList<PolyObject>();
     private PolyObject activeObject = null;
 
-    private MapView map;
+    private OHDMMapView map;
 
-    public PolyObjectManager(MapView map){
+    public PolyObjectManager(OHDMMapView map){
         this.map = map;
     }
 

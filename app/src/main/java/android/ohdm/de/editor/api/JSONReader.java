@@ -1,5 +1,6 @@
 package android.ohdm.de.editor.api;
 
+import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
@@ -9,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.postgis.MultiLineString;
 import org.postgis.MultiPoint;
 import org.postgis.MultiPolygon;
@@ -33,7 +33,7 @@ public class JSONReader {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
-    public static PolyObject getPolyObjectFromJSONObject(JSONObject jsonObject, MapView mapView) {
+    public static PolyObject getPolyObjectFromJSONObject(JSONObject jsonObject, OHDMMapView mapView) {
 
         PolyObject polyObject = null;
         PolyObjectType type;
