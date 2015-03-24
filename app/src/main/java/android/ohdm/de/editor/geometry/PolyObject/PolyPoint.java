@@ -103,7 +103,8 @@ public class PolyPoint extends PolyObject {
     }
 
     @Override
-    public void removeSelectedEditPoint() {
+    public boolean removeSelectedEditPoint() {
         //nothing to do here...
+        return true;
     }
 }

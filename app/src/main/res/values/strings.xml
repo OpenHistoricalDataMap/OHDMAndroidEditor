@@ -41,5 +41,7 @@
     <string name="edit_polyobject_data_key">key</string>
     <string name="edit_polyobject_data_value">value</string>
     <string name="not_implemented">not implemented yet</string>
+    <string name="no_edit_point_selected_error">no edit-point selected</string>
+    <string name="no_area_selected_error">no area selected</string>
 
 </resources>

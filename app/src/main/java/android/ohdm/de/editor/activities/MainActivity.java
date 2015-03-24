@@ -451,9 +451,15 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     public void buttonEditDelete(View view) {
 
         if (mode == Mode.SELECT) {
-            polyObjectManager.removeSelectedObject();
+            if(!polyObjectManager.removeSelectedObject()){
+                Toast.makeText(this,R.string.no_area_selected_error,Toast.LENGTH_SHORT).show();
+            }else{
+                stopSelect();
+            }
         } else if (mode == Mode.ADD) {
-            polyObjectManager.removeSelectedCornerPoint();
+            if(!polyObjectManager.removeSelectedCornerPoint()){
+                Toast.makeText(this,R.string.no_edit_point_selected_error,Toast.LENGTH_SHORT).show();
+            }
         }
         map.invalidate();
     }
@@ -484,7 +490,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
         protected Long doInBackground(Integer... params) {
 
-            if (!polyObjectManager.writeActivePolyObject()) {
+            if (!polyObjectManager.uploadActivePolyObject()) {
                 return -1L;
             }
 

@@ -147,7 +147,6 @@ public class JSONWriter {
 
         for (int i = 0; i < geoPoints.size(); i++) {
             GeoPoint geoPoint = geoPoints.get(i);
-            //TODO: hier konvertierungsfehler?
             Point point = new Point(geoPoint.getLongitude(), geoPoint.getLatitude(), geoPoint.getAltitude());
             points[i] = point;
         }

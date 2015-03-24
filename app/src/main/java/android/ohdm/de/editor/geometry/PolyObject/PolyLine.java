@@ -188,7 +188,7 @@ public class PolyLine extends PolyObject implements Serializable {
     }
 
     @Override
-    public void removeSelectedEditPoint() {
+    public boolean removeSelectedEditPoint() {
         if(activeEditPoint != null){
             view.getOverlays().remove(activeEditPoint);
             editPoints.remove(activeEditPoint);
@@ -198,7 +198,9 @@ public class PolyLine extends PolyObject implements Serializable {
 
             polyline.setPoints(points);
             activeEditPoint = null;
+            return true;
         }
+        return false;
     }
 
     @Override

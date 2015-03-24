@@ -151,7 +151,7 @@ public class PolyGon extends PolyObject {
     }
 
     @Override
-    public void removeSelectedEditPoint() {
+    public boolean removeSelectedEditPoint() {
         if(activeEditPoint != null){
             view.getOverlays().remove(activeEditPoint);
             editPoints.remove(activeEditPoint);
@@ -161,7 +161,9 @@ public class PolyGon extends PolyObject {
 
             polygon.setPoints(points);
             activeEditPoint = null;
+            return true;
         }
+        return false;
     }
 
     @Override

@@ -70,11 +70,14 @@ public class PolyObjectManager implements PolyObjectClickListener {
         map.invalidate();
     }
 
-    public void removeSelectedObject() {
+    public boolean removeSelectedObject() {
+
         if(activeObject != null){
             removeObject(activeObject);
+            activeObject = null;
+            return true;
         }
-        activeObject = null;
+        return false;
     }
 
     public List<PolyObject> getPolyObjectList(){
@@ -157,11 +160,14 @@ public class PolyObjectManager implements PolyObjectClickListener {
         activeObject.removeLastPoint();
     }
 
-    public void removeSelectedCornerPoint() {
-        activeObject.removeSelectedEditPoint();
+    public boolean removeSelectedCornerPoint() {
+        if(activeObject != null) {
+            return activeObject.removeSelectedEditPoint();
+        }
+        return false;
     }
 
-    public boolean writeActivePolyObject(){
+    public boolean uploadActivePolyObject(){
 
         if (activeObject != null){
             ApiConnect apiConnect = new ApiConnect(MainActivity.OHDMAPI_SERVER_ADDRESS);
@@ -174,7 +180,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
                 return false;
             }
         }else{
-            Log.d(TAG,"no active polyobject to write");
+            Log.d(TAG,"no active polyobject to upload");
             return false;
         }
     }
