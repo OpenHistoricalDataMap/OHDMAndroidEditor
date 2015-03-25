@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.activities.ViewMode;
+package android.ohdm.de.editor.activities.EditorState;
 
 import android.content.Context;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
@@ -6,46 +6,46 @@ import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
-public class ViewModeContext {
+public class EditorStateContext {
 
     private PolyObjectManager polyObjectManager;
     private Context context;
-    private ViewMode viewMode;
-    private ViewMode.Mode state;
+    private EditorState viewMode;
+    private EditorState.State state;
 
-    public ViewModeContext(ViewMode.Mode mode,PolyObjectManager polyObjectManager, Context context) {
+    public EditorStateContext(EditorState.State state, PolyObjectManager polyObjectManager, Context context) {
 
         this.polyObjectManager = polyObjectManager;
         this.context = context;
 
-        setState(mode);
+        setState(state);
     }
 
-    public void setState(ViewMode.Mode mode){
+    public void setState(EditorState.State state){
 
-        this.state = mode;
+        this.state = state;
 
-        switch (mode){
+        switch (state){
             case VIEW:
-                viewMode = new ViewModeView(polyObjectManager,context,this);
+                viewMode = new EditorStateView(polyObjectManager,context,this);
                 break;
             case SELECT:
-                viewMode = new ViewModeSelect(polyObjectManager,context,this);
+                viewMode = new EditorStateSelect(polyObjectManager,context,this);
                 break;
             case ADD:
-                viewMode = new ViewModeAdd(polyObjectManager,context,this);
+                viewMode = new EditorStateAdd(polyObjectManager,context,this);
                 break;
             case EDIT:
-                viewMode = new ViewModeEdit(polyObjectManager,context,this);
+                viewMode = new EditorStateEdit(polyObjectManager,context,this);
                 break;
             default:
-                Log.e("ViewModeContext","Mode is not implemented yet ("+mode+")");
+                Log.e("ViewModeContext","Mode is not implemented yet ("+ state +")");
         }
 
         viewMode.change();
     }
 
-    public ViewMode.Mode getState(){
+    public EditorState.State getState(){
         return this.state;
     }
 

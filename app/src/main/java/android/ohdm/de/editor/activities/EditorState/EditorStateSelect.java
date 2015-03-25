@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.activities.ViewMode;
+package android.ohdm.de.editor.activities.EditorState;
 
 import android.content.Context;
 import android.ohdm.de.editor.R;
@@ -9,16 +9,16 @@ import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 
-public class ViewModeSelect implements ViewMode {
+public class EditorStateSelect implements EditorState {
 
     private PolyObjectManager polyObjectManager;
     private Context context;
-    private ViewModeContext viewModeContext;
+    private EditorStateContext editorStateContext;
 
-    ViewModeSelect(PolyObjectManager polyObjectManager, Context context, ViewModeContext viewModeContext) {
+    EditorStateSelect(PolyObjectManager polyObjectManager, Context context, EditorStateContext editorStateContext) {
         this.polyObjectManager = polyObjectManager;
         this.context = context;
-        this.viewModeContext = viewModeContext;
+        this.editorStateContext = editorStateContext;
     }
 
     @Override
@@ -44,12 +44,12 @@ public class ViewModeSelect implements ViewMode {
 
         polyObjectManager.setObjectsClickable(false);
         polyObjectManager.deselectActiveObject();
-        viewModeContext.setState(Mode.VIEW);
+        editorStateContext.setState(State.VIEW);
     }
 
     @Override
     public void buttonAddAccept() {
-        viewModeContext.setState(Mode.EDIT);
+        editorStateContext.setState(State.EDIT);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ViewModeSelect implements ViewMode {
 
                 Toast.makeText(((MainActivity) this.context),R.string.no_area_selected_error, Toast.LENGTH_SHORT).show();
             }else{
-                viewModeContext.setState(Mode.VIEW);
+                editorStateContext.setState(State.VIEW);
             }
     }
 

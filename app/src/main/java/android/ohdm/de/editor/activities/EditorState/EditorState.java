@@ -1,10 +1,10 @@
-package android.ohdm.de.editor.activities.ViewMode;
+package android.ohdm.de.editor.activities.EditorState;
 
 import org.osmdroid.util.GeoPoint;
 
-public interface ViewMode {
+public interface EditorState {
 
-    public enum Mode {
+    public enum State {
         ADD, SELECT, EDIT, VIEW
     }
 

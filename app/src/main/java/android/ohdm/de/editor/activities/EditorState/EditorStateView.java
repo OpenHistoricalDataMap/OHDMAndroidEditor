@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.activities.ViewMode;
+package android.ohdm.de.editor.activities.EditorState;
 
 import android.content.Context;
 import android.ohdm.de.editor.activities.MainActivity;
@@ -7,16 +7,16 @@ import android.view.View;
 
 import org.osmdroid.util.GeoPoint;
 
-public class ViewModeView implements ViewMode{
+public class EditorStateView implements EditorState {
 
     private PolyObjectManager polyObjectManager;
     private Context context;
-    private ViewModeContext viewModeContext;
+    private EditorStateContext editorStateContext;
 
-    ViewModeView(PolyObjectManager polyObjectManager, Context context, ViewModeContext viewModeContext){
+    EditorStateView(PolyObjectManager polyObjectManager, Context context, EditorStateContext editorStateContext){
         this.polyObjectManager = polyObjectManager;
         this.context = context;
-        this.viewModeContext = viewModeContext;
+        this.editorStateContext = editorStateContext;
     }
 
     @Override

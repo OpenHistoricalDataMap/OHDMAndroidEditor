@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.activities.ViewMode;
+package android.ohdm.de.editor.activities.EditorState;
 
 import android.content.Context;
 import android.ohdm.de.editor.R;
@@ -9,29 +9,27 @@ import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 
-public class ViewModeEdit implements ViewMode{
+public class EditorStateAdd implements EditorState {
 
     private PolyObjectManager polyObjectManager;
     private Context context;
-    private ViewModeContext viewModeContext;
+    private EditorStateContext editorStateContext;
 
-    ViewModeEdit(PolyObjectManager polyObjectManager, Context context, ViewModeContext viewModeContext){
+    EditorStateAdd(PolyObjectManager polyObjectManager, Context context, EditorStateContext editorStateContext){
         this.polyObjectManager = polyObjectManager;
         this.context = context;
-        this.viewModeContext = viewModeContext;
+        this.editorStateContext = editorStateContext;
     }
 
     @Override
     public void change() {
 
-        ((MainActivity)this.context).changeEditButtonsVisibility(View.INVISIBLE);
         polyObjectManager.setObjectsClickable(false);
-        polyObjectManager.setSelectedObjectEditable(true);
+        polyObjectManager.setActiveObjectEditable(false);
+        polyObjectManager.setSelectedObjectEditable(false);
 
-        if (polyObjectManager.isSelectedObjectEditable()) {
-
-            ((MainActivity)this.context).changeAddButtonsVisibility(View.VISIBLE);
-        }
+        ((MainActivity)this.context).changeEditButtonsVisibility(View.INVISIBLE);
+        ((MainActivity)this.context).changeAddButtonsVisibility(View.VISIBLE);
     }
 
     @Override
@@ -46,16 +44,18 @@ public class ViewModeEdit implements ViewMode{
 
     @Override
     public void buttonAddAccept() {
+        //TODO: alles erledigen durch viewModeContext.setState(Mode.VIEW) und dadurch keine extra methode benötigen?
         polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.deselectActiveObject();
         ((MainActivity)this.context).changeAddButtonsVisibility(View.INVISIBLE);
-        viewModeContext.setState(Mode.VIEW);
+        editorStateContext.setState(State.VIEW);
+//        map.invalidate();
     }
 
     @Override
     public void buttonEditDelete() {
         if (!polyObjectManager.removeSelectedCornerPoint()) {
-            Toast.makeText(((MainActivity) this.context), R.string.no_edit_point_selected_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(((MainActivity)this.context), R.string.no_edit_point_selected_error, Toast.LENGTH_SHORT).show();
         }
     }
 

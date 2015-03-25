@@ -8,8 +8,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.R;
-import android.ohdm.de.editor.activities.ViewMode.ViewMode;
-import android.ohdm.de.editor.activities.ViewMode.ViewModeContext;
+import android.ohdm.de.editor.activities.EditorState.EditorState;
+import android.ohdm.de.editor.activities.EditorState.EditorStateContext;
 import android.ohdm.de.editor.WMSTileSource;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.api.ApiException;
@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     private PolyObjectManager polyObjectManager;
     private ITileSource wmsTileSource;
 
-    private ViewModeContext viewMode;
+    private EditorStateContext editorState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         GeoPoint startGeoPoint;
         int zoomlevel = 16;
         boolean isWmsOverlayActive = false;
-        ViewMode.Mode state = ViewMode.Mode.VIEW;
+        EditorState.State state = EditorState.State.VIEW;
         UUID selectedObjectId = null;
 
                 super.onCreate(savedInstanceState);
@@ -88,7 +88,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             isWmsOverlayActive = savedInstanceState.getBoolean(BUNDLE_MAP_WMS);
             longitude = savedInstanceState.getDouble(BUNDLE_MAP_LONGITUDE);
             latitude = savedInstanceState.getDouble(BUNDLE_MAP_LATITUDE);
-            state = (ViewMode.Mode)savedInstanceState.getSerializable(BUNDLE_MODE);
+            state = (EditorState.State)savedInstanceState.getSerializable(BUNDLE_MODE);
             selectedObjectId = (UUID) savedInstanceState.getSerializable(BUNDLE_SELECTED_POLYOBJECT_INTERNID);
         }
 
@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
         map.getOverlays().add(0, mapEventsOverlay);
 
-        viewMode = new ViewModeContext(state,polyObjectManager,this);
+        editorState = new EditorStateContext(state,polyObjectManager,this);
 
         location();
     }
@@ -157,7 +157,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         state.putDouble(BUNDLE_MAP_LONGITUDE, map.getMapCenter().getLongitude());
         state.putDouble(BUNDLE_MAP_LATITUDE, map.getMapCenter().getLatitude());
         state.putInt(BUNDLE_MAP_ZOOMLEVEL, map.getZoomLevel());
-        state.putSerializable(BUNDLE_MODE, viewMode.getState());
+        state.putSerializable(BUNDLE_MODE, editorState.getState());
 
         if(polyObjectManager.getSelectedPolyObjectInternId() != null) {
             state.putSerializable(BUNDLE_SELECTED_POLYOBJECT_INTERNID, polyObjectManager.getSelectedPolyObjectInternId());
@@ -176,7 +176,6 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     @Override
     protected void onStop() {
         super.onStop();
-//        viewMode.onStop();
         PolyObjectSerializer.serialize(polyObjectManager, map);
     }
 
@@ -199,25 +198,25 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
             case R.id.menuItemAddLine:
 
-                viewMode.setState(ViewMode.Mode.ADD);
+                editorState.setState(EditorState.State.ADD);
                 polyObjectManager.createAndAddPolyObject(PolyObjectType.POLYLINE);
                 return true;
 
             case R.id.menuItemAddPolygon:
 
-                viewMode.setState(ViewMode.Mode.ADD);
+                editorState.setState(EditorState.State.ADD);
                 polyObjectManager.createAndAddPolyObject(PolyObjectType.POLYGON);
                 return true;
 
             case R.id.menuItemAddPoint:
 
-                viewMode.setState(ViewMode.Mode.ADD);
+                editorState.setState(EditorState.State.ADD);
                 polyObjectManager.createAndAddPolyObject(PolyObjectType.POINT);
                 return true;
 
             case R.id.action_edit:
 
-                viewMode.setState(ViewMode.Mode.SELECT);
+                editorState.setState(EditorState.State.SELECT);
                 return true;
 
             case R.id.menuItemLayerOSM:
@@ -341,7 +340,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
      */
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
-        viewMode.singleTap(geoPoint);
+        editorState.singleTap(geoPoint);
         return true;
     }
 
@@ -356,23 +355,23 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
     public void buttonAddAccept(View view) {
 
-        viewMode.buttonAddAccept();
+        editorState.buttonAddAccept();
         map.invalidate();
     }
 
     public void buttonAddUndo(View view) {
 
-        viewMode.buttonAddUndo();
+        editorState.buttonAddUndo();
     }
 
     public void buttonAddCancel(View view) {
 
-        viewMode.buttonAddCancel();
+        editorState.buttonAddCancel();
     }
 
     public void buttonEditDelete(View view) {
 
-        viewMode.buttonEditDelete();
+        editorState.buttonEditDelete();
     }
 
     public void buttonAddData(View view) {
