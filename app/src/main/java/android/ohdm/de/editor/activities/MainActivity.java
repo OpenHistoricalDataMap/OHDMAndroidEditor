@@ -8,6 +8,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.R;
+import android.ohdm.de.editor.activities.ViewMode.ViewMode;
+import android.ohdm.de.editor.activities.ViewMode.ViewModeContext;
 import android.ohdm.de.editor.WMSTileSource;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.api.ApiException;
@@ -43,28 +45,28 @@ import java.util.UUID;
 public class MainActivity extends Activity implements MapEventsReceiver{
 
     private static final String TAG = "MainActivity";
+
     private static final int ID_DIALOG_REQUEST_CODE = 1747;
     private static final int DATA_DIALOG_REQUEST_CODE = 1748;
     private static final String EXTRA_POLYOBJECTID = "polyobjectid";
+    public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
+    public static final String MAP_DATA = "map_data";
+
     private static final String WMS_SERVER_ADDRESS = "http://141.45.94.68/cgi-bin/mapserv?map=%2Fmapserver%2Fmapdata%2Fohdm.map&&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=administrative&TILED=true&WIDTH=256&HEIGHT=256&CRS=EPSG%3A4326&STYLES&BBOX=";
+    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
+
     private static final String BUNDLE_MAP_ZOOMLEVEL = "map_zoom_level";
     private static final String BUNDLE_MAP_WMS = "map_wms_overlay";
     private static final String BUNDLE_MAP_LONGITUDE = "map_position_lon";
     private static final String BUNDLE_MAP_LATITUDE = "map_position_lat";
-
-    public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
-    public static final String MAP_DATA = "map_data";
-    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
-
-    private enum Mode {
-        ADD, SELECT, EDIT, VIEW
-    }
-
-    private static Mode mode = Mode.VIEW;
+    private static final String BUNDLE_MODE = "mode";
+    private static final String BUNDLE_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
 
     private OHDMMapView map;
     private PolyObjectManager polyObjectManager;
     private ITileSource wmsTileSource;
+
+    private ViewModeContext viewMode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,10 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         GeoPoint startGeoPoint;
         int zoomlevel = 16;
         boolean isWmsOverlayActive = false;
+        ViewMode.Mode state = ViewMode.Mode.VIEW;
+        UUID selectedObjectId = null;
 
-        super.onCreate(savedInstanceState);
+                super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
@@ -84,17 +88,23 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             isWmsOverlayActive = savedInstanceState.getBoolean(BUNDLE_MAP_WMS);
             longitude = savedInstanceState.getDouble(BUNDLE_MAP_LONGITUDE);
             latitude = savedInstanceState.getDouble(BUNDLE_MAP_LATITUDE);
+            state = (ViewMode.Mode)savedInstanceState.getSerializable(BUNDLE_MODE);
+            selectedObjectId = (UUID) savedInstanceState.getSerializable(BUNDLE_SELECTED_POLYOBJECT_INTERNID);
         }
+
         startGeoPoint = new GeoPoint(latitude, longitude);
-
         map = createMapView(zoomlevel, startGeoPoint, isWmsOverlayActive);
-
-        mode = Mode.VIEW;
 
         polyObjectManager = PolyObjectSerializer.deserialize(map);
 
+        if(selectedObjectId != null){
+            polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
+        }
+
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
         map.getOverlays().add(0, mapEventsOverlay);
+
+        viewMode = new ViewModeContext(state,polyObjectManager,this);
 
         location();
     }
@@ -147,6 +157,11 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         state.putDouble(BUNDLE_MAP_LONGITUDE, map.getMapCenter().getLongitude());
         state.putDouble(BUNDLE_MAP_LATITUDE, map.getMapCenter().getLatitude());
         state.putInt(BUNDLE_MAP_ZOOMLEVEL, map.getZoomLevel());
+        state.putSerializable(BUNDLE_MODE, viewMode.getState());
+
+        if(polyObjectManager.getSelectedPolyObjectInternId() != null) {
+            state.putSerializable(BUNDLE_SELECTED_POLYOBJECT_INTERNID, polyObjectManager.getSelectedPolyObjectInternId());
+        }
     }
 
 
@@ -161,11 +176,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     @Override
     protected void onStop() {
         super.onStop();
-
-        if (mode == Mode.ADD) {
-            stopAdd();
-        }
-
+//        viewMode.onStop();
         PolyObjectSerializer.serialize(polyObjectManager, map);
     }
 
@@ -180,8 +191,6 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     @Override
     public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
 
-        //MapView map = (MapView) findViewById(R.id.openmapview);
-
         switch (item.getItemId()) {
             case R.id.menuItemLocate:
 
@@ -190,41 +199,25 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
             case R.id.menuItemAddLine:
 
-                if (mode == Mode.ADD) {
-                    stopAdd();
-                } else {
-                    startAddObject(PolyObjectType.POLYLINE);
-                }
+                viewMode.setState(ViewMode.Mode.ADD);
+                polyObjectManager.createAndAddPolyObject(PolyObjectType.POLYLINE);
                 return true;
 
             case R.id.menuItemAddPolygon:
 
-                if (mode == Mode.ADD) {
-                    stopAdd();
-                } else {
-                    startAddObject(PolyObjectType.POLYGON);
-                }
+                viewMode.setState(ViewMode.Mode.ADD);
+                polyObjectManager.createAndAddPolyObject(PolyObjectType.POLYGON);
                 return true;
 
             case R.id.menuItemAddPoint:
 
-                if (mode == Mode.ADD) {
-                    stopAdd();
-                } else {
-                    startAddObject(PolyObjectType.POINT);
-                }
+                viewMode.setState(ViewMode.Mode.ADD);
+                polyObjectManager.createAndAddPolyObject(PolyObjectType.POINT);
                 return true;
 
             case R.id.action_edit:
 
-                if (mode == Mode.SELECT) {
-                    stopSelect();
-                } else if (mode == Mode.ADD) {
-                    stopAdd();
-                } else {
-                    startSelectObject();
-                }
-
+                viewMode.setState(ViewMode.Mode.SELECT);
                 return true;
 
             case R.id.menuItemLayerOSM:
@@ -287,61 +280,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         }
     }
 
-    private void startEdit() {
-
-        changeEditButtonsVisibility(View.INVISIBLE);
-
-        polyObjectManager.setObjectsClickable(false);
-
-        polyObjectManager.setSelectedObjectEditable(true);
-
-        if (polyObjectManager.isSelectedObjectEditable()) {
-            map.invalidate();
-
-            changeAddButtonsVisibility(View.VISIBLE);
-            mode = Mode.ADD;
-        }
-    }
-
-    private void startSelectObject() {
-
-        changeEditButtonsVisibility(View.VISIBLE);
-        mode = Mode.SELECT;
-        polyObjectManager.setObjectsClickable(true);
-    }
-
-    private void startAddObject(PolyObjectType type) {
-
-        if (mode == Mode.SELECT) {
-            stopSelect();
-        }
-
-        changeAddButtonsVisibility(View.VISIBLE);
-
-        polyObjectManager.createAndAddPolyObject(type);
-
-        mode = Mode.ADD;
-    }
-
-    private void stopAdd() {
-
-        mode = Mode.VIEW;
-        polyObjectManager.setActiveObjectEditable(false);
-        polyObjectManager.deselectActiveObject();
-        map.invalidate();
-        changeAddButtonsVisibility(View.INVISIBLE);
-    }
-
-    private void stopSelect() {
-
-        mode = Mode.VIEW;
-        changeEditButtonsVisibility(View.INVISIBLE);
-
-        polyObjectManager.setObjectsClickable(false);
-        polyObjectManager.deselectActiveObject();
-    }
-
-    private void changeAddButtonsVisibility(int visibility) {
+    public void changeAddButtonsVisibility(int visibility) {
         ImageButton buttonAddAccept = (ImageButton) findViewById(R.id.buttonAddAccept);
         ImageButton buttonAddUndo = (ImageButton) findViewById(R.id.buttonAddUndo);
         ImageButton buttonAddDelete = (ImageButton) findViewById(R.id.buttonEditDelete);
@@ -353,7 +292,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         buttonAddData.setVisibility(visibility);
     }
 
-    private void changeEditButtonsVisibility(int visibility) {
+    public void changeEditButtonsVisibility(int visibility) {
         ImageButton buttonAddAccept = (ImageButton) findViewById(R.id.buttonAddAccept);
         ImageButton buttonAddCancel = (ImageButton) findViewById(R.id.buttonAddCancel);
         ImageButton buttonEditDelete = (ImageButton) findViewById(R.id.buttonEditDelete);
@@ -402,12 +341,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
      */
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
-
-        if (mode == Mode.ADD) {
-            polyObjectManager.addPointToSelectedPolyObject(geoPoint);
-            map.invalidate();
-        }
-
+        viewMode.singleTap(geoPoint);
         return true;
     }
 
@@ -422,46 +356,23 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
     public void buttonAddAccept(View view) {
 
-        switch (mode) {
-            case ADD:
-                stopAdd();
-                break;
-            case SELECT:
-                startEdit();
-                break;
-            default:
-                Log.e(TAG, "Illegal mode");
-        }
+        viewMode.buttonAddAccept();
+        map.invalidate();
     }
 
     public void buttonAddUndo(View view) {
 
-        polyObjectManager.removeLastPointFromSelectedPolyObject();
-        map.invalidate();
+        viewMode.buttonAddUndo();
     }
 
     public void buttonAddCancel(View view) {
 
-        if (mode == Mode.SELECT) {
-            stopSelect();
-        }
-        map.invalidate();
+        viewMode.buttonAddCancel();
     }
 
     public void buttonEditDelete(View view) {
 
-        if (mode == Mode.SELECT) {
-            if(!polyObjectManager.removeSelectedObject()){
-                Toast.makeText(this,R.string.no_area_selected_error,Toast.LENGTH_SHORT).show();
-            }else{
-                stopSelect();
-            }
-        } else if (mode == Mode.ADD) {
-            if(!polyObjectManager.removeSelectedCornerPoint()){
-                Toast.makeText(this,R.string.no_edit_point_selected_error,Toast.LENGTH_SHORT).show();
-            }
-        }
-        map.invalidate();
+        viewMode.buttonEditDelete();
     }
 
     public void buttonAddData(View view) {

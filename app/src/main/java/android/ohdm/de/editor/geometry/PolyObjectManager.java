@@ -154,15 +154,21 @@ public class PolyObjectManager implements PolyObjectClickListener {
     
     public void addPointToSelectedPolyObject(GeoPoint point){
         activeObject.addPoint(point);
+        map.invalidate();
     }
 
     public void removeLastPointFromSelectedPolyObject() {
-        activeObject.removeLastPoint();
+        if(activeObject != null) {
+            activeObject.removeLastPoint();
+            map.invalidate();
+        }
     }
 
     public boolean removeSelectedCornerPoint() {
         if(activeObject != null) {
-            return activeObject.removeSelectedEditPoint();
+            activeObject.removeSelectedEditPoint();
+            map.invalidate();
+            return true;
         }
         return false;
     }
