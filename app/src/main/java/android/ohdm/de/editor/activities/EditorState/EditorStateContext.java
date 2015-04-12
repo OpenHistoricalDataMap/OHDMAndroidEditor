@@ -65,10 +65,6 @@ public class EditorStateContext {
         viewMode.buttonEditDelete();
     }
 
-    public void onStop(){
-        viewMode.onStop();
-    }
-
     public void buttonAddUndo(){
         viewMode.buttonAddUndo();
     }

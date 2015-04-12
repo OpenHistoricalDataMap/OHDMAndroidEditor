@@ -63,10 +63,4 @@ public class EditorStateEdit implements EditorState {
     public void buttonAddUndo() {
         polyObjectManager.removeLastPointFromSelectedPolyObject();
     }
-
-    @Override
-    public void onStop() {
-        polyObjectManager.setActiveObjectEditable(false);
-        polyObjectManager.deselectActiveObject();
-    }
 }

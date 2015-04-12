@@ -27,6 +27,7 @@ public class EditorStateSelect implements EditorState {
         polyObjectManager.setObjectsClickable(true);
         polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.setSelectedObjectEditable(false);
+        polyObjectManager.deselectActiveObject();
 
         ((MainActivity) this.context).changeAddButtonsVisibility(View.INVISIBLE);
         ((MainActivity) this.context).changeEditButtonsVisibility(View.VISIBLE);
@@ -64,11 +65,6 @@ public class EditorStateSelect implements EditorState {
 
     @Override
     public void buttonAddUndo() {
-
-    }
-
-    @Override
-    public void onStop() {
 
     }
 }

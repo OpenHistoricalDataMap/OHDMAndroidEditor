@@ -14,5 +14,4 @@ public interface EditorState {
     public void buttonAddAccept();
     public void buttonEditDelete();
     public void buttonAddUndo();
-    public void onStop();
 }

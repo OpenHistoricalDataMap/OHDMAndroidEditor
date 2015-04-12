@@ -25,7 +25,7 @@ public class EditorStateAdd implements EditorState {
     public void change() {
 
         polyObjectManager.setObjectsClickable(false);
-        polyObjectManager.setActiveObjectEditable(false);
+//        polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.setSelectedObjectEditable(false);
 
         ((MainActivity)this.context).changeEditButtonsVisibility(View.INVISIBLE);
@@ -45,7 +45,7 @@ public class EditorStateAdd implements EditorState {
     @Override
     public void buttonAddAccept() {
         //TODO: alles erledigen durch viewModeContext.setState(Mode.VIEW) und dadurch keine extra methode benötigen?
-        polyObjectManager.setActiveObjectEditable(false);
+//        polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.deselectActiveObject();
         ((MainActivity)this.context).changeAddButtonsVisibility(View.INVISIBLE);
         editorStateContext.setState(State.VIEW);
@@ -62,11 +62,5 @@ public class EditorStateAdd implements EditorState {
     @Override
     public void buttonAddUndo() {
         polyObjectManager.removeLastPointFromSelectedPolyObject();
-    }
-
-    @Override
-    public void onStop() {
-        polyObjectManager.setActiveObjectEditable(false);
-        polyObjectManager.deselectActiveObject();
     }
 }

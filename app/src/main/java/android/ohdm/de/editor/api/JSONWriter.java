@@ -115,7 +115,15 @@ public class JSONWriter {
     private static MultiPolygon convertPolyGonToMultiPolygon(PolyObject polyObject) {
 
         Point[] points = convertGeoPointListToPoints(polyObject.getPoints());
-        LinearRing linearRing = new LinearRing(points);
+
+        //TODO: remove hack below
+        Point[] points2 = new Point[points.length];
+        for(int i=0; i<points.length-1; i++){
+            points2[i] = points[i];
+        }
+        points2[points2.length-1] = points[0];
+
+        LinearRing linearRing = new LinearRing(points2);
         Polygon polygon = new Polygon(new LinearRing[]{linearRing});
         MultiPolygon multiPolygon = new MultiPolygon(new Polygon[]{polygon});
         multiPolygon.setSrid(SRID);

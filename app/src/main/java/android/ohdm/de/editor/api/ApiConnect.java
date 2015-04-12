@@ -50,6 +50,20 @@ public class ApiConnect {
 
             if(responseCode == UPLOAD_RESPONSE_ERROR){
 
+                Log.d(TAG,con.getResponseMessage());
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getErrorStream()));
+
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+
+                Log.d(TAG,response.toString());
+
                 return UPLOAD_RESPONSE_ERROR;
 
             }else{
