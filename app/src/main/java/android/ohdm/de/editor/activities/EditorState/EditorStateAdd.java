@@ -45,7 +45,7 @@ public class EditorStateAdd implements EditorState {
     @Override
     public void buttonAddAccept() {
         //TODO: alles erledigen durch viewModeContext.setState(Mode.VIEW) und dadurch keine extra methode benötigen?
-//        polyObjectManager.setActiveObjectEditable(false);
+        polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.deselectActiveObject();
         ((MainActivity)this.context).changeAddButtonsVisibility(View.INVISIBLE);
         editorStateContext.setState(State.VIEW);
