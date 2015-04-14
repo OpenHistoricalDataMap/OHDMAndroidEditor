@@ -116,12 +116,22 @@ public class JSONWriter {
 
         Point[] points = convertGeoPointListToPoints(polyObject.getPoints());
 
-        //TODO: remove hack below
-        Point[] points2 = new Point[points.length];
         for(int i=0; i<points.length-1; i++){
+            Log.d(TAG,"points "+i+": "+points[i]);
+        }
+
+
+        //TODO: remove hack below
+        Point[] points2 = new Point[points.length+1];
+
+        for(int i=0; i<points.length; i++){
             points2[i] = points[i];
         }
         points2[points2.length-1] = points[0];
+
+        for(int i=0; i<points2.length; i++){
+            Log.d(TAG,"points2 "+i+": "+points2[i]);
+        }
 
         LinearRing linearRing = new LinearRing(points2);
         Polygon polygon = new Polygon(new LinearRing[]{linearRing});

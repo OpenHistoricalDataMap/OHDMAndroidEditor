@@ -68,7 +68,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         stringBuffer.append(",");
         stringBuffer.append(newTile.north);
 
-        Log.d("WMSTileServer",stringBuffer.toString());
+//        Log.d("WMSTileServer",stringBuffer.toString());
 
         return stringBuffer.toString();
 
@@ -123,7 +123,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         double value = tileX / Math.pow(2.0, zoom) * 360.0 - 180;
 
         // apply the shift to get the EPSG longitude
-        return value;// * ORIGIN_SHIFT / 180.0;
+        return value * ORIGIN_SHIFT / 180.0;
 
     }
 
@@ -144,7 +144,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         value = Math.log(Math.tan((90 + value) * Math.PI / 360.0)) / (Math.PI / 180.0);
 
         // apply the shift to get the EPSG latitude
-        return value ;//* ORIGIN_SHIFT / 180.0;
+        return value * ORIGIN_SHIFT / 180.0;
 
     }
 
