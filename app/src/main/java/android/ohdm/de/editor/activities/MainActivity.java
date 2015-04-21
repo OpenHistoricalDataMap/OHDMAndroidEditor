@@ -8,13 +8,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.R;
+import android.ohdm.de.editor.WMSTileSource;
 import android.ohdm.de.editor.activities.EditorState.EditorState;
 import android.ohdm.de.editor.activities.EditorState.EditorStateContext;
-import android.ohdm.de.editor.WMSTileSource;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.api.ApiException;
-import android.ohdm.de.editor.api.JSONReader;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
+import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
 import android.ohdm.de.editor.geometry.PolyObjectSerializer;
@@ -443,7 +443,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
                 return -2L;
             }
 
-            PolyObject loadedPolyObject = JSONReader.getPolyObjectFromJSONObject(jsonObject, map);
+            PolyObject loadedPolyObject = PolyObjectFactory.buildObjectFromJSON(jsonObject,map);
 
             if (loadedPolyObject != null) {
 

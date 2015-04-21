@@ -2,6 +2,8 @@ package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.ohdm.de.editor.OHDMMapView;
 
+import org.json.JSONObject;
+
 public class PolyObjectFactory {
 
     public static PolyObject buildObject(PolyObjectType type,OHDMMapView view){
@@ -22,5 +24,9 @@ public class PolyObjectFactory {
                 throw new RuntimeException(type+" not implemented");
         }
         return polyObject;
+    }
+
+    public static PolyObject buildObjectFromJSON(JSONObject jsonObject, OHDMMapView view){
+        return JSONReader.getPolyObjectFromJSONObject(jsonObject,view);
     }
 }

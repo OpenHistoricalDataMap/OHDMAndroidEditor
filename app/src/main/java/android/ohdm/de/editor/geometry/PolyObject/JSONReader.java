@@ -1,4 +1,4 @@
-package android.ohdm.de.editor.api;
+package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class JSONReader {
+class JSONReader {
 
     private static final String TAG = "JSONReader";
     private static final String GEOMETRICOBJECT = "geometricObjects";
