@@ -47,7 +47,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         return tileURLString.toString();
     }
 
-    private final static double ORIGIN_SHIFT = Math.PI * 6378137;
+    private static final double ORIGIN_SHIFT = Math.PI * 6378137;
 
     /**
      * WMS requires the bounding box to be defined as the point (west, south)

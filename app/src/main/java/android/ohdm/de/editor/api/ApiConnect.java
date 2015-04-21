@@ -14,16 +14,16 @@ import java.net.URL;
 
 public class ApiConnect {
 
-    private final static String TAG = "ApiConnect";
+    private static final String TAG = "ApiConnect";
 
-    private final static String REQUEST_PROPERTY = "application/json; charset=utf-8";
+    private static final String REQUEST_PROPERTY = "application/json; charset=utf-8";
 
-    public final static int UPLOAD_RESPONSE_OK = 201;
-    public final static int UPLOAD_RESPONSE_ERROR = 500;
+    public static final int UPLOAD_RESPONSE_OK = 201;
+    public static final int UPLOAD_RESPONSE_ERROR = 500;
 
-    public final static int DOWNLOAD_RESPONSE_OK = 200;
-    public final static int DOWNLOAD_RESPONSE_ERROR = 500;
-    public final static int DOWNLOAD_RESPONSE_NOT_FOUND = 404;
+    public static final int DOWNLOAD_RESPONSE_OK = 200;
+    public static final int DOWNLOAD_RESPONSE_ERROR = 500;
+    public static final int DOWNLOAD_RESPONSE_NOT_FOUND = 404;
 
     private String serverUrl;
 
@@ -95,7 +95,7 @@ public class ApiConnect {
 
         JSONObject geoObject = null;
 
-        try {   
+        try {
             URL url = new URL(serverUrl + objectId);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
