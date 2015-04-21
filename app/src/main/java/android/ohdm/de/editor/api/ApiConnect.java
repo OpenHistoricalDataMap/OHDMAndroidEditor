@@ -46,7 +46,7 @@ public class ApiConnect {
             out.close();
 
             int responseCode = con.getResponseCode();
-            Log.d(TAG,"response code: "+String.valueOf(responseCode));
+            Log.d(TAG,"response code: "+responseCode);
 
             if(responseCode == UPLOAD_RESPONSE_ERROR){
 
@@ -95,17 +95,17 @@ public class ApiConnect {
 
         JSONObject geoObject = null;
 
-        try {
+        try {   
             URL url = new URL(serverUrl + objectId);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type",REQUEST_PROPERTY);
 
             int responseCode = con.getResponseCode();
-            Log.d(TAG,"response code: "+String.valueOf(responseCode));
+            Log.d(TAG,"response code: "+responseCode);
 
             if(responseCode == DOWNLOAD_RESPONSE_NOT_FOUND || responseCode == DOWNLOAD_RESPONSE_ERROR) {
-                Log.d(TAG,"ApiException: "+String.valueOf(responseCode));
+                Log.d(TAG,"ApiException: "+responseCode);
                 throw new ApiException(String.valueOf(responseCode));
             }
 

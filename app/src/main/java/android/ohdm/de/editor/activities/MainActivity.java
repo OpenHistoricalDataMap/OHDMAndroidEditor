@@ -99,6 +99,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         polyObjectManager = PolyObjectSerializer.deserialize(map);
 
         if(selectedObjectId != null){
+            Log.d(TAG,"select polyobject");
             polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
         }
 
@@ -113,7 +114,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     private OHDMMapView createMapView(int zoomlevel, GeoPoint geoPoint, boolean isWmsOverlayActive) {
 
         wmsTileSource = new WMSTileSource("wmsserver", null, 3, 18, 256, ".png",
-                new String[]{WMS_GEOSERVER_ADDRESS});
+                WMS_GEOSERVER_ADDRESS);
 
         // Setup base map
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.ohdmmapview);
@@ -135,7 +136,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         osmv.setClickable(true);
         osmv.setMultiTouchControls(true);
         osmv.getController().setZoom(zoomlevel);
-        osmv.getController().setCenter(geoPoint);;
+        osmv.getController().setCenter(geoPoint);
 
 //        osmv.getTileProvider().clearTileCache();
 

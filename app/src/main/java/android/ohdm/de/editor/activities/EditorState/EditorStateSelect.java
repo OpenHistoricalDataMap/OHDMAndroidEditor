@@ -25,9 +25,7 @@ public class EditorStateSelect implements EditorState {
     public void change() {
 
         polyObjectManager.setObjectsClickable(true);
-        polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.setSelectedObjectEditable(false);
-        polyObjectManager.deselectActiveObject();
 
         ((MainActivity) this.context).changeAddButtonsVisibility(View.INVISIBLE);
         ((MainActivity) this.context).changeEditButtonsVisibility(View.VISIBLE);
@@ -50,6 +48,8 @@ public class EditorStateSelect implements EditorState {
 
     @Override
     public void buttonAddAccept() {
+
+        //TODO: nur wenn activeObject existiert, sonst muss VIEW oder gar nichts
         editorStateContext.setState(State.EDIT);
     }
 
@@ -57,7 +57,7 @@ public class EditorStateSelect implements EditorState {
     public void buttonEditDelete() {
             if(!polyObjectManager.removeSelectedObject()){
 
-                Toast.makeText(((MainActivity) this.context),R.string.no_area_selected_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.context,R.string.no_area_selected_error, Toast.LENGTH_SHORT).show();
             }else{
                 editorStateContext.setState(State.VIEW);
             }

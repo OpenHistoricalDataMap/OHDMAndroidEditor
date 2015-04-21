@@ -8,6 +8,8 @@ import org.osmdroid.util.GeoPoint;
 
 public class EditorStateContext {
 
+    private static final String TAG = "EditorStateContext";
+
     private PolyObjectManager polyObjectManager;
     private Context context;
     private EditorState viewMode;
@@ -39,7 +41,7 @@ public class EditorStateContext {
                 viewMode = new EditorStateEdit(polyObjectManager,context,this);
                 break;
             default:
-                Log.e("ViewModeContext","Mode is not implemented yet ("+ state +")");
+                Log.e(TAG,"Mode is not implemented yet ("+ state +")");
         }
 
         viewMode.change();

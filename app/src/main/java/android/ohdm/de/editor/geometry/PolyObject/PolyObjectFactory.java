@@ -2,8 +2,6 @@ package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.ohdm.de.editor.OHDMMapView;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 public class PolyObjectFactory {
 
     public static PolyObject buildObject(PolyObjectType type,OHDMMapView view){
@@ -21,7 +19,7 @@ public class PolyObjectFactory {
                 polyObject = new PolyPoint(view.getContext());
                 break;
             default:
-                throw new NotImplementedException(type+" not implemented");
+                throw new RuntimeException(type+" not implemented");
         }
         return polyObject;
     }

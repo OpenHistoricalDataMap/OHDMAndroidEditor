@@ -169,13 +169,14 @@ public class PolyLine extends PolyObject implements Serializable {
             }
 
         } else {
-            polyline.setColor(FILL_COLOR);
 
             for (EditPoint point : editPoints) {
                 view.getOverlays().remove(point);
             }
 
             deselectActiveCornerPoint();
+
+            setSelected(this.selected);
         }
     }
 
@@ -208,7 +209,7 @@ public class PolyLine extends PolyObject implements Serializable {
 
         if (clickObject instanceof EditPoint) {
 
-            if(activeEditPoint == (EditPoint)clickObject){
+            if(activeEditPoint == clickObject){
                 deselectActiveCornerPoint();
             }else{
                 deselectActiveCornerPoint();

@@ -144,8 +144,6 @@ public class PolyObjectManager implements PolyObjectClickListener {
                 activeObject.setSelected(true);
                 map.invalidate();
                 return;
-            }else{
-                Log.d(TAG,polyObject.getId().toString()+" != "+id.toString());
             }
         }
 
@@ -164,7 +162,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
         }
     }
 
-    public boolean removeSelectedCornerPoint() {
+    public boolean removeSelectedEditPoint() {
         if(activeObject != null) {
             activeObject.removeSelectedEditPoint();
             map.invalidate();
@@ -178,13 +176,9 @@ public class PolyObjectManager implements PolyObjectClickListener {
         if (activeObject != null){
             ApiConnect apiConnect = new ApiConnect(MainActivity.OHDMAPI_SERVER_ADDRESS);
 
-            int resposeCode = apiConnect.putPolyObject(JSONWriter.createJSONObjectFromPolyObject(activeObject));
+            int responseCode = apiConnect.putPolyObject(JSONWriter.createJSONObjectFromPolyObject(activeObject));
 
-            if(resposeCode == ApiConnect.UPLOAD_RESPONSE_OK) {
-                return true;
-            }else{
-                return false;
-            }
+            return responseCode == ApiConnect.UPLOAD_RESPONSE_OK;
         }else{
             Log.d(TAG,"no active polyobject to upload");
             return false;

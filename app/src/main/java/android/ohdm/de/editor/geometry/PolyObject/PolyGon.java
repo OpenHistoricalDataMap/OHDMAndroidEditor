@@ -179,13 +179,14 @@ public class PolyGon extends PolyObject {
             }
 
         } else {
-            polygon.setFillColor(FILL_COLOR);
 
             for (EditPoint point : this.editPoints) {
                 view.getOverlays().remove(point);
             }
 
             deselectActiveEditPoint();
+
+            setSelected(this.selected);
         }
     }
 
@@ -203,7 +204,7 @@ public class PolyGon extends PolyObject {
 
         if (clickObject instanceof EditPoint) {
 
-            if(activeEditPoint != (EditPoint)clickObject){
+            if(activeEditPoint != clickObject){
                 deselectActiveEditPoint();
                 activeEditPoint = (EditPoint) clickObject;
                 activeEditPoint.setFillColor(FILL_COLOR_EDIT);

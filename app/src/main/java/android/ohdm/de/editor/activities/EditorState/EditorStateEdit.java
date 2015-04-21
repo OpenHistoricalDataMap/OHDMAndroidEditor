@@ -54,8 +54,8 @@ public class EditorStateEdit implements EditorState {
 
     @Override
     public void buttonEditDelete() {
-        if (!polyObjectManager.removeSelectedCornerPoint()) {
-            Toast.makeText(((MainActivity) this.context), R.string.no_edit_point_selected_error, Toast.LENGTH_SHORT).show();
+        if (!polyObjectManager.removeSelectedEditPoint()) {
+            Toast.makeText(this.context, R.string.no_edit_point_selected_error, Toast.LENGTH_SHORT).show();
         }
     }
 
