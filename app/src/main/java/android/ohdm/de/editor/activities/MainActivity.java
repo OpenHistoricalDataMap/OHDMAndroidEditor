@@ -325,7 +325,9 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        }
     }
 
     private GeoPoint createGeoPointFromLocation(Location location) {
