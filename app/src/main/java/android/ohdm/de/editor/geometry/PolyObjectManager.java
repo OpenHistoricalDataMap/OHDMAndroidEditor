@@ -8,11 +8,9 @@ import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectClickListener;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
-import android.ohdm.de.editor.api.JSONWriter;
 import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,7 +174,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
         if (activeObject != null){
             ApiConnect apiConnect = new ApiConnect(MainActivity.OHDMAPI_SERVER_ADDRESS);
 
-            int responseCode = apiConnect.putPolyObject(JSONWriter.createJSONObjectFromPolyObject(activeObject));
+            int responseCode = apiConnect.putPolyObject(activeObject.getAsJSONObject());
 
             return responseCode == ApiConnect.UPLOAD_RESPONSE_OK;
         }else{

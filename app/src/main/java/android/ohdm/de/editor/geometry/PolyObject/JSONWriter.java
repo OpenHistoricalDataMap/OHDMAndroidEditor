@@ -1,6 +1,5 @@
-package android.ohdm.de.editor.api;
+package android.ohdm.de.editor.geometry.PolyObject;
 
-import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -18,7 +17,7 @@ import org.postgis.Polygon;
 import java.util.HashMap;
 import java.util.List;
 
-public class JSONWriter {
+class JSONWriter {
 
     private static final String TAG = "JSONWriter";
 

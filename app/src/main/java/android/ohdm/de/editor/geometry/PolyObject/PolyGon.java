@@ -6,6 +6,7 @@ import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.EditPoint;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPolygonOverlay;
 
+import org.json.JSONObject;
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
@@ -218,4 +219,6 @@ public class PolyGon extends PolyObject {
             }
         }
     }
+
+
 }

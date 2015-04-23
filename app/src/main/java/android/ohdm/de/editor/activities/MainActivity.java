@@ -138,7 +138,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         osmv.getController().setZoom(zoomlevel);
         osmv.getController().setCenter(geoPoint);
 
-//        osmv.getTileProvider().clearTileCache();
+        osmv.getTileProvider().clearTileCache();
 
         return osmv;
     }
@@ -231,6 +231,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             case R.id.menuItemLayerOHDM:
 
                 map.getTileProvider().setTileSource(wmsTileSource);
+                map.getTileProvider().clearTileCache();
                 map.invalidate();
 
                 return true;

@@ -3,6 +3,7 @@ package android.ohdm.de.editor.geometry.PolyObject;
 import android.content.Context;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedOverlayClickListener;
 
+import org.json.JSONObject;
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
 import org.osmdroid.util.GeoPoint;
 
@@ -80,6 +81,10 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     public boolean isEditing() {
         return editing;
+    }
+
+    public JSONObject getAsJSONObject() {
+        return JSONWriter.createJSONObjectFromPolyObject(this);
     }
 
 }
