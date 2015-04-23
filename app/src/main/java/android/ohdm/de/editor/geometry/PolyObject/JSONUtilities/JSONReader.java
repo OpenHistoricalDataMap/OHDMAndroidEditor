@@ -33,6 +33,10 @@ public class JSONReader {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
+    private JSONReader(){
+
+    }
+
     public static PolyObject getPolyObjectFromJSONObject(JSONObject jsonObject, OHDMMapView mapView) {
 
         PolyObject polyObject = null;

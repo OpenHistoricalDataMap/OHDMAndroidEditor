@@ -36,6 +36,10 @@ public class JSONWriter {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
+    private JSONWriter(){
+
+    }
+
     public static JSONObject createJSONObjectFromPolyObject(PolyObject polyObject) {
 
         JSONObject jsonObject = new JSONObject();

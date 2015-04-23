@@ -7,6 +7,10 @@ import org.json.JSONObject;
 
 public class PolyObjectFactory {
 
+    private PolyObjectFactory(){
+
+    }
+
     public static PolyObject buildObject(PolyObjectType type,OHDMMapView view){
 
         PolyObject polyObject = null;

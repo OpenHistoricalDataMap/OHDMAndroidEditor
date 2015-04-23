@@ -19,6 +19,10 @@ public class PolyObjectSerializer {
     private static final String TAG = "PolyObjectSerializer";
     private static final String SER_KEY = "de.ohdm.editor.ser";
 
+    private PolyObjectSerializer(){
+
+    }
+
     public static void serialize(PolyObjectManager polyObjectManager, OHDMMapView mapView) {
 
         try {
