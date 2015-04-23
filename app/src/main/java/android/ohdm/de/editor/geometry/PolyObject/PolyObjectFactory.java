@@ -1,6 +1,7 @@
 package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.ohdm.de.editor.OHDMMapView;
+import android.ohdm.de.editor.geometry.PolyObject.JSONUtilities.JSONReader;
 
 import org.json.JSONObject;
 
@@ -27,6 +28,6 @@ public class PolyObjectFactory {
     }
 
     public static PolyObject buildObjectFromJSON(JSONObject jsonObject, OHDMMapView view){
-        return JSONReader.getPolyObjectFromJSONObject(jsonObject,view);
+        return JSONReader.getPolyObjectFromJSONObject(jsonObject, view);
     }
 }

@@ -2,6 +2,7 @@ package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.content.Context;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedOverlayClickListener;
+import android.ohdm.de.editor.geometry.PolyObject.JSONUtilities.JSONWriter;
 
 import org.json.JSONObject;
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;
