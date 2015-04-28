@@ -61,12 +61,17 @@ public class PolyObjectSerializer {
                     case POINT:
                         polyObject = PolyObjectFactory.buildObject(PolyObjectType.POINT, map);
                         break;
+                    default:
+                        Log.e(TAG,"Not a supported PolyObject type");
+                        throw new RuntimeException("Not a supported PolyObject type");
                 }
 
-                polyObject.setPoints(loadedObject.getPoints());
-                polyObject.setTags(loadedObject.getTags());
-                polyObject.setId(loadedObject.getId());
-                polyObjectManager.addObject(polyObject);
+                if(polyObject != null) {
+                    polyObject.setPoints(loadedObject.getPoints());
+                    polyObject.setTags(loadedObject.getTags());
+                    polyObject.setId(loadedObject.getId());
+                    polyObjectManager.addObject(polyObject);
+                }
             }
 
         } catch (IOException e) {

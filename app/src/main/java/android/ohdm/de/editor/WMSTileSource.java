@@ -1,7 +1,5 @@
 package android.ohdm.de.editor;
 
-import android.util.Log;
-
 import org.osmdroid.ResourceProxy.string;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;

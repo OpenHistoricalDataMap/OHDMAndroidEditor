@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.EditPoint;
-import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPointOverlay;
 import android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay.ExtendedPolylineOverlay;
 
 import org.osmdroid.bonuspack.overlays.OverlayWithIW;

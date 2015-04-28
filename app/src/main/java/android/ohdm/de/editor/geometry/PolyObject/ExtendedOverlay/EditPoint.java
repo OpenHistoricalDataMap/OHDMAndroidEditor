@@ -3,7 +3,6 @@ package android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay;
 import android.graphics.Color;
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.ZoomSubscriber;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import org.osmdroid.bonuspack.overlays.Polygon;

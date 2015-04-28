@@ -1,10 +1,8 @@
 package android.ohdm.de.editor;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.osmdroid.ResourceProxy;
-import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
