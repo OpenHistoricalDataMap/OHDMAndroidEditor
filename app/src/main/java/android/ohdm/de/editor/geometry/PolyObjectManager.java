@@ -85,7 +85,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
     public void setActiveObjectEditable(boolean editable) {
 
         if(activeObject != null){
-                activeObject.setEditing(editable);
+            activeObject.setEditing(editable);
         }
     }
 

@@ -3,6 +3,7 @@ package android.ohdm.de.editor.geometry.PolyObject.ExtendedOverlay;
 import android.graphics.Color;
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.ZoomSubscriber;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import org.osmdroid.bonuspack.overlays.Polygon;
@@ -14,10 +15,11 @@ import java.util.List;
 
 public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,ZoomSubscriber {
 
+    private static final String TAG = "EditPoint";
     public static final int FILL_COLOR = Color.argb(128, 116, 116, 116);
     private boolean clickable = false;
-    private OHDMMapView mapView;
     private transient int radius = 5;
+    private transient OHDMMapView mapView;
     private transient List<GeoPoint> points;
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
@@ -47,13 +49,17 @@ public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,
     public void setPoints(final List<GeoPoint> points) {
 
         this.points = points;
-
         radius = (int)((double)mapView.getBoundingBox().getDiagonalLengthInMeters()*0.03);
 
         if (this.points != null && this.points.size() >= 1) {
 
-            super.setPoints(Polygon.pointsAsCircle(this.points.get(this.points.size() - 1), radius));
+            GeoPoint editPoint = this.points.get(this.points.size() - 1);
+            super.setPoints(Polygon.pointsAsCircle(editPoint, radius));
         }
+    }
+
+    public void refreshPoints(){
+        setPoints(this.points);
     }
 
     @Override
@@ -94,6 +100,5 @@ public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,
     @Override
     public void onZoom() {
         setPoints(this.points);
-//        mapView.invalidate();
     }
 }

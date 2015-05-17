@@ -18,7 +18,7 @@ import java.util.UUID;
 public class PolyGon extends PolyObject {
 
     private static final long serialVersionUID = 0L;
-
+    private static final String TAG = "PolyGon";
     private static final int FILL_COLOR = Color.argb(128, 0, 0, 255);
     private static final int FILL_COLOR_SELECTED = Color.argb(128, 255, 0, 0);
     private static final int FILL_COLOR_EDIT = Color.argb(128, 0, 255, 0);
@@ -59,19 +59,25 @@ public class PolyGon extends PolyObject {
         polygon.setPoints(points);
 
         for(GeoPoint point : this.points){
-            EditPoint editPoint = new EditPoint(view);
-
-            List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
-            pointPoints.add(point);
-            editPoint.setPoints(pointPoints);
-
-            editPoint.setClickable(true);
-            editPoint.subscribe(this);
-
-            editPoints.add(editPoint);
-
-            pointOverlayMap.put(editPoint,point);
+            createAndAddEditPoint(point);
         }
+    }
+
+    private EditPoint createAndAddEditPoint(GeoPoint geoPoint){
+        EditPoint editPoint = new EditPoint(view);
+
+        List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
+        pointPoints.add(geoPoint);
+        editPoint.setPoints(pointPoints);
+
+        editPoint.setClickable(true);
+        editPoint.subscribe(this);
+
+        editPoints.add(editPoint);
+
+        pointOverlayMap.put(editPoint, geoPoint);
+
+        return editPoint;
     }
 
     public List<GeoPoint> getPoints() {
@@ -98,40 +104,25 @@ public class PolyGon extends PolyObject {
             points.add(geoPoint);
             polygon.setPoints(this.points);
 
-            createAndAddEditPoint(geoPoint);
+            EditPoint created = createAndAddEditPoint(geoPoint);
+            view.getOverlays().add(created);
+
         } else {
-            List<GeoPoint> activeCornerPointPoints = activeEditPoint.getPoints();
-            activeCornerPointPoints.add(geoPoint);
-            activeEditPoint.setPoints(activeCornerPointPoints);
+            List<GeoPoint> activeEditPointPoints = activeEditPoint.getPoints();
+            activeEditPointPoints.add(geoPoint);
+            activeEditPoint.setPoints(activeEditPointPoints);
 
             GeoPoint oldPoint = pointOverlayMap.get(activeEditPoint);
 
-            for(int i=0; i<points.size(); i++){
-                if(points.get(i) == oldPoint){
-                    pointOverlayMap.put(activeEditPoint,geoPoint);
-                    points.set(i,geoPoint);
+            for (int i = 0; i < points.size(); i++) {
+                if (points.get(i) == oldPoint) {
+                    pointOverlayMap.put(activeEditPoint, geoPoint);
+                    points.set(i, geoPoint);
                     polygon.setPoints(this.points);
                     break;
                 }
             }
         }
-    }
-
-    private void createAndAddEditPoint(GeoPoint geoPoint){
-        EditPoint editPoint = new EditPoint(view);
-
-        List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
-        pointPoints.add(geoPoint);
-        editPoint.setPoints(pointPoints);
-
-        editPoint.setClickable(true);
-        editPoint.subscribe(this);
-
-        editPoints.add(editPoint);
-
-        pointOverlayMap.put(editPoint,geoPoint);
-
-        view.getOverlays().add(editPoint);
     }
 
     @Override
@@ -173,15 +164,18 @@ public class PolyGon extends PolyObject {
         if (editing) {
             polygon.setFillColor(FILL_COLOR_EDIT);
 
-            for (EditPoint point : this.editPoints) {
-                point.setPoints(point.getPoints());
-                view.getOverlays().add(point);
+            for (EditPoint editPoint : this.editPoints) {
+                editPoint.refreshPoints();
+
+                if(!view.getOverlays().contains(editPoint)) {
+                    view.getOverlays().add(editPoint);
+                }
             }
 
         } else {
 
-            for (EditPoint point : this.editPoints) {
-                view.getOverlays().remove(point);
+            for (EditPoint editPoint : this.editPoints) {
+                view.getOverlays().remove(editPoint);
             }
 
             deselectActiveEditPoint();

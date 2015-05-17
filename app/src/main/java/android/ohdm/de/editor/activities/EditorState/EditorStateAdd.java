@@ -4,6 +4,7 @@ import android.content.Context;
 import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.activities.MainActivity;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import org.osmdroid.util.GeoPoint;
 
 public class EditorStateAdd implements EditorState {
 
+    private static final String TAG = "EditorStateAdd";
     private PolyObjectManager polyObjectManager;
     private Context context;
     private EditorStateContext editorStateContext;
@@ -24,6 +26,7 @@ public class EditorStateAdd implements EditorState {
     @Override
     public void change() {
 
+        Log.d(TAG,"change");
         polyObjectManager.setObjectsClickable(false);
 //        polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.setSelectedObjectEditable(false);

@@ -42,7 +42,7 @@ import org.osmdroid.util.GeoPoint;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class MainActivity extends Activity implements MapEventsReceiver{
+public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static final String TAG = "MainActivity";
 
@@ -53,7 +53,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
     public static final String MAP_DATA = "map_data";
 
     private static final String WMS_MAPSERVER_ADDRESS = "http://141.45.94.68/cgi-bin/mapserv?map=%2Fmapserver%2Fmapdata%2Fohdm.map&&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=administrative&TILED=true&WIDTH=256&HEIGHT=256&CRS=EPSG%3A4326&STYLES&BBOX=";
-    private static final String WMS_GEOSERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/OHDM/wms?service=WMS&version=1.1.0&request=GetMap&layers=Berlin&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
+    private static final String WMS_GEOSERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/OHDM/wms?service=WMS&version=1.1.0&request=GetMap&layers=Berlin&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256http://ohsm.f4.htw-berlin.de:8080/geoserver/OHDM/wms?service=WMS&version=1.1.0&request=GetMap&layers=Berlin&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256http://ohsm.f4.htw-berlin.de:8080/geoserver/OHDM/wms?service=WMS&version=1.1.0&request=GetMap&layers=Berlin&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
     public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
 
     private static final String BUNDLE_MAP_ZOOMLEVEL = "map_zoom_level";
@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         EditorState.State state = EditorState.State.VIEW;
         UUID selectedObjectId = null;
 
-                super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
@@ -89,7 +89,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             isWmsOverlayActive = savedInstanceState.getBoolean(BUNDLE_MAP_WMS);
             longitude = savedInstanceState.getDouble(BUNDLE_MAP_LONGITUDE);
             latitude = savedInstanceState.getDouble(BUNDLE_MAP_LATITUDE);
-            state = (EditorState.State)savedInstanceState.getSerializable(BUNDLE_MODE);
+            state = (EditorState.State) savedInstanceState.getSerializable(BUNDLE_MODE);
             selectedObjectId = (UUID) savedInstanceState.getSerializable(BUNDLE_SELECTED_POLYOBJECT_INTERNID);
         }
 
@@ -98,18 +98,39 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
         polyObjectManager = PolyObjectSerializer.deserialize(map);
 
-        if(selectedObjectId != null){
-            Log.d(TAG,"select polyobject");
+        if (selectedObjectId != null) {
+            Log.d(TAG, "select polyobject");
             polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
         }
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
         map.getOverlays().add(0, mapEventsOverlay);
 
-        editorState = new EditorStateContext(state,polyObjectManager,this);
+        Log.d(TAG,"state: "+state);
+
+        editorState = new EditorStateContext(state, polyObjectManager, this);
 
         location();
+
+        map.postDelayed(waitForMapTimeTask, 100);
     }
+
+    //Due to an bug in OSMDroid we have to wait for the Map to be initialized
+    //otherwise the radius of the EditPoints will be 0 and therefore they would
+    // not be shown on the map.
+    private Runnable waitForMapTimeTask = new Runnable() {
+        public void run() {
+            if(map.getLatitudeSpan() == 0 || map.getLongitudeSpan() == 360000000) {
+                Log.d(TAG, "can't get map... will try again.");
+                map.postDelayed(this, 100);
+            }else {
+                if(editorState.getState() == EditorState.State.ADD || editorState.getState() == EditorState.State.EDIT) {
+                    polyObjectManager.setActiveObjectEditable(true);
+                }
+            }
+
+        }
+    };
 
     private OHDMMapView createMapView(int zoomlevel, GeoPoint geoPoint, boolean isWmsOverlayActive) {
 
@@ -161,7 +182,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
         state.putInt(BUNDLE_MAP_ZOOMLEVEL, map.getZoomLevel());
         state.putSerializable(BUNDLE_MODE, editorState.getState());
 
-        if(polyObjectManager.getSelectedPolyObjectInternId() != null) {
+        if (polyObjectManager.getSelectedPolyObjectInternId() != null) {
             state.putSerializable(BUNDLE_SELECTED_POLYOBJECT_INTERNID, polyObjectManager.getSelectedPolyObjectInternId());
         }
     }
@@ -266,17 +287,19 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
         } else if (resultCode == Activity.RESULT_OK && requestCode == DATA_DIALOG_REQUEST_CODE) {
 
+            Log.i(TAG, "DATA_DIAG_FINISH");
+
             UUID selectedObjectId = (UUID) data.getSerializableExtra(EXTRA_SELECTED_POLYOBJECT_INTERNID);
-            polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
+            //polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
 
             HashMap<String, String> resultMap = (HashMap) data.getSerializableExtra(MAP_DATA);
-            polyObjectManager.setSelectedPolyObjectTags(resultMap);
+            //polyObjectManager.setSelectedPolyObjectTags(resultMap);
 
-        }else if (resultCode == Activity.RESULT_CANCELED && requestCode == ID_DIALOG_REQUEST_CODE){
+        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == ID_DIALOG_REQUEST_CODE) {
 
             int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
 
-            if(polyObjectId == -1){
+            if (polyObjectId == -1) {
                 Toast.makeText(getApplicationContext(), R.string.no_real_id_error, Toast.LENGTH_SHORT).show();
             }
         }
@@ -326,7 +349,7 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             }
         };
 
-        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
     }
@@ -439,14 +462,14 @@ public class MainActivity extends Activity implements MapEventsReceiver{
             try {
                 jsonObject = apiConnect.getJSONObjectById(params[0]);
             } catch (JSONException e) {
-                Log.e(TAG, "could not read polyobject from server: "+e.toString());
+                Log.e(TAG, "could not read polyobject from server: " + e.toString());
                 return -1L;
-            } catch (ApiException e){
-                Log.e(TAG,e.toString());
+            } catch (ApiException e) {
+                Log.e(TAG, e.toString());
                 return -2L;
             }
 
-            PolyObject loadedPolyObject = PolyObjectFactory.buildObjectFromJSON(jsonObject,map);
+            PolyObject loadedPolyObject = PolyObjectFactory.buildObjectFromJSON(jsonObject, map);
 
             if (loadedPolyObject != null) {
 
@@ -466,9 +489,9 @@ public class MainActivity extends Activity implements MapEventsReceiver{
 
             if (result == 0) {
                 Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
-            } else if(result == -2){
+            } else if (result == -2) {
                 Toast.makeText(getApplicationContext(), R.string.async_download_error_server, Toast.LENGTH_SHORT).show();
-            } else{
+            } else {
                 Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
             }
         }
