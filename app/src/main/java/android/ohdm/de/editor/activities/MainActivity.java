@@ -106,7 +106,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
         map.getOverlays().add(0, mapEventsOverlay);
 
-        Log.d(TAG,"state: "+state);
+        Log.d(TAG, "state: " + state);
 
         editorState = new EditorStateContext(state, polyObjectManager, this);
 
@@ -120,11 +120,11 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     //not be shown on the map.
     private Runnable waitForMapTimeTask = new Runnable() {
         public void run() {
-            if(map.getLatitudeSpan() == 0 || map.getLongitudeSpan() == 360000000) {
+            if (map.getLatitudeSpan() == 0 || map.getLongitudeSpan() == 360000000) {
                 Log.d(TAG, "can't get map... will try again.");
                 map.postDelayed(this, 100);
-            }else {
-                if(editorState.getState() == EditorState.State.ADD || editorState.getState() == EditorState.State.EDIT) {
+            } else {
+                if (editorState.getState() == EditorState.State.ADD || editorState.getState() == EditorState.State.EDIT) {
                     polyObjectManager.setActiveObjectEditable(true);
                 }
             }
@@ -297,10 +297,12 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == ID_DIALOG_REQUEST_CODE) {
 
-            int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
+            if (data != null) {
+                int polyObjectId = data.getIntExtra(EXTRA_POLYOBJECTID, 0);
 
-            if (polyObjectId == -1) {
-                Toast.makeText(getApplicationContext(), R.string.no_real_id_error, Toast.LENGTH_SHORT).show();
+                if (polyObjectId == -1) {
+                    Toast.makeText(getApplicationContext(), R.string.no_real_id_error, Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
