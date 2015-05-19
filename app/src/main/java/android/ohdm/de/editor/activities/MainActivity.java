@@ -117,7 +117,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     //Due to an bug in OSMDroid we have to wait for the Map to be initialized
     //otherwise the radius of the EditPoints will be 0 and therefore they would
-    // not be shown on the map.
+    //not be shown on the map.
     private Runnable waitForMapTimeTask = new Runnable() {
         public void run() {
             if(map.getLatitudeSpan() == 0 || map.getLongitudeSpan() == 360000000) {

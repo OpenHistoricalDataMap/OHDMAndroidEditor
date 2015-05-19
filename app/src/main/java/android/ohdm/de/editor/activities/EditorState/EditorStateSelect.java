@@ -49,8 +49,11 @@ public class EditorStateSelect implements EditorState {
     @Override
     public void buttonAddAccept() {
 
-        //TODO: nur wenn activeObject existiert, sonst muss VIEW oder gar nichts
-        editorStateContext.setState(State.EDIT);
+        if(polyObjectManager.hasActiveObject()) {
+            editorStateContext.setState(State.EDIT);
+        }else{
+            editorStateContext.setState(State.VIEW);
+        }
     }
 
     @Override

@@ -105,6 +105,13 @@ public class PolyObjectManager implements PolyObjectClickListener {
         return false;
     }
 
+    public boolean hasActiveObject(){
+        if(activeObject != null){
+            return true;
+        }
+        return false;
+    }
+
     public void createAndAddPolyObject(PolyObjectType type) {
         activeObject = PolyObjectFactory.buildObject(type, map);
         activeObject.setEditing(true);
