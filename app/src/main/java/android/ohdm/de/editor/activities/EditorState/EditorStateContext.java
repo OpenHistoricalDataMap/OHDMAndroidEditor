@@ -71,5 +71,8 @@ public class EditorStateContext {
         viewMode.buttonAddUndo();
     }
 
+    public void longPress(GeoPoint geoPoint) {
+        viewMode.longPress(geoPoint);
+    }
 }
 

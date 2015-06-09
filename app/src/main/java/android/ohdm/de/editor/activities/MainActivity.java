@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.DefaultResourceProxyImpl;
@@ -376,7 +377,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     @Override
     public boolean longPressHelper(GeoPoint geoPoint) {
-        return false;
+        editorState.longPress(geoPoint);
+        return true;
     }
 
     /*
@@ -414,6 +416,11 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         intent.putExtras(extras);
 
         startActivityForResult(intent, DATA_DIALOG_REQUEST_CODE);
+    }
+
+    public void downloadNearByPolyObjects(GeoPoint geoPoint) {
+        DownloadNearByPolyObjectsTask downloadNearByPolyObjectsTask = new DownloadNearByPolyObjectsTask();
+        downloadNearByPolyObjectsTask.execute(geoPoint);
     }
 
     /**
@@ -478,6 +485,58 @@ public class MainActivity extends Activity implements MapEventsReceiver {
                 map.getController().setCenter(loadedPolyObject.getPoints().get(0));
 
                 polyObjectManager.addObject(loadedPolyObject);
+
+            } else {
+                Log.e(TAG, "could not create polyobject");
+                return -1L;
+            }
+
+            return 0L;
+        }
+
+        protected void onPostExecute(Long result) {
+
+            if (result == 0) {
+                Toast.makeText(getApplicationContext(), R.string.async_download_done, Toast.LENGTH_SHORT).show();
+            } else if (result == -2) {
+                Toast.makeText(getApplicationContext(), R.string.async_download_error_server, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.async_download_error, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class DownloadNearByPolyObjectsTask extends AsyncTask<GeoPoint, Integer, Long> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(getApplicationContext(), R.string.async_download_start, Toast.LENGTH_SHORT).show();
+        }
+
+        protected Long doInBackground(GeoPoint... params) {
+
+
+            ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
+            JSONArray jsonObjects = null;
+
+            try {
+                jsonObjects = apiConnect.getNearJSONObjectsByGeoPoint(params[0]);
+            } catch (JSONException e) {
+                Log.e(TAG, "could not read polyobject from server: " + e.toString());
+                return -1L;
+            } catch (ApiException e) {
+                Log.e(TAG, e.toString());
+                return -2L;
+            }
+
+            PolyObject loadedPolyObjects[] = PolyObjectFactory.buildObjectsFromJSON(jsonObjects, map);
+
+            if (loadedPolyObjects != null) {
+
+//                map.getController().setCenter(loadedPolyObjects[0].getPoints().get(0));
+
+                polyObjectManager.addObjects(loadedPolyObjects);
 
             } else {
                 Log.e(TAG, "could not create polyobject");

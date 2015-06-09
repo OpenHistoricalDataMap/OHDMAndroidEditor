@@ -4,6 +4,7 @@ import android.content.Context;
 import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.activities.MainActivity;
 import android.ohdm.de.editor.geometry.PolyObjectManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import org.osmdroid.util.GeoPoint;
 
 public class EditorStateSelect implements EditorState {
 
+    private static final String TAG = "EditorStateSelect";
     private PolyObjectManager polyObjectManager;
     private Context context;
     private EditorStateContext editorStateContext;
@@ -68,6 +70,14 @@ public class EditorStateSelect implements EditorState {
 
     @Override
     public void buttonAddUndo() {
+
+    }
+
+    @Override
+    public void longPress(GeoPoint geoPoint) {
+        Toast.makeText(this.context,"Long Press", Toast.LENGTH_SHORT).show();
+
+        ((MainActivity) this.context).downloadNearByPolyObjects(geoPoint);
 
     }
 }

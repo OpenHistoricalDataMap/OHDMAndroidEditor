@@ -2,20 +2,27 @@ package android.ohdm.de.editor.geometry.PolyObject;
 
 import android.ohdm.de.editor.OHDMMapView;
 import android.ohdm.de.editor.geometry.PolyObject.JSONUtilities.JSONReader;
+import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class PolyObjectFactory {
 
-    private PolyObjectFactory(){
+    private static final String TAG = "PolyObjectFactory";
+
+    private PolyObjectFactory() {
 
     }
 
-    public static PolyObject buildObject(PolyObjectType type,OHDMMapView view){
+    public static PolyObject buildObject(PolyObjectType type, OHDMMapView view) {
 
         PolyObject polyObject = null;
 
-        switch (type){
+        switch (type) {
             case POLYGON:
                 polyObject = new PolyGon(view);
                 break;
@@ -26,12 +33,33 @@ public class PolyObjectFactory {
                 polyObject = new PolyPoint(view.getContext());
                 break;
             default:
-                throw new RuntimeException(type+" not implemented");
+                throw new RuntimeException(type + " not implemented");
         }
         return polyObject;
     }
 
-    public static PolyObject buildObjectFromJSON(JSONObject jsonObject, OHDMMapView view){
+    public static PolyObject buildObjectFromJSON(JSONObject jsonObject, OHDMMapView view) {
         return JSONReader.getPolyObjectFromJSONObject(jsonObject, view);
+    }
+
+    public static PolyObject[] buildObjectsFromJSON(JSONArray jsonObjects, OHDMMapView map) {
+
+        ArrayList<PolyObject> polyObjects = new ArrayList<PolyObject>();
+
+        for (int i = 0; i < jsonObjects.length(); i++) {
+
+            PolyObject polyObject = JSONReader.getPolyObjectFromJSONObject(jsonObjects.optJSONObject(i), map);
+
+            if(polyObject != null){
+                polyObjects.add(polyObject);
+            }else{
+                Log.d(TAG,"read an null-PolyObject");
+            }
+
+        }
+
+        PolyObject[] polyObjectsArray = polyObjects.toArray(new PolyObject[polyObjects.size()]);
+
+        return polyObjectsArray;
     }
 }

@@ -185,8 +185,14 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
             return responseCode == ApiConnect.UPLOAD_RESPONSE_OK;
         }else{
-            Log.d(TAG,"no active polyobject to upload");
+            Log.d(TAG, "no active polyobject to upload");
             return false;
+        }
+    }
+
+    public void addObjects(PolyObject[] loadedPolyObjects) {
+        for(PolyObject polyObject : loadedPolyObjects){
+            addObject(polyObject);
         }
     }
 }

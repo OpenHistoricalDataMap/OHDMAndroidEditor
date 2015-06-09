@@ -66,4 +66,9 @@ public class EditorStateEdit implements EditorState {
     public void buttonAddUndo() {
         polyObjectManager.removeLastPointFromSelectedPolyObject();
     }
+
+    @Override
+    public void longPress(GeoPoint geoPoint) {
+
+    }
 }

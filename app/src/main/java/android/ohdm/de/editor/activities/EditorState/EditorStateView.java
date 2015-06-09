@@ -55,4 +55,9 @@ public class EditorStateView implements EditorState {
     public void buttonAddUndo() {
 
     }
+
+    @Override
+    public void longPress(GeoPoint geoPoint) {
+
+    }
 }

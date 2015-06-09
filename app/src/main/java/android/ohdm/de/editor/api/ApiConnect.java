@@ -2,8 +2,10 @@ package android.ohdm.de.editor.api;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +40,7 @@ public class ApiConnect {
             URL url = new URL(serverUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("PUT");
-            con.setRequestProperty("Content-Type",REQUEST_PROPERTY);
+            con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
 
             OutputStreamWriter out = new OutputStreamWriter(
                     con.getOutputStream());
@@ -46,11 +48,11 @@ public class ApiConnect {
             out.close();
 
             int responseCode = con.getResponseCode();
-            Log.d(TAG,"response code: "+responseCode);
+            Log.d(TAG, "response code: " + responseCode);
 
-            if(responseCode == UPLOAD_RESPONSE_ERROR){
+            if (responseCode == UPLOAD_RESPONSE_ERROR) {
 
-                Log.d(TAG,con.getResponseMessage());
+                Log.d(TAG, con.getResponseMessage());
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         con.getErrorStream()));
@@ -62,11 +64,11 @@ public class ApiConnect {
                     response.append(inputLine);
                 }
 
-                Log.d(TAG,response.toString());
+                Log.d(TAG, response.toString());
 
                 return UPLOAD_RESPONSE_ERROR;
 
-            }else{
+            } else {
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         con.getInputStream()));
                 String inputLine;
@@ -78,7 +80,7 @@ public class ApiConnect {
 
                 in.close();
 
-                Log.d(TAG,response.toString());
+                Log.d(TAG, response.toString());
             }
 
         } catch (IOException ex) {
@@ -91,7 +93,7 @@ public class ApiConnect {
         return UPLOAD_RESPONSE_OK;
     }
 
-    public JSONObject getJSONObjectById(int objectId) throws JSONException,ApiException {
+    public JSONObject getJSONObjectById(int objectId) throws JSONException, ApiException {
 
         JSONObject geoObject = null;
 
@@ -99,13 +101,13 @@ public class ApiConnect {
             URL url = new URL(serverUrl + objectId);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type",REQUEST_PROPERTY);
+            con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
 
             int responseCode = con.getResponseCode();
-            Log.d(TAG,"response code: "+responseCode);
+            Log.d(TAG, "response code: " + responseCode);
 
-            if(responseCode == DOWNLOAD_RESPONSE_NOT_FOUND || responseCode == DOWNLOAD_RESPONSE_ERROR) {
-                Log.d(TAG,"ApiException: "+responseCode);
+            if (responseCode == DOWNLOAD_RESPONSE_NOT_FOUND || responseCode == DOWNLOAD_RESPONSE_ERROR) {
+                Log.d(TAG, "ApiException: " + responseCode);
                 throw new ApiException(String.valueOf(responseCode));
             }
 
@@ -134,5 +136,65 @@ public class ApiConnect {
         }
 
         return geoObject;
+    }
+
+    public JSONArray getNearJSONObjectsByGeoPoint(GeoPoint geoPoint) throws ApiException, JSONException {
+
+        JSONArray geoObjects = null;
+
+        Log.d(TAG, "Longitude: " + geoPoint.getLongitude());
+        Log.d(TAG, "Latitude: " + geoPoint.getLatitude());
+        Log.d(TAG, "toDoubleString: " + geoPoint.toDoubleString());
+        Log.d(TAG, "toString: " + geoPoint.toString());
+        Log.d(TAG, "toInvertedDoubleString: " + geoPoint.toInvertedDoubleString());
+
+        String parameterUrl = "nearObjects//since/0001-01-01/until/3000-01-01/10/";
+        String longLatUrl = String.valueOf(geoPoint.getLongitude()) + "/" + String.valueOf(geoPoint.getLatitude());
+        String requestUrl = serverUrl + parameterUrl + longLatUrl;
+
+        try {
+
+            Log.d(TAG,requestUrl);
+
+            URL url = new URL(requestUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
+
+            int responseCode = con.getResponseCode();
+            Log.d(TAG, "response code: " + responseCode);
+
+            if (responseCode == DOWNLOAD_RESPONSE_NOT_FOUND || responseCode == DOWNLOAD_RESPONSE_ERROR) {
+                Log.d(TAG, "ApiException: " + responseCode);
+                throw new ApiException(String.valueOf(responseCode));
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            in.close();
+
+            Log.d(TAG, response.toString());
+
+            try {
+
+                geoObjects = new JSONArray(response.toString());
+
+            } catch (JSONException e) {
+                throw e;
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return geoObjects;
     }
 }

@@ -14,4 +14,6 @@ public interface EditorState {
     void buttonAddAccept();
     void buttonEditDelete();
     void buttonAddUndo();
+    void longPress(GeoPoint geoPoint);
 }
+
