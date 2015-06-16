@@ -21,6 +21,9 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     protected transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
 
     protected HashMap<String,String> tags = new HashMap<String, String>();
+
+    // speichert Attribute, sowie {"building":"hotel"}
+    protected HashMap<String,String> attributes = new HashMap<String, String>();
     protected PolyObjectType type = null;
     protected UUID internId;
 
@@ -53,11 +56,28 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     public abstract boolean removeSelectedEditPoint();
 
     public HashMap<String, String> getTags() {
-        return tags;
+        return this.tags;
     }
-
     public void setTags(HashMap<String, String> tags) {
         this.tags = tags;
+    }
+
+    /**
+     * Setter für attributes.
+     *
+     * @param attributes HashMap<String, String>
+     */
+    public void setAttributes(HashMap<String, String> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * Getter für attributes.
+     *
+     * @return HashMap<String, String>
+     */
+    public HashMap<String, String> getAttributes() {
+        return this.attributes;
     }
 
     public void setId(UUID id){

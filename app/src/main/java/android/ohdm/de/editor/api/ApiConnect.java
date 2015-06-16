@@ -80,7 +80,6 @@ public class ApiConnect {
 
                 in.close();
 
-                Log.d(TAG, response.toString());
             }
 
         } catch (IOException ex) {

@@ -14,7 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
+/**
+ *
+ *
+ */
 public class ShowPolyObjectDataActivity extends Activity {
 
     private static final String TAG = "EditPolyObjectData";
@@ -77,7 +80,8 @@ public class ShowPolyObjectDataActivity extends Activity {
 
         resultData.putExtra(MainActivity.MAP_DATA, polyObjectData);
 
-        Log.d(TAG,"selected polybject intern id: "+polyObjectInternId.toString());
+        Log.d(TAG, "selected polybject intern id: " + polyObjectInternId.toString());
+        Log.d(TAG,"polyObjectData: "+polyObjectData.toString());
 
         resultData.putExtra(MainActivity.EXTRA_SELECTED_POLYOBJECT_INTERNID,polyObjectInternId);
         setResult(Activity.RESULT_OK, resultData);

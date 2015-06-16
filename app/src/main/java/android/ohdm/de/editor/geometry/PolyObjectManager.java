@@ -118,6 +118,11 @@ public class PolyObjectManager implements PolyObjectClickListener {
         addObject(activeObject);
     }
 
+    /**
+     *
+     *
+     * @return HashMap<String,String>
+     */
     public HashMap<String,String> getSelectedPolyObjectTags(){
         if(activeObject != null){
             return activeObject.getTags();
@@ -126,6 +131,11 @@ public class PolyObjectManager implements PolyObjectClickListener {
         return new HashMap<String, String>();
     }
 
+    /**
+     *
+     *
+     * @param tags HashMap<String,String>
+     */
     public void setSelectedPolyObjectTags(HashMap<String,String> tags){
         if(activeObject != null){
             activeObject.setTags(tags);
