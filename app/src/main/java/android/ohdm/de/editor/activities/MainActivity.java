@@ -20,6 +20,8 @@ import android.ohdm.de.editor.geometry.PolyObjectManager;
 import android.ohdm.de.editor.geometry.PolyObjectSerializer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,17 +47,26 @@ import java.util.UUID;
 
 public class MainActivity extends Activity implements MapEventsReceiver {
 
+    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
+    public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
+    public static final String MAP_DATA = "map_data";
+
+    public static final String EXTRA_NEAR_VALID_SINCE = "extra_near_valid_since";
+    public static final String EXTRA_NEAR_VALID_UNTIL = "extra_near_valid_until";
+    public static final String EXTRA_NEAR_DISTANCE = "extra_near_distance";
+    public static final String EXTRA_NEAR_GEOPOINT_LONG = "extra_near_geopoint_long";
+    public static final String EXTRA_NEAR_GEOPOINT_LAT = "extra_near_geopoint_lat";
+
     private static final String TAG = "MainActivity";
 
     private static final int ID_DIALOG_REQUEST_CODE = 1747;
     private static final int DATA_DIALOG_REQUEST_CODE = 1748;
-    private static final String EXTRA_POLYOBJECTID = "polyobjectid";
-    public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
-    public static final String MAP_DATA = "map_data";
+    private static final int NEAR_DIALOG_REQUEST_CODE = 1749;
 
-    private static final String WMS_GEOSERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/ohsm/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev2&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
+    private static final String EXTRA_POLYOBJECTID = "polyobjectid";
+
+    private static final String WMS_GEOSERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/ohsm/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev1&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
     private static final String WMS_GEOSERVER_CACHED_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/gwc/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev2&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
-    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
 
     private static final String BUNDLE_MAP_ZOOMLEVEL = "map_zoom_level";
     private static final String BUNDLE_MAP_WMS = "map_wms_overlay";
@@ -68,6 +79,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     private PolyObjectManager polyObjectManager;
     private ITileSource wmsTileSource;
 
+    private Handler handler;
     private EditorStateContext editorState;
 
     @Override
@@ -114,6 +126,13 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         location();
 
         map.postDelayed(waitForMapTimeTask, 100);
+
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                map.invalidate();
+            }
+        };
     }
 
     //Due to an bug in OSMDroid we have to wait for the Map to be initialized
@@ -246,6 +265,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             case R.id.menuItemLayerOSM:
 
                 map.getTileProvider().setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+                map.getTileProvider().clearTileCache();
                 map.invalidate();
 
                 return true;
@@ -304,6 +324,27 @@ public class MainActivity extends Activity implements MapEventsReceiver {
                 if (polyObjectId == -1) {
                     Toast.makeText(getApplicationContext(), R.string.no_real_id_error, Toast.LENGTH_SHORT).show();
                 }
+            }
+        } else if(resultCode == Activity.RESULT_OK && requestCode == NEAR_DIALOG_REQUEST_CODE){
+
+            if(data != null){
+                String valid_since = data.getStringExtra(EXTRA_NEAR_VALID_SINCE);
+                String valid_until = data.getStringExtra(EXTRA_NEAR_VALID_UNTIL);
+                int distance = data.getIntExtra(EXTRA_NEAR_DISTANCE, 1);
+
+                double longitude = data.getDoubleExtra(EXTRA_NEAR_GEOPOINT_LONG, 0);
+                double latitude = data.getDoubleExtra(EXTRA_NEAR_GEOPOINT_LAT,0);
+
+                String params[] = new String[5];
+
+                params[0] = String.valueOf(longitude);
+                params[1] = String.valueOf(latitude);
+                params[2] = String.valueOf(distance);
+                params[3] = valid_since;
+                params[4] = valid_until;
+
+                DownloadNearByPolyObjectsTask downloadNearByPolyObjectsTask = new DownloadNearByPolyObjectsTask();
+                downloadNearByPolyObjectsTask.execute(params);
             }
         }
     }
@@ -409,9 +450,9 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     public void buttonAddData(View view) {
 
         Intent intent = new Intent(this, ShowPolyObjectDataActivity.class);
+
         Bundle extras = new Bundle();
         extras.putSerializable(MAP_DATA, polyObjectManager.getSelectedPolyObjectTags());
-
         extras.putSerializable(EXTRA_SELECTED_POLYOBJECT_INTERNID, polyObjectManager.getSelectedPolyObjectInternId());
         intent.putExtras(extras);
 
@@ -419,8 +460,15 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     }
 
     public void downloadNearByPolyObjects(GeoPoint geoPoint) {
-        DownloadNearByPolyObjectsTask downloadNearByPolyObjectsTask = new DownloadNearByPolyObjectsTask();
-        downloadNearByPolyObjectsTask.execute(geoPoint);
+
+        Intent intent = new Intent(this, GetNearPolyObjectsActivity.class);
+
+        Bundle extras = new Bundle();
+        extras.putDouble(EXTRA_NEAR_GEOPOINT_LONG, geoPoint.getLongitude());
+        extras.putDouble(EXTRA_NEAR_GEOPOINT_LAT, geoPoint.getLatitude());
+        intent.putExtras(extras);
+
+        startActivityForResult(intent,NEAR_DIALOG_REQUEST_CODE);
     }
 
     /**
@@ -506,7 +554,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         }
     }
 
-    private class DownloadNearByPolyObjectsTask extends AsyncTask<GeoPoint, Integer, Long> {
+    private class DownloadNearByPolyObjectsTask extends AsyncTask<String, Integer, Long> {
 
         @Override
         protected void onPreExecute() {
@@ -514,14 +562,14 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             Toast.makeText(getApplicationContext(), R.string.async_download_start, Toast.LENGTH_SHORT).show();
         }
 
-        protected Long doInBackground(GeoPoint... params) {
+        protected Long doInBackground(String... params) {
 
 
             ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
             JSONArray jsonObjects = null;
 
             try {
-                jsonObjects = apiConnect.getNearJSONObjectsByGeoPoint(params[0]);
+                jsonObjects = apiConnect.getNearJSONObjectsByGeoPoint(params);
             } catch (JSONException e) {
                 Log.e(TAG, "could not read polyobject from server: " + e.toString());
                 return -1L;
@@ -537,6 +585,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 //                map.getController().setCenter(loadedPolyObjects[0].getPoints().get(0));
 
                 polyObjectManager.addObjects(loadedPolyObjects);
+                Message message = handler.obtainMessage();
+                handler.sendMessage(message);
 
             } else {
                 Log.e(TAG, "could not create polyobject");

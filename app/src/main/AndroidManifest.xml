@@ -38,6 +38,16 @@
             android:name=".activities.PolyObjectsOverviewActivity"
             android:label="@string/title_activity_poly_objets_overview" >
         </activity>
+        <activity
+            android:name=".activities.GetNearPolyObjectsActivity"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:label="@string/title_activity_get_near_poly_objects" >
+        </activity>
+        <activity
+            android:name=".activities.ValiddatepickerActivity"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:label="@string/title_activity_dialog_validdatepicker" >
+        </activity>
     </application>
 
 </manifest>

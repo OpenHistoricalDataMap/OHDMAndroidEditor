@@ -138,23 +138,24 @@ public class ApiConnect {
         return geoObject;
     }
 
-    public JSONArray getNearJSONObjectsByGeoPoint(GeoPoint geoPoint) throws ApiException, JSONException {
+    public JSONArray getNearJSONObjectsByGeoPoint(String[] params) throws ApiException, JSONException {
 
         JSONArray geoObjects = null;
 
-        Log.d(TAG, "Longitude: " + geoPoint.getLongitude());
-        Log.d(TAG, "Latitude: " + geoPoint.getLatitude());
-        Log.d(TAG, "toDoubleString: " + geoPoint.toDoubleString());
-        Log.d(TAG, "toString: " + geoPoint.toString());
-        Log.d(TAG, "toInvertedDoubleString: " + geoPoint.toInvertedDoubleString());
+        String nearObjects = "nearObjects//";
+        String since = "since/"+params[3]+"/";
+        String until = "until/"+params[4]+"/";
+        String distance = params[2]+"/";
+        String longitude = params[0];
+        String latitude = params[1];
 
-        String parameterUrl = "nearObjects//since/0001-01-01/until/3000-01-01/10/";
-        String longLatUrl = String.valueOf(geoPoint.getLongitude()) + "/" + String.valueOf(geoPoint.getLatitude());
-        String requestUrl = serverUrl + parameterUrl + longLatUrl;
+        String parameterUrl = nearObjects + since + until + distance + longitude + "/" + latitude;
+
+        String requestUrl = serverUrl + parameterUrl;
 
         try {
 
-            Log.d(TAG,requestUrl);
+            Log.d(TAG, requestUrl);
 
             URL url = new URL(requestUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();

@@ -46,7 +46,7 @@ public class PolyObjectFactory {
 
         ArrayList<PolyObject> polyObjects = new ArrayList<PolyObject>();
 
-        for (int i = 0; i < jsonObjects.length(); i++) {
+        for (int i = jsonObjects.length()-1; i >= 0; i--) {
 
             PolyObject polyObject = JSONReader.getPolyObjectFromJSONObject(jsonObjects.optJSONObject(i), map);
 
