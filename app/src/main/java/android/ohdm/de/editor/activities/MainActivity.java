@@ -311,10 +311,10 @@ public class MainActivity extends Activity implements MapEventsReceiver {
             Log.i(TAG, "DATA_DIAG_FINISH");
 
             UUID selectedObjectId = (UUID) data.getSerializableExtra(EXTRA_SELECTED_POLYOBJECT_INTERNID);
-            //polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
+            polyObjectManager.selectPolyObjectByInternId(selectedObjectId);
 
             HashMap<String, String> resultMap = (HashMap) data.getSerializableExtra(MAP_DATA);
-            //polyObjectManager.setSelectedPolyObjectTags(resultMap);
+            polyObjectManager.setSelectedPolyObjectTags(resultMap);
 
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == ID_DIALOG_REQUEST_CODE) {
 
@@ -563,7 +563,6 @@ public class MainActivity extends Activity implements MapEventsReceiver {
         }
 
         protected Long doInBackground(String... params) {
-
 
             ApiConnect apiConnect = new ApiConnect(OHDMAPI_SERVER_ADDRESS);
             JSONArray jsonObjects = null;

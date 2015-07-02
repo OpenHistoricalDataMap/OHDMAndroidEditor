@@ -42,8 +42,7 @@ public class ApiConnect {
             con.setRequestMethod("PUT");
             con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
 
-            OutputStreamWriter out = new OutputStreamWriter(
-                    con.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
             out.write(polyObject.toString());
             out.close();
 
@@ -52,7 +51,7 @@ public class ApiConnect {
 
             if (responseCode == UPLOAD_RESPONSE_ERROR) {
 
-                Log.d(TAG, con.getResponseMessage());
+                Log.d(TAG,"Response Message: "+ con.getResponseMessage());
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         con.getErrorStream()));
@@ -64,7 +63,7 @@ public class ApiConnect {
                     response.append(inputLine);
                 }
 
-                Log.d(TAG, response.toString());
+                Log.d(TAG, "Error Stream: " + response.toString());
 
                 return UPLOAD_RESPONSE_ERROR;
 
@@ -79,13 +78,12 @@ public class ApiConnect {
                 }
 
                 in.close();
-
-                Log.d(TAG, response.toString());
+                Log.d(TAG, "Server: NO ERROR " );
             }
 
         } catch (IOException ex) {
 
-            Log.d(TAG, ex.toString());
+            Log.d(TAG, "Exception: "+ ex.toString());
 
             return UPLOAD_RESPONSE_ERROR;
         }

@@ -4,16 +4,30 @@ import android.app.Activity;
 import android.content.Intent;
 import android.ohdm.de.editor.R;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-
+/**
+ * Ruft einen Dialog auf, in dem Key und Value eingetragen werden können.
+ * Beim Drücken des Edit-Buttons, sind die Werte bereits eingetragen im Dialogfenster.
+ *
+ */
 public class EditPolyObjectDataActivity extends Activity {
 
+
+
+    /**
+     * Beim Bearbeiten werden die Werte aus der activity_edit_poly_object_data.xml
+     * eingetragen.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_poly_object_data);
 
@@ -48,6 +62,11 @@ public class EditPolyObjectDataActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Daten werden an die ShowPolyObjectDataActivity übergeben.
+     *
+     * @param view
+     */
     public void buttonEditOk(View view) {
 
         TextView textViewKey = (TextView)findViewById(R.id.polyobject_data_key);
@@ -61,6 +80,11 @@ public class EditPolyObjectDataActivity extends Activity {
         finish();
     }
 
+    /**
+     * Schließt den Dialog.
+     *
+     * @param view
+     */
     public void buttonEditCancel(View view) {
 
         finish();

@@ -1,10 +1,12 @@
 package android.ohdm.de.editor.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.ohdm.de.editor.R;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
+/**
+ *
+ *
+ */
 public class ShowPolyObjectDataActivity extends Activity {
 
-    private static final String TAG = "EditPolyObjectData";
+    private static final String TAG = "ShowPolyObjectData";
     private static final int EDIT_DATA_REQUEST_CODE = 1749;
 
     public static final String DATA_KEY = "data_key";
@@ -25,6 +30,11 @@ public class ShowPolyObjectDataActivity extends Activity {
 
     private HashMap<String, String> polyObjectData = new HashMap<String, String>();
     private UUID polyObjectInternId;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +87,8 @@ public class ShowPolyObjectDataActivity extends Activity {
 
         resultData.putExtra(MainActivity.MAP_DATA, polyObjectData);
 
-        Log.d(TAG,"selected polybject intern id: "+polyObjectInternId.toString());
+        Log.d(TAG, "selected polybject intern id: " + polyObjectInternId.toString());
+        Log.d(TAG,"polyObjectData: "+polyObjectData.toString());
 
         resultData.putExtra(MainActivity.EXTRA_SELECTED_POLYOBJECT_INTERNID,polyObjectInternId);
         setResult(Activity.RESULT_OK, resultData);

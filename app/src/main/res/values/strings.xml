@@ -46,5 +46,6 @@
     <string name="title_activity_poly_objets_overview">PolyObjetsOverviewActivity</string>
     <string name="title_activity_get_near_poly_objects">Get near PolyObjects</string>
     <string name="title_activity_dialog_validdatepicker">Pick Date</string>
+    <string name="add_attr_button">add Attribute</string>
 
 </resources>

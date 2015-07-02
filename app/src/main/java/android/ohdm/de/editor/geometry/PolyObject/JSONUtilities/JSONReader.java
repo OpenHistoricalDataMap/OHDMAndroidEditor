@@ -28,6 +28,7 @@ public class JSONReader {
     private static final String GEOMETRICOBJECT = "geometricObjects";
     private static final String TAGDATES = "tagDates";
     private static final String TAGS = "tags";
+    private static final String ATTRIBUTES = "attributes"; // Attribute die im JSON ankommen
 
     private static final String MULTILINESTRING = "multilinestring";
     private static final String MULTIPOINT = "multipoint";
@@ -43,25 +44,30 @@ public class JSONReader {
         PolyObjectType type;
         List<GeoPoint> geoPoints;
         HashMap<String,String> tagDates;
+        HashMap<String,String> attributes;
 
         if(jsonObject != null) {
 
             try {
-
+                Log.d(TAG,"JsonString von der DB : "+ jsonObject.toString());
                 JSONArray geometricObject = jsonObject.getJSONArray(GEOMETRICOBJECT);
-                JSONArray tagDatesObject = jsonObject.getJSONArray(TAGDATES);
+                JSONArray tagDatesObject  = jsonObject.getJSONArray(TAGDATES);
+                JSONArray attributesObject  = jsonObject.getJSONArray(ATTRIBUTES); // ließt den Array mit den Attributen
 
                 //TODO: können auch mehrere Geometrien sein
                 JSONObject geom = (JSONObject) geometricObject.get(0);
                 JSONObject tags = (JSONObject) tagDatesObject.get(0);
+                JSONObject attr = (JSONObject) attributesObject.get(0);
 
                 type = getPolyObjectType(geom);
                 geoPoints = getGeoPoints(geom);
-                tagDates = getTagDates((JSONObject)tags.get(TAGS));
+                tagDates  = getTagDates((JSONObject) tags.get(TAGS));
+                attributes  = getTagDates(attr); // gleiche Funktion noch mal
 
                 polyObject = PolyObjectFactory.buildObject(type, mapView);
                 polyObject.setPoints(geoPoints);
                 polyObject.setTags(tagDates);
+                polyObject.setAttributes(attributes);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -70,6 +76,8 @@ public class JSONReader {
 
         return polyObject;
     }
+
+
 
     private static HashMap<String,String> getTagDates(JSONObject tags) {
 

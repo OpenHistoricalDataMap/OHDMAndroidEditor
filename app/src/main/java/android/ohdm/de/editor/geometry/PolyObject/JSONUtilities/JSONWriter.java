@@ -22,6 +22,7 @@ public class JSONWriter {
 
     private static final String TAG = "JSONWriter";
 
+    private static final String ATTRIBUTES = "attributes";
     private static final String TAGS = "tags";
     private static final String GEOMETRICOBJECT = "geometricObjects";
     private static final String TAGDATES = "tagDates";
@@ -46,6 +47,8 @@ public class JSONWriter {
 
         JSONObject geometry = createGeometryObject(polyObject);
         JSONObject tags = createTagDatesObject(polyObject);
+        JSONObject attr = createAttrObject(polyObject); // Attribute aus dem PolyObject erfassen
+
         JSONObject tagDates = new JSONObject();
         JSONObject validDates = createValidDatesObject();
 
@@ -62,6 +65,7 @@ public class JSONWriter {
 
             jsonObject.put(TAGDATES, tagDatesArray);
             jsonObject.put(GEOMETRICOBJECT, geometryArray);
+            jsonObject.put(ATTRIBUTES,attr);// Attribute mit einbinden in das JSONObject
             jsonObject.put(EXTERNAL_SOURCE_ID_STR, EXTERNAL_SOURCE_ID);
 
         } catch (JSONException e) {
@@ -179,6 +183,30 @@ public class JSONWriter {
     private static JSONObject createTagDatesObject(PolyObject polyObject) {
 
         HashMap<String, String> tagDates = polyObject.getTags();
+        JSONObject tagDatesObject = new JSONObject();
+
+        try {
+            for (String key : tagDates.keySet()) {
+                tagDatesObject.put(key, tagDates.get(key));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return tagDatesObject;
+    }
+
+    /**
+     * Ließt aus dem PolyObject die Attribute heraus und
+     * wandelt diese in ein JSONObject um.
+     * Funktion fast gleich zu createTagDatesObject.
+     * Getter ein anderer.
+     * @param polyObject
+     * @return
+     */
+    private static JSONObject createAttrObject(PolyObject polyObject) {
+
+        HashMap<String, String> tagDates = polyObject.getAttributes();
         JSONObject tagDatesObject = new JSONObject();
 
         try {
