@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 public class ShowPolyObjectDataActivity extends Activity {
 
-    private static final String TAG = "EditPolyObjectData";
+    private static final String TAG = "ShowPolyObjectData";
     private static final int EDIT_DATA_REQUEST_CODE = 1749;
 
     public static final String DATA_KEY = "data_key";

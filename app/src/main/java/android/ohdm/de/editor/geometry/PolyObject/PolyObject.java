@@ -26,6 +26,7 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     protected HashMap<String,String> attributes = new HashMap<String, String>();
     protected PolyObjectType type = null;
     protected UUID internId;
+    //TODO: so in der art...: protected String icon;
 
     public PolyObject(PolyObjectType type){
         this.type = type;
@@ -37,7 +38,7 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     protected abstract void create(Context context);
 
-    public abstract OverlayWithIW getOverlay();
+    public abstract OverlayWithIW getOverlay(); // todo nachschauen
 
     public abstract void setPoints(List<GeoPoint> points);
 

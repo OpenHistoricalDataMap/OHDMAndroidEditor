@@ -35,7 +35,15 @@ public class PolyObjectManager implements PolyObjectClickListener {
         polyObject.subscribe(this);
 
         polyObjectList.add(polyObject);
-        map.getOverlays().add(polyObject.getOverlay());
+        map.getOverlays().add(polyObject.getOverlay()); // todo am besten hier schon icon zeichnen
+
+        //polyObject.getPoints()[0];
+        // create overlay
+
+
+        //1. welches icon hat das polyobject polyObject.getIcon
+        //2. hole das icon overlay passend zur referenz
+        //3. zeichne map.getOverlays().add(...);
     }
 
     private void removeObject(PolyObject polyObject){

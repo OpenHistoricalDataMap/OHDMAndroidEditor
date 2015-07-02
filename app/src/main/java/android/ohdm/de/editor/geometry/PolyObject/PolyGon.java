@@ -48,11 +48,30 @@ public class PolyGon extends PolyObject {
         polygon.setPoints(points);
     }
 
-    @Override
-    public OverlayWithIW getOverlay() {
+    OverlayWithIW getIcon(){
+        //iterieren über tagDates und dementsprechend Overlay anlegen (icon)
+        //overlay muss sinvoller GeoPoint zugeordnet werden (evtl. polygon.getPoints())
+        //return icon
         return polygon;
     }
 
+    @Override
+    public OverlayWithIW getOverlay() {
+        //icon = getIcon
+        //arraylist mit polygon und icon
+        return polygon;
+    }
+/*
+    @Override
+    public ArrayList<OverlayWithIW> getOverlays() {
+        ArrayList<OverlayWithIW> overlays = new ArrayList<OverlayWithIW>();
+        overlays.add(polygon);
+        overlays.add(getIcon());
+        //icon = getIcon
+        //arraylist mit polygon und icon
+        return overlays;
+    }
+*/
     @Override
     public void setPoints(List<GeoPoint> points) {
         this.points = points;
