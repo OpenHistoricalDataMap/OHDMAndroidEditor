@@ -17,6 +17,8 @@ import android.widget.TextView;
  */
 public class EditPolyObjectDataActivity extends Activity {
 
+
+
     /**
      * Beim Bearbeiten werden die Werte aus der activity_edit_poly_object_data.xml
      * eingetragen.
@@ -25,6 +27,7 @@ public class EditPolyObjectDataActivity extends Activity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_poly_object_data);
 

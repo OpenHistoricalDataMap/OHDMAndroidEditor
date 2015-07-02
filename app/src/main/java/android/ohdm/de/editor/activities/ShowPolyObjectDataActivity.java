@@ -1,10 +1,12 @@
 package android.ohdm.de.editor.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.ohdm.de.editor.R;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,11 @@ public class ShowPolyObjectDataActivity extends Activity {
 
     private HashMap<String, String> polyObjectData = new HashMap<String, String>();
     private UUID polyObjectInternId;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

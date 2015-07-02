@@ -44,5 +44,6 @@
     <string name="no_edit_point_selected_error">no edit-point selected</string>
     <string name="no_area_selected_error">no area selected</string>
     <string name="title_activity_poly_objets_overview">PolyObjetsOverviewActivity</string>
+    <string name="add_attr_button">add Attribute</string>
 
 </resources>

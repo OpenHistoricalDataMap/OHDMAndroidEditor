@@ -26,7 +26,7 @@ public class EditorStateAdd implements EditorState {
     @Override
     public void change() {
 
-        Log.d(TAG,"change");
+        Log.d(TAG,"change()");
         polyObjectManager.setObjectsClickable(false);
 //        polyObjectManager.setActiveObjectEditable(false);
         polyObjectManager.setSelectedObjectEditable(false);

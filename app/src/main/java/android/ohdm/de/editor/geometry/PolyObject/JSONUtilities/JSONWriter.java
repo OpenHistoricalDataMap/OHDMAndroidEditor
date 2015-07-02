@@ -63,9 +63,9 @@ public class JSONWriter {
             geometry.put(VALID,validDates);
             geometryArray.put(0, geometry);
 
-            jsonObject.put(ATTRIBUTES,attr);// Attribute mit einbinden in das JSONObject
             jsonObject.put(TAGDATES, tagDatesArray);
             jsonObject.put(GEOMETRICOBJECT, geometryArray);
+            jsonObject.put(ATTRIBUTES,attr);// Attribute mit einbinden in das JSONObject
             jsonObject.put(EXTERNAL_SOURCE_ID_STR, EXTERNAL_SOURCE_ID);
 
         } catch (JSONException e) {
