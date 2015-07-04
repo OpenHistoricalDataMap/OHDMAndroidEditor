@@ -1,7 +1,11 @@
 package android.ohdm.de.editor.geometry;
 
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.ohdm.de.editor.OHDMMapView;
+import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.activities.MainActivity;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
@@ -10,7 +14,10 @@ import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.util.Log;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,29 +28,48 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
     private static final String TAG = "PolyObjectManager";
 
+    private Context context; // bekommt von der Activity um Resourcen laden zu können
     private List<PolyObject> polyObjectList = new ArrayList<PolyObject>();
     private PolyObject activeObject = null;
 
     private OHDMMapView map;
 
-    public PolyObjectManager(OHDMMapView map){
-        this.map = map;
+    public PolyObjectManager(OHDMMapView map)
+    {
+        this.context = map.getContext();
+        this.map     = map;
     }
 
+    /**
+     * PolyObject wird zu der Liste aller PolyObjecte hinzugefügt.
+     *
+     * @param polyObject PolyObject
+     */
     public void addObject(PolyObject polyObject){
 
         polyObject.subscribe(this);
 
         polyObjectList.add(polyObject);
-        map.getOverlays().add(polyObject.getOverlay()); // todo am besten hier schon icon zeichnen
+        map.getOverlays().add(polyObject.getOverlay());
 
-        //polyObject.getPoints()[0];
-        // create overlay
+        if(polyObject.getPoints().isEmpty())
+        {
+            Log.d(TAG, "Keine GeoPoints für das Zeichen.");
+        }
+        else
+        {
+            ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
+            OverlayItem overlay
+                    = new OverlayItem("New Overlay", "Test", polyObject.getPoints().get(0));
+            Drawable newMarker  = context.getResources().getDrawable(R.drawable.bunker_silo );
+            overlay.setMarker(newMarker);
+            overlays.add(overlay);
+            ItemizedIconOverlay<OverlayItem> itemizedIconOverlay
+                    = new ItemizedIconOverlay<OverlayItem>(this.context, overlays, null);
 
-
-        //1. welches icon hat das polyobject polyObject.getIcon
-        //2. hole das icon overlay passend zur referenz
-        //3. zeichne map.getOverlays().add(...);
+            map.getOverlays().add(itemizedIconOverlay);
+            Log.d(TAG, "malt");
+        }
     }
 
     private void removeObject(PolyObject polyObject){

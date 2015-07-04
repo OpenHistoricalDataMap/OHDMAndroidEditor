@@ -52,17 +52,16 @@ public class JSONReader {
                 Log.d(TAG,"JsonString von der DB : "+ jsonObject.toString());
                 JSONArray geometricObject = jsonObject.getJSONArray(GEOMETRICOBJECT);
                 JSONArray tagDatesObject  = jsonObject.getJSONArray(TAGDATES);
-                JSONArray attributesObject  = jsonObject.getJSONArray(ATTRIBUTES); // ließt den Array mit den Attributen
+                JSONObject attributesObject= jsonObject.getJSONObject(ATTRIBUTES); // ließt den Array mit den Attributen
 
                 //TODO: können auch mehrere Geometrien sein
                 JSONObject geom = (JSONObject) geometricObject.get(0);
                 JSONObject tags = (JSONObject) tagDatesObject.get(0);
-                JSONObject attr = (JSONObject) attributesObject.get(0);
 
-                type = getPolyObjectType(geom);
+                type      = getPolyObjectType(geom);
                 geoPoints = getGeoPoints(geom);
                 tagDates  = getTagDates((JSONObject) tags.get(TAGS));
-                attributes  = getTagDates(attr); // gleiche Funktion noch mal
+                attributes= getTagDates(attributesObject); // gleiche Funktion noch mal
 
                 polyObject = PolyObjectFactory.buildObject(type, mapView);
                 polyObject.setPoints(geoPoints);

@@ -21,8 +21,6 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
     protected transient List<PolyObjectClickListener> listeners = new ArrayList<PolyObjectClickListener>();
 
     protected HashMap<String,String> tags = new HashMap<String, String>();
-
-    // speichert Attribute, sowie {"building":"hotel"}
     protected HashMap<String,String> attributes = new HashMap<String, String>();
     protected PolyObjectType type = null;
     protected UUID internId;
