@@ -104,6 +104,7 @@ public class PolyLine extends PolyObject implements Serializable {
             polyline.setPoints(this.points);
 
             createAndAddEditPoint(geoPoint);
+
         } else {
             List<GeoPoint> activeCornerPointPoints = activeEditPoint.getPoints();
             activeCornerPointPoints.add(geoPoint);

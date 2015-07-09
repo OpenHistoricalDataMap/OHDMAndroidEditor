@@ -36,7 +36,10 @@ public class ExtendedPolylineOverlay extends Polyline implements ExtendedOverlay
     public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView){
 
 
-        if(!isClickable()) return false;
+        if(!isClickable())
+        {
+            return false;
+        }
 
         final Projection pj = mapView.getProjection();
         GeoPoint eventPos = (GeoPoint) pj.fromPixels((int)event.getX(), (int)event.getY());

@@ -14,7 +14,6 @@ import android.ohdm.de.editor.geometry.PolyObject.PolyObjectFactory;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.util.Log;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -65,10 +64,11 @@ public class PolyObjectManager implements PolyObjectClickListener {
             overlay.setMarker(newMarker);
             overlays.add(overlay);
             ItemizedIconOverlay<OverlayItem> itemizedIconOverlay
-                    = new ItemizedIconOverlay<OverlayItem>(this.context, overlays, null);
+                    = new ItemizedIconOverlay<OverlayItem>(this.context, overlays, null); // todo: null-> listener hinzufügen
 
             map.getOverlays().add(itemizedIconOverlay);
-            Log.d(TAG, "malt");
+
+            Log.d(TAG, "Icon wird auf der Karte dargestellt.");
         }
     }
 
