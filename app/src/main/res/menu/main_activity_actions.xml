@@ -37,6 +37,9 @@
             <item
                 android:id="@+id/menuItemStartTrack"
                 android:title="@string/start_track" />
+            <item
+                android:id="@+id/menuItemStopTrack"
+                android:title="@string/stop_track" />
         </menu>
     </item>
 

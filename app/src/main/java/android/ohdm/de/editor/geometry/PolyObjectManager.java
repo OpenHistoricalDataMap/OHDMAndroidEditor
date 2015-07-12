@@ -1,11 +1,7 @@
 package android.ohdm.de.editor.geometry;
 
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.ohdm.de.editor.OHDMMapView;
-import android.ohdm.de.editor.R;
 import android.ohdm.de.editor.activities.MainActivity;
 import android.ohdm.de.editor.api.ApiConnect;
 import android.ohdm.de.editor.geometry.PolyObject.PolyObject;
@@ -15,8 +11,6 @@ import android.ohdm.de.editor.geometry.PolyObject.PolyObjectType;
 import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,49 +21,21 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
     private static final String TAG = "PolyObjectManager";
 
-    private Context context; // bekommt von der Activity um Resourcen laden zu können
     private List<PolyObject> polyObjectList = new ArrayList<PolyObject>();
     private PolyObject activeObject = null;
 
     private OHDMMapView map;
 
-    public PolyObjectManager(OHDMMapView map)
-    {
-        this.context = map.getContext();
-        this.map     = map;
+    public PolyObjectManager(OHDMMapView map){
+        this.map = map;
     }
 
-    /**
-     * PolyObject wird zu der Liste aller PolyObjecte hinzugefügt.
-     *
-     * @param polyObject PolyObject
-     */
     public void addObject(PolyObject polyObject){
 
         polyObject.subscribe(this);
 
         polyObjectList.add(polyObject);
         map.getOverlays().add(polyObject.getOverlay());
-
-        if(polyObject.getPoints().isEmpty())
-        {
-            Log.d(TAG, "Keine GeoPoints für das Zeichen.");
-        }
-        else
-        {
-            ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
-            OverlayItem overlay
-                    = new OverlayItem("New Overlay", "Test", polyObject.getPoints().get(0));
-            Drawable newMarker  = context.getResources().getDrawable(R.drawable.bunker_silo );
-            overlay.setMarker(newMarker);
-            overlays.add(overlay);
-            ItemizedIconOverlay<OverlayItem> itemizedIconOverlay
-                    = new ItemizedIconOverlay<OverlayItem>(this.context, overlays, null); // todo: null-> listener hinzufügen
-
-            map.getOverlays().add(itemizedIconOverlay);
-
-            Log.d(TAG, "Icon wird auf der Karte dargestellt.");
-        }
     }
 
     private void removeObject(PolyObject polyObject){
@@ -152,6 +118,13 @@ public class PolyObjectManager implements PolyObjectClickListener {
         addObject(activeObject);
     }
 
+    public void addGPSTrack(PolyObjectType type, List<GeoPoint> geoPoints) {
+
+        PolyObject track = PolyObjectFactory.buildObject(type,this.map);
+        track.setPoints(geoPoints);
+        addObject(track);
+    }
+
     /**
      *
      *
@@ -198,7 +171,7 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
         Log.d(TAG,"no polyobject found");
     }
-    
+
     public void addPointToSelectedPolyObject(GeoPoint point){
         activeObject.addPoint(point);
         map.invalidate();

@@ -1,7 +1,9 @@
 package android.ohdm.de.editor.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,13 +38,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.DefaultResourceProxyImpl;
+import org.osmdroid.ResourceProxy;
+import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.MapEventsOverlay;
 import org.osmdroid.bonuspack.overlays.MapEventsReceiver;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -78,20 +87,37 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     private OHDMMapView map;
     private PolyObjectManager polyObjectManager;
     private ITileSource wmsTileSource;
-
-    private Handler handler;
+    private double lat;
+    private double lng;
+    private boolean trackingActive;
+    private boolean endTrack;
+    private int zoomlevel;
+    private LocationManager service;
+    private ItemizedOverlay<OverlayItem> locOverlay;
+    private ResourceProxy resourceProxy;
+    private Handler hand;
+    private ArrayList<GeoPoint> geoList = new ArrayList<GeoPoint>();
+    boolean enabled;
+    private IMapController mapController;
     private EditorStateContext editorState;
+
+    //Die Punkte einer Tracking-Liste
+    private ArrayList<OverlayItem> items;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         double longitude = 13.52400;
         double latitude = 52.49688;
+        trackingActive = false;
         GeoPoint startGeoPoint;
-        int zoomlevel = 16;
+        geoList = new ArrayList<GeoPoint>();
+        zoomlevel = 16;
         boolean isWmsOverlayActive = false;
+        resourceProxy = new DefaultResourceProxyImpl(getApplicationContext());
         EditorState.State state = EditorState.State.VIEW;
         UUID selectedObjectId = null;
+
 
         super.onCreate(savedInstanceState);
 
@@ -108,6 +134,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         startGeoPoint = new GeoPoint(latitude, longitude);
         map = createMapView(zoomlevel, startGeoPoint, isWmsOverlayActive);
+        mapController = map.getController();
+        mapController.setZoom(15);
 
         polyObjectManager = PolyObjectSerializer.deserialize(map);
 
@@ -127,7 +155,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         map.postDelayed(waitForMapTimeTask, 100);
 
-        handler = new Handler() {
+        hand = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 map.invalidate();
@@ -220,11 +248,24 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     protected void onStop() {
         super.onStop();
         PolyObjectSerializer.serialize(polyObjectManager, map);
+        if(trackingActive)
+            Toast.makeText(getApplicationContext(), "Tracking continues, return to App to save Track.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if(trackingActive)
+            Toast.makeText(getApplicationContext(), "Tracking continues, return to App to save Track.", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    @Override
     protected void onDestroy() {
+
         super.onDestroy();
+        endTrack = true;
     }
 
     /**
@@ -235,8 +276,154 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         switch (item.getItemId()) {
             case R.id.menuItemLocate:
+                // GPS Locate Position
+                Toast.makeText(getApplicationContext(), "Locating Position...", Toast.LENGTH_SHORT).show();
+                service = (LocationManager) getSystemService(LOCATION_SERVICE);
+                enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-                Toast.makeText(getApplicationContext(), R.string.not_implemented, Toast.LENGTH_SHORT).show();
+                if (!enabled) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Activate GPS")
+                            .setMessage("You need to activate GPS to use this feature.")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(intent);                            }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+
+                location();
+                GeoPoint startGeoPoint = new GeoPoint(lat, lng);
+                //mapController = map.getController();
+                ArrayList<OverlayItem> cP = new ArrayList<OverlayItem>();
+                cP.add(new OverlayItem("", "", startGeoPoint));
+                ItemizedOverlay<OverlayItem> currPos;
+                currPos = new ItemizedIconOverlay<OverlayItem>(cP, null, resourceProxy);
+                mapController.setCenter(startGeoPoint);
+                map.getOverlays().add(currPos);
+                map.invalidate();
+                //map.getOverlays().remove(0);
+                return true;
+
+            case R.id.menuItemStartTrack:
+                // GPS Tracking
+                map.getOverlays().clear();
+                endTrack = false;
+                trackingActive = true;
+                service = (LocationManager) getSystemService(LOCATION_SERVICE);
+                enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                // check if enabled and if not send user to the GSP settings
+                // Better solution would be to display a dialog and suggesting to
+                // go to the settings
+                if (!enabled) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Activate GPS")
+                            .setMessage("You need to activate GPS to use this feature.")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(intent);                            }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+
+                Toast.makeText(getApplicationContext(), "Tracking started", Toast.LENGTH_SHORT).show();
+                //editorState.setState(EditorState.State.ADD);
+                location();
+                //mapController = map.getController();
+                //GeoPoint geoPoint = new GeoPoint(lat, lng);
+                //map = createMapView(zoomlevel, geoPoint, true);
+                items = new ArrayList<OverlayItem>();
+                final Handler h = new Handler();
+                final int delay = 5000; //milliseconds
+
+                h.postDelayed(new Runnable(){
+                    public void run(){
+                        location();
+                        if (endTrack) {
+                            Toast.makeText(getApplicationContext(), "Tracking stopped", Toast.LENGTH_SHORT).show();
+                            //map.getOverlays().remove(locOverlay);
+                            /*for(int i =0;i<geoList.size();i++) {
+                                Toast.makeText(getApplicationContext(), "Geopoint lat: " + String.valueOf(geoList.get(i).getLatitude()), Toast.LENGTH_SHORT).show();
+
+                                Log.i("Geopoint " + i, String.valueOf(geoList.get(i).getLatitude()));
+                            }*/
+                            h.removeCallbacksAndMessages(null);
+
+                        }
+                        else {
+                            //If there is a signal, track
+                            if (lat != 0) {
+                                Toast.makeText(getApplicationContext(), "lat: " + lat + ",long: " + lng, Toast.LENGTH_SHORT).show();
+
+                                //Get the current position
+                                GeoPoint pos = new GeoPoint(lat, lng);
+
+                                //add a marker to the current position in an extra layer
+                                items.add(new OverlayItem("Pos " + items.size(), "leer", pos));
+                                locOverlay = new ItemizedIconOverlay<OverlayItem>(items, null, resourceProxy);
+
+                                //add the geopoint of the current position to a list
+                                geoList.add(pos);
+                                //center map to current position and add layer with a marker for the current position
+                                mapController.setCenter(pos);
+                                map.getOverlays().add(locOverlay);
+                                map.invalidate();
+                            } else
+                                Toast.makeText(getApplicationContext(), "waiting for signal", Toast.LENGTH_SHORT).show();
+                            h.postDelayed(this, delay);
+                        }
+                    }
+                }, delay);
+                return true;
+
+            //TODO Layers richtig löschen
+            case R.id.menuItemStopTrack:
+                trackingActive = false;
+                endTrack = true;
+                map.getOverlays().clear();
+                /*for (int i = 0; i < items.size(); i++)
+                    map.getOverlays().remove(0);*/
+                if (geoList.size() > 0) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Send Route to Database")
+                            .setMessage("Do you want to submit this route to the database?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //TODO Add Route to DB
+                                    //TODO make object accessible to edit
+                                    //TODO check why editing doesnt work after gps
+
+                                    polyObjectManager.addGPSTrack(PolyObjectType.POLYLINE, geoList);
+
+
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //TODO Add question if tracked route should be kept
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+
+                location();
+                items = null;
+                // Vielleicht Problem mit map = ... ?
+                //map = createMapView(zoomlevel, new GeoPoint(lat, lng), false);
                 return true;
 
             case R.id.menuItemAddLine:
@@ -375,11 +562,12 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        //TODO: buggy, returns null sometimes
         //geoPoint = createGeoPointFromLocation(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
 
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
+                lat = (double) (location.getLatitude());
+                lng = (double) (location.getLongitude());
                 //geoPoint = createGeoPointFromLocation(location);
             }
 
@@ -584,8 +772,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 //                map.getController().setCenter(loadedPolyObjects[0].getPoints().get(0));
 
                 polyObjectManager.addObjects(loadedPolyObjects);
-                Message message = handler.obtainMessage();
-                handler.sendMessage(message);
+                Message message = hand.obtainMessage();
+                hand.sendMessage(message);
 
             } else {
                 Log.e(TAG, "could not create polyobject");
