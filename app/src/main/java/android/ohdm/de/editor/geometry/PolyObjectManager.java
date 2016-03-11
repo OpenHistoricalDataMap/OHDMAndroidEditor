@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ *
+ */
 public class PolyObjectManager implements PolyObjectClickListener {
 
     private static final String TAG = "PolyObjectManager";
@@ -26,10 +29,21 @@ public class PolyObjectManager implements PolyObjectClickListener {
 
     private OHDMMapView map;
 
-    public PolyObjectManager(OHDMMapView map){
+    /**
+     * Getter for map.
+     *
+     * @param map OHDMMapView
+     */
+    public PolyObjectManager(OHDMMapView map)
+    {
         this.map = map;
     }
 
+    /**
+     * Adds PolyObject to the Map-View and PolyObject-List.
+     *
+     * @param polyObject PolyObject
+     */
     public void addObject(PolyObject polyObject){
 
         polyObject.subscribe(this);
@@ -38,12 +52,22 @@ public class PolyObjectManager implements PolyObjectClickListener {
         map.getOverlays().add(polyObject.getOverlay());
     }
 
+    /**
+     * Removes PolyObject from the Map-View and PolyObject-List.
+     *
+     * @param polyObject PolyObject
+     */
     private void removeObject(PolyObject polyObject){
         map.getOverlays().remove(polyObject.getOverlay());
         polyObjectList.remove(polyObject);
         map.invalidate();
     }
 
+    /**
+     * Setter for clickable.
+     *
+     * @param clickable boolean
+     */
     public void setObjectsClickable(boolean clickable){
         for(PolyObject object : polyObjectList){
             object.setClickable(clickable);
@@ -51,15 +75,24 @@ public class PolyObjectManager implements PolyObjectClickListener {
         map.invalidate();
     }
 
-    public void deselectActiveObject(){
-
-        if(activeObject != null) {
+    /**
+     * Deselects an PolyObject an the Map-View.
+     */
+    public void deselectActiveObject()
+    {
+        if(activeObject != null)
+        {
             activeObject.setSelected(false);
             activeObject = null;
         }
         map.invalidate();
     }
 
+    /**
+     * Deselects currently selected PolyObject and selects the new one.
+     *
+     * @param polyObject PolyObject
+     */
     @Override
     public void onClick(PolyObject polyObject) {
         deselectActiveObject();
@@ -68,9 +101,16 @@ public class PolyObjectManager implements PolyObjectClickListener {
         map.invalidate();
     }
 
-    public boolean removeSelectedObject() {
-
-        if(activeObject != null){
+    /**
+     * Deletes selected PolyObject.
+     *
+     * @return boolean true deleted
+     *                 false no selected PolyObject
+     */
+    public boolean removeSelectedObject()
+    {
+        if(activeObject != null)
+        {
             removeObject(activeObject);
             activeObject = null;
             return true;
@@ -78,59 +118,104 @@ public class PolyObjectManager implements PolyObjectClickListener {
         return false;
     }
 
-    public List<PolyObject> getPolyObjectList(){
+    /**
+     * Getter for List<PolyObject>.
+     *
+     * @return List<PolyObject>
+     */
+    public List<PolyObject> getPolyObjectList()
+    {
         return polyObjectList;
     }
 
-    public void setActiveObjectEditable(boolean editable) {
-
-        if(activeObject != null){
+    /**
+     * Sets Edit-Mode true or false of currently active PolyObject.
+     *
+     * @param editable boolean
+     */
+    public void setActiveObjectEditable(boolean editable)
+    {
+        if(activeObject != null)
+        {
             activeObject.setEditing(editable);
         }
     }
 
+    /**
+     * Sets Edit-Mode true or false of currently selected PolyObject.
+     *
+     * @param editable boolean
+     */
     public void setSelectedObjectEditable(boolean editable) {
 
-        if(activeObject != null){
-            if(activeObject.isSelected()) {
+        if(activeObject != null)
+        {
+            if(activeObject.isSelected())
+            {
                 activeObject.setEditing(editable);
             }
         }
     }
 
+    /**
+     * Getter for editable.
+     *
+     * @return boolean
+     */
     public boolean isSelectedObjectEditable(){
-        if(activeObject != null){
+        if(activeObject != null) {
             return activeObject.isEditing();
         }
         return false;
     }
 
-    public boolean hasActiveObject(){
-        if(activeObject != null){
+    /**
+     * Checks if an Object is active or not.
+     *
+     * @return boolean
+     */
+    public boolean hasActiveObject()
+    {
+        if(activeObject != null)
+        {
             return true;
         }
+
         return false;
     }
 
-    public void createAndAddPolyObject(PolyObjectType type) {
+    /**
+     * Creates new PolyObject and adds it to the Map-View.
+     *
+     * @param type PolyObjectType
+     */
+    public void createAndAddPolyObject(PolyObjectType type)
+    {
         activeObject = PolyObjectFactory.buildObject(type, map);
         activeObject.setEditing(true);
         addObject(activeObject);
     }
 
-    public void addGPSTrack(PolyObjectType type, List<GeoPoint> geoPoints) {
-
+    /**
+     * Adds the GPSTrack to the MapView.
+     *
+     * @param type PolyObjectType
+     * @param geoPoints List<GeoPoint>
+     */
+    public void addGPSTrack(PolyObjectType type, List<GeoPoint> geoPoints)
+    {
         PolyObject track = PolyObjectFactory.buildObject(type,this.map);
         track.setPoints(geoPoints);
         addObject(track);
     }
 
     /**
-     *
+     * Getter for Tags of activeObject.
      *
      * @return HashMap<String,String>
      */
-    public HashMap<String,String> getSelectedPolyObjectTags(){
+    public HashMap<String,String> getSelectedPolyObjectTags()
+    {
         if(activeObject != null){
             return activeObject.getTags();
         }
@@ -139,32 +224,50 @@ public class PolyObjectManager implements PolyObjectClickListener {
     }
 
     /**
-     *
+     * Setter for Tags for activeObject.
      *
      * @param tags HashMap<String,String>
      */
-    public void setSelectedPolyObjectTags(HashMap<String,String> tags){
-        if(activeObject != null){
+    public void setSelectedPolyObjectTags(HashMap<String,String> tags)
+    {
+        if(activeObject != null)
+        {
             activeObject.setTags(tags);
-        }else{
+        }else
+        {
             Log.d(TAG,"no active object");
         }
     }
 
-    public UUID getSelectedPolyObjectInternId(){
-        if(activeObject != null){
+    /**
+     * Getter for the InternId of the activeObject.
+     *
+     * @return UUID
+     */
+    public UUID getSelectedPolyObjectInternId()
+    {
+        if(activeObject != null)
+        {
             return activeObject.getId();
         }
         return null;
     }
 
-    public void selectPolyObjectByInternId(UUID id){
-
-        for(PolyObject polyObject: polyObjectList){
-            if(polyObject.getId().equals(id)){
+    /**
+     * Getter for PolyObject with specific ID.
+     *
+     * @param id UUID
+     */
+    public void selectPolyObjectByInternId(UUID id)
+    {
+        for(PolyObject polyObject: polyObjectList)
+        {
+            if(polyObject.getId().equals(id))
+            {
                 activeObject = polyObject;
                 activeObject.setSelected(true);
                 map.invalidate();
+
                 return;
             }
         }
@@ -172,11 +275,21 @@ public class PolyObjectManager implements PolyObjectClickListener {
         Log.d(TAG,"no polyobject found");
     }
 
-    public void addPointToSelectedPolyObject(GeoPoint point){
+    /**
+     * Adds Point to selected PolyObject.
+     *
+     * @param point GeoPoint
+     */
+    public void addPointToSelectedPolyObject(GeoPoint point)
+    {
         activeObject.addPoint(point);
         map.invalidate();
     }
 
+    /**
+     * Removes last Point from selected PolyObject.
+     *
+     */
     public void removeLastPointFromSelectedPolyObject() {
         if(activeObject != null) {
             activeObject.removeLastPoint();
@@ -184,15 +297,27 @@ public class PolyObjectManager implements PolyObjectClickListener {
         }
     }
 
-    public boolean removeSelectedEditPoint() {
-        if(activeObject != null) {
+    /**
+     * Removes selected EditPoint.
+     *
+     */
+    public boolean removeSelectedEditPoint()
+    {
+        if(activeObject != null)
+        {
             activeObject.removeSelectedEditPoint();
             map.invalidate();
+
             return true;
         }
         return false;
     }
 
+    /**
+     * Upload active PolyObject to the Server.
+     *
+     * @return boolean
+     */
     public boolean uploadActivePolyObject(){
 
         if (activeObject != null){
@@ -207,8 +332,15 @@ public class PolyObjectManager implements PolyObjectClickListener {
         }
     }
 
-    public void addObjects(PolyObject[] loadedPolyObjects) {
-        for(PolyObject polyObject : loadedPolyObjects){
+    /**
+     * Adds PolyObjects.
+     *
+     * @param loadedPolyObjects PolyObject[]
+     */
+    public void addObjects(PolyObject[] loadedPolyObjects)
+    {
+        for(PolyObject polyObject : loadedPolyObjects)
+        {
             addObject(polyObject);
         }
     }

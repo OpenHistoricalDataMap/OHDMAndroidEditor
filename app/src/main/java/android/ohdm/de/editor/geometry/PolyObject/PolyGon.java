@@ -15,13 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class PolyGon extends PolyObject {
-
+/**
+ * Basic Element that can be drawn on the MapView.
+ *
+ */
+public class PolyGon extends PolyObject
+{
     private static final long serialVersionUID = 0L;
     private static final String TAG = "PolyGon";
-    private static final int FILL_COLOR = Color.argb(128, 0, 0, 255);
-    private static final int FILL_COLOR_SELECTED = Color.argb(128, 255, 0, 0);
-    private static final int FILL_COLOR_EDIT = Color.argb(128, 0, 255, 0);
+    private static final int FILL_COLOR          = Color.argb(128,   0,   0, 255);
+    private static final int FILL_COLOR_SELECTED = Color.argb(128, 255,   0,   0);
+    private static final int FILL_COLOR_EDIT     = Color.argb(128,   0, 255,   0);
 
     private transient ExtendedPolygonOverlay polygon;
     private transient OHDMMapView view;
@@ -32,15 +36,27 @@ public class PolyGon extends PolyObject {
 
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
-    PolyGon(OHDMMapView view) {
+    /**
+     * Constructor.
+     *
+     * @param view OHDMMapView there the PolyGon will be created.
+     */
+    PolyGon(OHDMMapView view)
+    {
         super(PolyObjectType.POLYGON);
         this.view = view;
         internId = UUID.randomUUID();
         create(view.getContext());
     }
 
+    /**
+     * Draws the PolyGon on the MapView.
+     *
+     * @param context Context Interface to global information about an application environment.
+     */
     @Override
-    protected void create(Context context) {
+    protected void create(Context context)
+    {
         polygon = new ExtendedPolygonOverlay(context);
         polygon.subscribe(this);
         polygon.setFillColor(FILL_COLOR);
@@ -48,22 +64,28 @@ public class PolyGon extends PolyObject {
         polygon.setPoints(points);
     }
 
-    OverlayWithIW getIcon(){
+    //TODO needed to implement Icons on the map
+    OverlayWithIW getIcon()
+    {
         //iterieren über tagDates und dementsprechend Overlay anlegen (icon)
-        //overlay muss sinvoller GeoPoint zugeordnet werden (evtl. polygon.getPoints())
+        //overlay muss sinnvoller GeoPoint zugeordnet werden (evtl. polygon.getPoints())
         //return icon
         return polygon;
     }
 
+    //TODO needed to implement Icons on the map
     @Override
-    public OverlayWithIW getOverlay() {
+    public OverlayWithIW getOverlay()
+    {
         //icon = getIcon
         //arraylist mit polygon und icon
         return polygon;
     }
+
 /*
     @Override
-    public ArrayList<OverlayWithIW> getOverlays() {
+    public ArrayList<OverlayWithIW> getOverlays()
+    {
         ArrayList<OverlayWithIW> overlays = new ArrayList<OverlayWithIW>();
         overlays.add(polygon);
         overlays.add(getIcon());
@@ -72,17 +94,32 @@ public class PolyGon extends PolyObject {
         return overlays;
     }
 */
+
+    /**
+     * Goes through the given list and adds them to the PolyGon.
+     *
+     * @param points List<GeoPoints>
+     */
     @Override
-    public void setPoints(List<GeoPoint> points) {
+    public void setPoints(List<GeoPoint> points)
+    {
         this.points = points;
         polygon.setPoints(points);
 
-        for(GeoPoint point : this.points){
+        for(GeoPoint point : this.points)
+        {
             createAndAddEditPoint(point);
         }
     }
 
-    private EditPoint createAndAddEditPoint(GeoPoint geoPoint){
+    /**
+     * Puts the GeoPoint on the MapView und adds EventListener.
+     *
+     * @param geoPoint GeoPoint
+     * @return editPoint EditPoint
+     */
+    private EditPoint createAndAddEditPoint(GeoPoint geoPoint)
+    {
         EditPoint editPoint = new EditPoint(view);
 
         List<GeoPoint> pointPoints = new ArrayList<GeoPoint>();
@@ -99,13 +136,25 @@ public class PolyGon extends PolyObject {
         return editPoint;
     }
 
-    public List<GeoPoint> getPoints() {
+    /**
+     * Getter for points.
+     *
+     * @return List<GeoPoint>
+     */
+    public List<GeoPoint> getPoints()
+    {
         return this.points;
     }
 
+    /**
+     * Removes the last Point added to the MapView.
+     *
+     */
     @Override
-    public void removeLastPoint() {
-        if (!points.isEmpty()) {
+    public void removeLastPoint()
+    {
+        if (!points.isEmpty())
+        {
             points.remove(points.size() - 1);
             EditPoint removePoint = editPoints.get(editPoints.size() - 1);
             view.getOverlays().remove(removePoint);
@@ -115,26 +164,35 @@ public class PolyGon extends PolyObject {
         polygon.setPoints(this.points);
     }
 
+    /**
+     * Adds a Point to the MapView or if the Point already exists, then
+     * the old one will be replaced this the new one.
+     *
+     * @param geoPoint GeoPoint
+     */
     @Override
-    public void addPoint(GeoPoint geoPoint) {
-
-        if (activeEditPoint == null) {
-
+    public void addPoint(GeoPoint geoPoint)
+    {
+        if (activeEditPoint == null)
+        {
             points.add(geoPoint);
             polygon.setPoints(this.points);
 
             EditPoint created = createAndAddEditPoint(geoPoint);
             view.getOverlays().add(created);
-
-        } else {
+        }
+        else
+        {
             List<GeoPoint> activeEditPointPoints = activeEditPoint.getPoints();
             activeEditPointPoints.add(geoPoint);
             activeEditPoint.setPoints(activeEditPointPoints);
 
             GeoPoint oldPoint = pointOverlayMap.get(activeEditPoint);
 
-            for (int i = 0; i < points.size(); i++) {
-                if (points.get(i) == oldPoint) {
+            for (int i = 0; i < points.size(); i++)
+            {
+                if (points.get(i) == oldPoint)
+                {
                     pointOverlayMap.put(activeEditPoint, geoPoint);
                     points.set(i, geoPoint);
                     polygon.setPoints(this.points);
@@ -144,25 +202,48 @@ public class PolyGon extends PolyObject {
         }
     }
 
+    /**
+     * Sets oder removes the ClickEvent on the PolyGon.
+     *
+     * @param clickable boolean
+     */
     @Override
-    public void setClickable(boolean clickable) {
+    public void setClickable(boolean clickable)
+    {
         polygon.setClickable(clickable);
     }
 
+    /**
+     * Changes the appearance of the PolyGon if selected or not selected.
+     *
+     * @param selected boolean
+     */
     @Override
-    public void setSelected(boolean selected) {
+    public void setSelected(boolean selected)
+    {
         this.selected = selected;
 
-        if (selected) {
+        if (selected)
+        {
             polygon.setFillColor(FILL_COLOR_SELECTED);
-        } else {
+        }
+        else
+        {
             polygon.setFillColor(FILL_COLOR);
         }
     }
 
+    /**
+     * Removes selected Point from the MapView.
+     *
+     * @return true  boolean if selected Point exists
+     *         false boolean if selected Point not exists
+     */
     @Override
-    public boolean removeSelectedEditPoint() {
-        if(activeEditPoint != null){
+    public boolean removeSelectedEditPoint()
+    {
+        if(activeEditPoint != null)
+        {
             view.getOverlays().remove(activeEditPoint);
             editPoints.remove(activeEditPoint);
 
@@ -176,35 +257,49 @@ public class PolyGon extends PolyObject {
         return false;
     }
 
+    /**
+     * Sets all Points to the state editable or
+     * removes all editPoints from the MapView.
+     *
+     * @param editing boolean
+     */
     @Override
-    public void setEditing(boolean editing) {
+    public void setEditing(boolean editing)
+    {
         this.editing = editing;
 
-        if (editing) {
+        if (editing)
+        {
             polygon.setFillColor(FILL_COLOR_EDIT);
 
-            for (EditPoint editPoint : this.editPoints) {
+            for (EditPoint editPoint : this.editPoints)
+            {
                 editPoint.refreshPoints();
 
-                if(!view.getOverlays().contains(editPoint)) {
+                if(!view.getOverlays().contains(editPoint))
+                {
                     view.getOverlays().add(editPoint);
                 }
             }
-
-        } else {
-
-            for (EditPoint editPoint : this.editPoints) {
+        }
+        else
+        {
+            for (EditPoint editPoint : this.editPoints)
+            {
                 view.getOverlays().remove(editPoint);
             }
 
             deselectActiveEditPoint();
-
             setSelected(this.selected);
         }
     }
 
-    private void deselectActiveEditPoint() {
-
+    /**
+     * Deselects active EditPoint on the MapView.
+     *
+     */
+    private void deselectActiveEditPoint()
+    {
         if (activeEditPoint != null) {
             activeEditPoint.setFillColor(EditPoint.FILL_COLOR);
             activeEditPoint = null;
@@ -212,21 +307,32 @@ public class PolyGon extends PolyObject {
         }
     }
 
+    /**
+     * Manages the ClickEvent on the Object.
+     *
+     * @param clickObject Object
+     */
     @Override
-    public void onClick(Object clickObject) {
-
-        if (clickObject instanceof EditPoint) {
-
-            if(activeEditPoint != clickObject){
+    public void onClick(Object clickObject)
+    {
+        if (clickObject instanceof EditPoint)
+        {
+            if(activeEditPoint != clickObject)
+            {
                 deselectActiveEditPoint();
                 activeEditPoint = (EditPoint) clickObject;
                 activeEditPoint.setFillColor(FILL_COLOR_EDIT);
                 view.invalidate();
-            }else{
+            }
+            else
+            {
                 deselectActiveEditPoint();
             }
-        } else {
-            for (PolyObjectClickListener listener : listeners) {
+        }
+        else
+        {
+            for (PolyObjectClickListener listener : listeners)
+            {
                 listener.onClick(this);
             }
         }

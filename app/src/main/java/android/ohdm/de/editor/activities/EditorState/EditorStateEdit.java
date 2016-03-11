@@ -10,43 +10,71 @@ import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 
-public class EditorStateEdit implements EditorState {
-
+/**
+ * State to edit already existing PolyObject if selected.
+ */
+public class EditorStateEdit implements EditorState
+{
     private static final String TAG = "EditorStateEdit";
     private PolyObjectManager polyObjectManager;
     private Context context;
     private EditorStateContext editorStateContext;
 
-    EditorStateEdit(PolyObjectManager polyObjectManager, Context context, EditorStateContext editorStateContext){
-        this.polyObjectManager = polyObjectManager;
-        this.context = context;
+    /**
+     * Constructor.
+     *
+     * @param polyObjectManager PolyObjectManager
+     * @param context Context
+     * @param editorStateContext EditorStateContext
+     */
+    EditorStateEdit(PolyObjectManager polyObjectManager,
+                    Context context,
+                    EditorStateContext editorStateContext)
+    {
+        Log.d(TAG, "Constructor");
+        this.polyObjectManager  = polyObjectManager;
+        this.context            = context;
         this.editorStateContext = editorStateContext;
     }
 
+    /**
+     * Sets Edit-State settings.
+     */
     @Override
-    public void change() {
-
+    public void change()
+    {
         Log.d(TAG, "change");
         ((MainActivity)this.context).changeEditButtonsVisibility(View.INVISIBLE);
         polyObjectManager.setObjectsClickable(false);
         polyObjectManager.setSelectedObjectEditable(true);
 
-        if (polyObjectManager.isSelectedObjectEditable()) {
-
+        if (polyObjectManager.isSelectedObjectEditable())
+        {
             ((MainActivity)this.context).changeAddButtonsVisibility(View.VISIBLE);
         }
     }
 
+    /**
+     * Handle for Single-Tap-Event.
+     *
+     * @param geoPoint GeoPoint
+     */
     @Override
     public void singleTap(GeoPoint geoPoint) {
         polyObjectManager.addPointToSelectedPolyObject(geoPoint);
     }
 
+    /**
+     * Empty.
+     */
     @Override
     public void buttonAddCancel() {
 
     }
 
+    /**
+     * Save changes.
+     */
     @Override
     public void buttonAddAccept() {
         polyObjectManager.setActiveObjectEditable(false);
@@ -55,6 +83,9 @@ public class EditorStateEdit implements EditorState {
         editorStateContext.setState(State.VIEW);
     }
 
+    /**
+     * Delete selected Point.
+     */
     @Override
     public void buttonEditDelete() {
         if (!polyObjectManager.removeSelectedEditPoint()) {
@@ -62,11 +93,19 @@ public class EditorStateEdit implements EditorState {
         }
     }
 
+    /**
+     * Removes last Point of PolyObject added to the MapView.
+     */
     @Override
     public void buttonAddUndo() {
         polyObjectManager.removeLastPointFromSelectedPolyObject();
     }
 
+    /**
+     * Empty.
+     *
+     * @param geoPoint GeoPoint
+     */
     @Override
     public void longPress(GeoPoint geoPoint) {
 

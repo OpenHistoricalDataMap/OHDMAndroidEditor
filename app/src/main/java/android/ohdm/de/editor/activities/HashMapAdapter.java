@@ -18,7 +18,8 @@ public class HashMapAdapter extends BaseAdapter {
 
     ArrayList data;
 
-    public HashMapAdapter(HashMap<String,String> mapData){
+    public HashMapAdapter(HashMap<String,String> mapData)
+    {
         data = new ArrayList();
         data.addAll(mapData.entrySet());
     }

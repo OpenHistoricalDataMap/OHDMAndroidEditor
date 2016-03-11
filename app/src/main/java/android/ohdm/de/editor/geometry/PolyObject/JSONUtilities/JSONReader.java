@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Handle JSON-String coming from the Server.
+ */
 public class JSONReader {
 
     private static final String TAG = "JSONReader";
@@ -34,10 +37,22 @@ public class JSONReader {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
-    private JSONReader(){
+    /**
+     * Constructor.
+     */
+    private JSONReader()
+    {
 
     }
 
+    /**
+     * Converts the JSONObject to PolyObject and draws it on the MapView.
+     *
+     * @param jsonObject JSONObject
+     * @param mapView OHDMMapView
+     *
+     * @return PolyObject
+     */
     public static PolyObject getPolyObjectFromJSONObject(JSONObject jsonObject, OHDMMapView mapView) {
 
         PolyObject polyObject = null;
@@ -49,19 +64,20 @@ public class JSONReader {
         if(jsonObject != null) {
 
             try {
-                Log.d(TAG,"JsonString von der DB : "+ jsonObject.toString());
-                JSONArray geometricObject = jsonObject.getJSONArray(GEOMETRICOBJECT);
-                JSONArray tagDatesObject  = jsonObject.getJSONArray(TAGDATES);
-                JSONObject attributesObject= jsonObject.getJSONObject(ATTRIBUTES); // ließt den Array mit den Attributen
+                Log.d(TAG,"JsonString from DB : "+ jsonObject.toString());
+
+                JSONArray geometricObject   = jsonObject.getJSONArray(GEOMETRICOBJECT);
+                JSONArray tagDatesObject    = jsonObject.getJSONArray(TAGDATES);
+                JSONObject attributesObject = jsonObject.getJSONObject(ATTRIBUTES);
 
                 //TODO: können auch mehrere Geometrien sein
                 JSONObject geom = (JSONObject) geometricObject.get(0);
                 JSONObject tags = (JSONObject) tagDatesObject.get(0);
 
-                type      = getPolyObjectType(geom);
-                geoPoints = getGeoPoints(geom);
-                tagDates  = getTagDates((JSONObject) tags.get(TAGS));
-                attributes= getTagDates(attributesObject); // gleiche Funktion noch mal
+                type       = getPolyObjectType(geom);
+                geoPoints  = getGeoPoints(geom);
+                tagDates   = getTagDates((JSONObject) tags.get(TAGS));
+                attributes = getTagDates(attributesObject);
 
                 polyObject = PolyObjectFactory.buildObject(type, mapView);
                 polyObject.setPoints(geoPoints);
@@ -77,20 +93,30 @@ public class JSONReader {
     }
 
 
-
+    /**
+     * Reads from the JSONObject the "tagDates".
+     *
+     * @param tags JSONObject
+     *
+     * @return HashMap<String,String>
+     */
     private static HashMap<String,String> getTagDates(JSONObject tags) {
 
         Iterator<String> keys = tags.keys();
         HashMap<String,String> parsedTagDates = new HashMap<String,String>();
 
-        while(keys.hasNext()){
+        while(keys.hasNext())
+        {
             String key = keys.next();
 
-            try {
+            try
+            {
                 String value = tags.getString(key);
                 Log.d(TAG,"key: "+key+", value: "+value);
                 parsedTagDates.put(key,value);
-            } catch (JSONException e) {
+            }
+            catch (JSONException e)
+            {
                 e.printStackTrace();
             }
         }
@@ -98,6 +124,13 @@ public class JSONReader {
         return parsedTagDates;
     }
 
+    /**
+     * Gets the Type(MULTIPOLYGON,MULTILINESTRING,MULTIPOINT) of the Geom.
+     *
+     * @param geom JSONObject
+     *
+     * @return PolyObjectType
+     */
     private static PolyObjectType getPolyObjectType(JSONObject geom) {
 
         PolyObjectType type = null;
@@ -120,6 +153,13 @@ public class JSONReader {
 
     }
 
+    /**
+     * Selects the GeoPoints from the JSONObject and returns a list.
+     *
+     * @param geom JSONObject
+     *
+     * @return List<GeoPoint>
+     */
     private static List<GeoPoint> getGeoPoints(JSONObject geom) {
 
         List<GeoPoint> geoPoints = null;
@@ -147,6 +187,13 @@ public class JSONReader {
         return geoPoints;
     }
 
+    /**
+     * Converts the String(Point Information) to a PostGIS-Element and extracts the GeoPoints.
+     *
+     * @param input String
+     *
+     * @return List<GeoPoint>
+     */
     private static List<GeoPoint> extractGeoPointsFromMultiPoint(String input) {
 
         List<GeoPoint> geoPoints = null;
@@ -167,6 +214,13 @@ public class JSONReader {
         return geoPoints;
     }
 
+    /**
+     * Converts the String(Line Information) to a PostGIS-Element and extracts the GeoPoints.
+     *
+     * @param input String
+     *
+     * @return List<GeoPoint>
+     */
     private static List<GeoPoint> extractGeoPointsFromMultiLineString(String input) {
 
         List<GeoPoint> geoPoints = null;
@@ -187,6 +241,13 @@ public class JSONReader {
         return geoPoints;
     }
 
+    /**
+     * Converts the String(Polygon Information) to a PostGIS-Element and extracts the GeoPoints.
+     *
+     * @param input String
+     *
+     * @return List<GeoPoint>
+     */
     private static List<GeoPoint> extractGeoPointsFromMultipolygon(String input) {
 
         List<GeoPoint> geoPoints = null;
@@ -206,6 +267,13 @@ public class JSONReader {
         return geoPoints;
     }
 
+    /**
+     * Converts PostGIS-Points to osmdroid-Points.
+     *
+     * @param points Point[] (PostGIS-Element)
+     *
+     * @return List<GeoPoint>
+     */
     private static List<GeoPoint> convertPointsToGeoPoints(Point[] points){
 
         List<GeoPoint> geoPoints = new ArrayList<GeoPoint>();

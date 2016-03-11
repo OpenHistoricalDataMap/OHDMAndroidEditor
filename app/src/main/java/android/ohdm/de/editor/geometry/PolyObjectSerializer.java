@@ -14,29 +14,48 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+/**
+ * Handles saving and reading PolyObjects from a File.
+ */
 public class PolyObjectSerializer {
 
     private static final String TAG = "PolyObjectSerializer";
     private static final String SER_KEY = "de.ohdm.editor.ser";
 
-    private PolyObjectSerializer(){
+    private PolyObjectSerializer()
+    {
 
     }
 
-    public static void serialize(PolyObjectManager polyObjectManager, OHDMMapView mapView) {
-
-        try {
+    /**
+     * Saves PolyObjects to a local file.
+     *
+     * @param polyObjectManager PolyObjectManager
+     * @param mapView OHDMMapView
+     */
+    public static void serialize(PolyObjectManager polyObjectManager, OHDMMapView mapView)
+    {
+        try
+        {
             FileOutputStream fos = mapView.getContext().openFileOutput(SER_KEY, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
 
             os.writeObject(polyObjectManager.getPolyObjectList());
             os.close();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Log.e(TAG, "serializing: " + e.toString());
         }
     }
 
+    /**
+     * Reads PolyObjects from a file.
+     *
+     * @param map OHDMMapView
+     *
+     * @return PolyObjectManager
+     */
     public static PolyObjectManager deserialize(OHDMMapView map) {
 
         PolyObjectManager polyObjectManager = new PolyObjectManager(map);

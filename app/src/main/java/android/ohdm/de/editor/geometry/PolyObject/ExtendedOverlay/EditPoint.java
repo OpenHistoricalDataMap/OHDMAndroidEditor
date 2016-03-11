@@ -13,7 +13,12 @@ import org.osmdroid.views.MapView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the Points of an PolyObject while in EditMode.
+ *
+ */
 public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,ZoomSubscriber {
+
 
     private static final String TAG = "EditPoint";
     public static final int FILL_COLOR = Color.argb(128, 116, 116, 116);
@@ -24,7 +29,13 @@ public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
 
-    public EditPoint(OHDMMapView mapView) {
+    /**
+     * Constructor.
+     *
+     * @param mapView OHDMMapView
+     */
+    public EditPoint(OHDMMapView mapView)
+    {
         super(mapView.getContext());
 
         this.mapView = mapView;
@@ -32,19 +43,36 @@ public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,
         setStrokeWidth(4);
 
         //TODO: maybe it is better to subscribe the EditPoints to the ZoomPublisher only if needed
-        //concretly only if they are really seen. this would be before they are added
-        //seee getOverlays.add() in PolyObject's setEditing()
+        //TODO: concretly only if they are really seen. this would be before they are added
+        //TODO: seee getOverlays.add() in PolyObject's setEditing()
         mapView.subscribe(this);
     }
 
-    public boolean isClickable() {
+    /**
+     * Return true if EditPoint is clickable.
+     *
+     * @return clickable boolean
+     */
+    public boolean isClickable()
+    {
         return clickable;
     }
 
-    public void setClickable(boolean clickable) {
+    /**
+     * Setter clickable.
+     *
+     * @param clickable boolean
+     */
+    public void setClickable(boolean clickable)
+    {
         this.clickable = clickable;
     }
 
+    /**
+     * Reads the GeoPoints from the List and draws Circle around them.
+     *
+     * @param points List<GeoPoint>
+     */
     @Override
     public void setPoints(final List<GeoPoint> points) {
 
@@ -58,22 +86,40 @@ public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,
         }
     }
 
+    /**
+     * Calls setPoint() again.
+     */
     public void refreshPoints(){
         setPoints(this.points);
     }
 
+    /**
+     * Getter List of EditPoints.
+     *
+     * @return List<GeoPoint>
+     */
     @Override
     public List<GeoPoint> getPoints(){
         return this.points;
     }
 
+    /**
+     * Notifies if tapped in EditMode.
+     *
+     * @param event MotionEvent
+     * @param mapView MapView
+     *
+     * @return boolean
+     */
     @Override
-    public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView) {
-
+    public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView)
+    {
         boolean tapped = super.contains(event);
 
-        if (tapped) {
-            if (isClickable()) {
+        if (tapped)
+        {
+            if (isClickable())
+            {
                 notifyListeners();
             }
         }
@@ -81,24 +127,45 @@ public class EditPoint extends Polygon implements ExtendedOverlayClickPublisher,
         return tapped;
     }
 
-    private void notifyListeners() {
-        for (ExtendedOverlayClickListener listener : listeners) {
+    /**
+     * Calls onClick().
+     */
+    private void notifyListeners()
+    {
+        for (ExtendedOverlayClickListener listener : listeners)
+        {
             listener.onClick(this);
         }
     }
 
+    /**
+     * Subscribes Lister.
+     *
+     * @param listener ExtendedOverlayClickListener
+     */
     @Override
-    public void subscribe(ExtendedOverlayClickListener listener) {
+    public void subscribe(ExtendedOverlayClickListener listener)
+    {
         listeners.add(listener);
     }
 
+    /**
+     * Removes Listener.
+     *
+     * @param listener ExtendedOverlayClickListener
+     */
     @Override
-    public void remove(ExtendedOverlayClickListener listener) {
+    public void remove(ExtendedOverlayClickListener listener)
+    {
         listeners.remove(listener);
     }
 
+    /**
+     * Redraws the Points if the User tries to zoom.
+     */
     @Override
-    public void onZoom() {
+    public void onZoom()
+    {
         setPoints(this.points);
     }
 }

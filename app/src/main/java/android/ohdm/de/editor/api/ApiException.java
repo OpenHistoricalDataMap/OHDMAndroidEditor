@@ -1,11 +1,16 @@
 package android.ohdm.de.editor.api;
 
-public class ApiException extends Exception{
+import android.util.Log;
 
-    public ApiException(){
+public class ApiException extends Exception
+{
+    public ApiException()
+    {
+        Log.d("Expection","ApiException wurde geworfen. ");
     }
 
-    public ApiException(String message){
+    public ApiException(String message)
+    {
         super(message);
     }
 }

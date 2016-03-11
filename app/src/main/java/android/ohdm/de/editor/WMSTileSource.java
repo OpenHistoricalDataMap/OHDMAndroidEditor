@@ -66,7 +66,7 @@ public class WMSTileSource extends OnlineTileSourceBase {
         stringBuffer.append(",");
         stringBuffer.append(newTile.north);
 
-//        Log.d("WMSTileServer",stringBuffer.toString());
+//  TODO:       Log.d("WMSTileServer",stringBuffer.toString());
 
         return stringBuffer.toString();
 

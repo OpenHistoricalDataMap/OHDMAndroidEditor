@@ -27,11 +27,14 @@ public class ApiConnect {
     public static final int DOWNLOAD_RESPONSE_ERROR = 500;
     public static final int DOWNLOAD_RESPONSE_NOT_FOUND = 404;
 
+    public static final String TOKEN = "1ac089eb4b7fc214eca1ece813629cb4a08c6ddfc0cf9cff4ee66926ef2da08b12fe71b74843b2f7fc84bec4a0d0326bf99979e77d24c37fa2db17c924c09bcd";
+
     private String serverUrl;
 
     public ApiConnect(String serverUrl) {
 
         this.serverUrl = serverUrl;
+        Log.d(TAG,"URL: ");
     }
 
     public int putPolyObject(JSONObject polyObject) {
@@ -39,6 +42,7 @@ public class ApiConnect {
         try {
             URL url = new URL(serverUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Authorization", "Bearer " + TOKEN);
             con.setRequestMethod("PUT");
             con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
 
@@ -47,11 +51,11 @@ public class ApiConnect {
             out.close();
 
             int responseCode = con.getResponseCode();
-            Log.d(TAG, "response code: " + responseCode);
+            Log.d(TAG, "response code PUT: " + responseCode);
 
             if (responseCode == UPLOAD_RESPONSE_ERROR) {
 
-                Log.d(TAG,"Response Message: "+ con.getResponseMessage());
+                Log.d(TAG,"Response Message: "+ con.getResponseMessage()+" (* wahrscheinlich ist der JSON-String falsch * ");
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         con.getErrorStream()));
@@ -97,7 +101,9 @@ public class ApiConnect {
 
         try {
             URL url = new URL(serverUrl + objectId);
+            Log.d(TAG,serverUrl+objectId);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Authorization", "Bearer " + TOKEN);
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
 
@@ -157,6 +163,7 @@ public class ApiConnect {
 
             URL url = new URL(requestUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Authorization", "Bearer " + TOKEN);
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", REQUEST_PROPERTY);
 

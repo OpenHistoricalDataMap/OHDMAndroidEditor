@@ -31,11 +31,20 @@ public class ShowPolyObjectDataActivity extends Activity {
     private HashMap<String, String> polyObjectData = new HashMap<String, String>();
     private UUID polyObjectInternId;
 
+    /**
+     *
+     */
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
     }
 
+    /**
+     *
+     *
+     * @param savedInstanceState Bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +55,8 @@ public class ShowPolyObjectDataActivity extends Activity {
         listView.addFooterView(footer);
 
         Bundle bundle = this.getIntent().getExtras();
-        if (bundle != null) {
+        if (bundle != null)
+        {
             polyObjectData = (HashMap) bundle.getSerializable(MainActivity.MAP_DATA);
             HashMapAdapter adapter = new HashMapAdapter(polyObjectData);
             listView.setAdapter(adapter);
@@ -55,6 +65,13 @@ public class ShowPolyObjectDataActivity extends Activity {
         }
     }
 
+    /**
+     *
+     *
+     * @param menu Menu
+     *
+     * @return boolean
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -62,6 +79,13 @@ public class ShowPolyObjectDataActivity extends Activity {
         return true;
     }
 
+    /**
+     *
+     *
+     * @param item MenuItem
+     *
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -77,6 +101,11 @@ public class ShowPolyObjectDataActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     *
+     *
+     * @param view View
+     */
     public void buttonShowOk(View view) {
 
         Intent resultData = new Intent();
@@ -97,10 +126,21 @@ public class ShowPolyObjectDataActivity extends Activity {
 
     }
 
+    /**
+     *
+     * @param view View
+     */
     public void buttonShowCancel(View view) {
         finish();
     }
 
+    /**
+     *
+     *
+     * @param requestCode int
+     * @param resultCode int
+     * @param data Intent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -114,12 +154,22 @@ public class ShowPolyObjectDataActivity extends Activity {
         }
     }
 
+    /**
+     *
+     *
+     * @param view View
+     */
     public void buttonShowAdd(View view) {
 
         Intent intent = new Intent(this, EditPolyObjectDataActivity.class);
         startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);
     }
 
+    /**
+     *
+     *
+     * @param view View
+     */
     public void buttonEditDataRowDelete(View view){
 
         Map.Entry<String,String> item = getItemFromRow(view);
@@ -130,6 +180,9 @@ public class ShowPolyObjectDataActivity extends Activity {
         }
     }
 
+    /**
+     *
+     */
     private void updateAdapterAndRefreshView(){
         ListView listView = (ListView) findViewById(R.id.listView);
         HashMapAdapter adapter = new HashMapAdapter(polyObjectData);
@@ -140,15 +193,27 @@ public class ShowPolyObjectDataActivity extends Activity {
         listView.invalidate();
     }
 
+    /**
+     *
+     *
+     * @param view View
+     */
     public void buttonEditDataRow(View view){
         Map.Entry<String,String> item = getItemFromRow(view);
 
         Intent intent = new Intent(this, EditPolyObjectDataActivity.class);
-        intent.putExtra(DATA_KEY,item.getKey().toString());
-        intent.putExtra(DATA_VALUE,item.getValue());
+        intent.putExtra(DATA_KEY, item.getKey().toString());
+        intent.putExtra(DATA_VALUE, item.getValue());
         startActivityForResult(intent, EDIT_DATA_REQUEST_CODE);
     }
 
+    /**
+     *
+     *
+     * @param rowView View
+     *
+     * @return Map.Entry<String,String>
+     */
     private Map.Entry<String,String> getItemFromRow(View rowView){
         ListView listView = (ListView) findViewById(R.id.listView);
 

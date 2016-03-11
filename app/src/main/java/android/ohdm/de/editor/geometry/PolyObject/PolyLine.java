@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Basic Element that can be drawn on the MapView.
+ *
+ */
 public class PolyLine extends PolyObject implements Serializable {
 
     private static final long serialVersionUID = 4209360273818925922L;
@@ -35,6 +39,11 @@ public class PolyLine extends PolyObject implements Serializable {
 
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
+    /**
+     * Constructor.
+     *
+     * @param view OHDMMapView there the PolyLine will be created.
+     */
     public PolyLine(OHDMMapView view){
         super(PolyObjectType.POLYLINE);
         this.internId = UUID.randomUUID();
@@ -42,6 +51,11 @@ public class PolyLine extends PolyObject implements Serializable {
         create(view.getContext());
     }
 
+    /**
+     * Draws the PolyLine on the MapView.
+     *
+     * @param context Context Interface to global information about an application environment.
+     */
     @Override
     protected void create(Context context) {
         polyline = new ExtendedPolylineOverlay(context);
@@ -53,11 +67,21 @@ public class PolyLine extends PolyObject implements Serializable {
         polyline.setPoints(points);
     }
 
+    /**
+     * //TODO needed to implement Icons on the map
+     *
+     * @return polyline ExtendedPolylineOverlay
+     */
     @Override
     public OverlayWithIW getOverlay() {
         return polyline;
     }
 
+    /**
+     * Goes through the given list and adds them to the PolyLine.
+     *
+     * @param points List<GeoPoints>
+     */
     @Override
     public void setPoints(List<GeoPoint> points) {
         this.points = points;
@@ -79,10 +103,19 @@ public class PolyLine extends PolyObject implements Serializable {
         }
     }
 
+    /**
+     * Getter for points.
+     *
+     * @return List<GeoPoint>
+     */
     public List<GeoPoint> getPoints(){
         return this.points;
     }
 
+    /**
+     * Removes the last Point added to the MapView.
+     *
+     */
     @Override
     public void removeLastPoint() {
         if(!points.isEmpty()){
@@ -95,6 +128,12 @@ public class PolyLine extends PolyObject implements Serializable {
         polyline.setPoints(this.points);
     }
 
+    /**
+     * Adds a Point to the MapView or if the Point already exists, then
+     * the old one will be replaced this the new one.
+     *
+     * @param geoPoint GeoPoint
+     */
     @Override
     public void addPoint(GeoPoint geoPoint) {
 
@@ -123,6 +162,12 @@ public class PolyLine extends PolyObject implements Serializable {
         }
     }
 
+
+    /**
+     * Puts the GeoPoint on the MapView und adds EventListener.
+     *
+     * @param geoPoint GeoPoint
+     */
     private void createAndAddEditPoint(GeoPoint geoPoint) {
         EditPoint editPoint = new EditPoint(view);
 
@@ -140,11 +185,22 @@ public class PolyLine extends PolyObject implements Serializable {
         view.getOverlays().add(editPoint);
     }
 
+
+    /**
+     * Sets oder removes the ClickEvent on the PolyLine.
+     *
+     * @param clickable boolean
+     */
     @Override
     public void setClickable(boolean clickable) {
         polyline.setClickable(clickable);
     }
 
+    /**
+     * Changes the appearance of the PolyGon if selected or not selected.
+     *
+     * @param selected boolean
+     */
     @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
@@ -156,6 +212,13 @@ public class PolyLine extends PolyObject implements Serializable {
         }
     }
 
+
+    /**
+     * Sets all Points to the state editable or
+     * removes all editPoints from the MapView.
+     *
+     * @param editing boolean
+     */
     @Override
     public void setEditing(boolean editing) {
         this.editing = editing;
@@ -180,6 +243,10 @@ public class PolyLine extends PolyObject implements Serializable {
         }
     }
 
+    /**
+     * Deselects active EditPoint on the MapView.
+     *
+     */
     private void deselectActiveCornerPoint() {
         if (activeEditPoint != null) {
             activeEditPoint.setFillColor(EditPoint.FILL_COLOR);
@@ -188,6 +255,12 @@ public class PolyLine extends PolyObject implements Serializable {
         }
     }
 
+    /**
+     * Removes selected Point from the MapView.
+     *
+     * @return true  boolean if selected Point exists
+     *         false boolean if selected Point not exists
+     */
     @Override
     public boolean removeSelectedEditPoint() {
         if(activeEditPoint != null){
@@ -204,6 +277,11 @@ public class PolyLine extends PolyObject implements Serializable {
         return false;
     }
 
+    /**
+     * Manages the ClickEvent on the Object.
+     *
+     * @param clickObject Object
+     */
     @Override
     public void onClick(Object clickObject) {
 

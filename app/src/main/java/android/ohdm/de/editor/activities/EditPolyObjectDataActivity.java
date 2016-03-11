@@ -15,19 +15,17 @@ import android.widget.TextView;
  * Beim Drücken des Edit-Buttons, sind die Werte bereits eingetragen im Dialogfenster.
  *
  */
-public class EditPolyObjectDataActivity extends Activity {
-
-
-
+public class EditPolyObjectDataActivity extends Activity
+{
     /**
      * Beim Bearbeiten werden die Werte aus der activity_edit_poly_object_data.xml
      * eingetragen.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState Bundle
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_poly_object_data);
 
@@ -45,9 +43,11 @@ public class EditPolyObjectDataActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_poly_object_data, menu);
+
         return true;
     }
 
@@ -65,10 +65,10 @@ public class EditPolyObjectDataActivity extends Activity {
     /**
      * Daten werden an die ShowPolyObjectDataActivity übergeben.
      *
-     * @param view
+     * @param view View
      */
-    public void buttonEditOk(View view) {
-
+    public void buttonEditOk(View view)
+    {
         TextView textViewKey = (TextView)findViewById(R.id.polyobject_data_key);
         TextView textViewValue = (TextView)findViewById(R.id.polyobject_data_value);
 
@@ -83,11 +83,10 @@ public class EditPolyObjectDataActivity extends Activity {
     /**
      * Schließt den Dialog.
      *
-     * @param view
+     * @param view View
      */
-    public void buttonEditCancel(View view) {
-
+    public void buttonEditCancel(View view)
+    {
         finish();
-
     }
 }

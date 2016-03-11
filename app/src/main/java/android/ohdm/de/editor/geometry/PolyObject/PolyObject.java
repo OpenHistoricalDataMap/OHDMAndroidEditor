@@ -14,7 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class PolyObject implements ExtendedOverlayClickListener, PolyObjectClickPublisher, Serializable {
+/**
+ * Abstract class for PolyObject.
+ */
+public abstract class PolyObject implements ExtendedOverlayClickListener, PolyObjectClickPublisher, Serializable
+{
 
     protected transient boolean selected = false;
     protected transient boolean editing = false;
@@ -36,7 +40,7 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     protected abstract void create(Context context);
 
-    public abstract OverlayWithIW getOverlay(); // todo nachschauen
+    public abstract OverlayWithIW getOverlay();
 
     public abstract void setPoints(List<GeoPoint> points);
 
@@ -54,10 +58,12 @@ public abstract class PolyObject implements ExtendedOverlayClickListener, PolyOb
 
     public abstract boolean removeSelectedEditPoint();
 
-    public HashMap<String, String> getTags() {
+    public HashMap<String, String> getTags()
+    {
         return this.tags;
     }
-    public void setTags(HashMap<String, String> tags) {
+    public void setTags(HashMap<String, String> tags)
+    {
         this.tags = tags;
     }
 

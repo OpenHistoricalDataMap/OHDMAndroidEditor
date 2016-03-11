@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the Output of the PolyGon to the MapView and adds EvenListener.
+ */
 public class ExtendedPolygonOverlay extends Polygon implements ExtendedOverlayClickPublisher, Serializable {
 
     private static final long serialVersionUID = 0L;
@@ -18,21 +21,48 @@ public class ExtendedPolygonOverlay extends Polygon implements ExtendedOverlayCl
 
     private List<ExtendedOverlayClickListener> listeners = new ArrayList<ExtendedOverlayClickListener>();
 
-    public ExtendedPolygonOverlay(Context context){
+    /**
+     * Constructor.
+     *
+     * @param context Context
+     */
+    public ExtendedPolygonOverlay(Context context)
+    {
         super(context);
     }
 
-    public boolean isClickable() {
+    /**
+     * Getter clickable.
+     *
+     * @return clickable boolean
+     */
+    public boolean isClickable()
+    {
         return clickable;
     }
 
-    public void setClickable(boolean clickable) {
+    /**
+     * Setter clickable.
+     *
+     * @param clickable boolean
+     */
+    public void setClickable(boolean clickable)
+    {
         this.clickable = clickable;
     }
 
-    @Override
-    public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView){
 
+    /**
+     * Handles Tap-Events.
+     *
+     * @param event MotionEvent
+     * @param mapView MapView
+     *
+     * @return boolean
+     */
+    @Override
+    public boolean onSingleTapConfirmed(final MotionEvent event, final MapView mapView)
+    {
         boolean tapped = super.contains(event);
 
         if(tapped) {
@@ -44,17 +74,33 @@ public class ExtendedPolygonOverlay extends Polygon implements ExtendedOverlayCl
         return tapped;
     }
 
-    private void notifyListeners(){
-        for(ExtendedOverlayClickListener listener : listeners){
+    /**
+     * Triggers an onClick-Event.
+     *
+     */
+    private void notifyListeners()
+    {
+        for(ExtendedOverlayClickListener listener : listeners)
+        {
             listener.onClick(this);
         }
     }
 
+    /**
+     * Adds Listener to the list.
+     *
+     * @param listener ExtendedOverlayClickListener
+     */
     @Override
     public void subscribe(ExtendedOverlayClickListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Removes Listener from the list.
+     *
+     * @param listener ExtendedOverlayClickListener
+     */
     @Override
     public void remove(ExtendedOverlayClickListener listener) {
         listeners.remove(listener);

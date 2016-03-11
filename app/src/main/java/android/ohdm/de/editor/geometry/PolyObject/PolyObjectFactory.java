@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class PolyObjectFactory {
 
     private static final String TAG = "PolyObjectFactory";
@@ -18,9 +21,17 @@ public class PolyObjectFactory {
 
     }
 
+    /**
+     * Creates a PolyObject(Line,Polygon,Point) depending on give type on the MapView.
+     *
+     * @param type PolyObjectType
+     * @param view OHDMMapView
+     *
+     * @return PolyObject
+     */
     public static PolyObject buildObject(PolyObjectType type, OHDMMapView view) {
 
-        PolyObject polyObject = null;
+        PolyObject polyObject;
 
         switch (type) {
             case POLYGON:
@@ -38,10 +49,25 @@ public class PolyObjectFactory {
         return polyObject;
     }
 
+    /**
+     * Creates an PolyObject from a JSONObject.
+     *
+     * @param jsonObject JSONObject
+     * @param view OHDMMapView
+     *
+     * @return PolyObject
+     */
     public static PolyObject buildObjectFromJSON(JSONObject jsonObject, OHDMMapView view) {
         return JSONReader.getPolyObjectFromJSONObject(jsonObject, view);
     }
 
+    /**
+     * Creates an PolyObject-Array from a JSONArray.
+     *
+     * @param jsonObjects JSONArray
+     * @param map OHDMMapView
+     * @return PolyObject[]
+     */
     public static PolyObject[] buildObjectsFromJSON(JSONArray jsonObjects, OHDMMapView map) {
 
         ArrayList<PolyObject> polyObjects = new ArrayList<PolyObject>();

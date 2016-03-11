@@ -18,6 +18,10 @@ import org.postgis.Polygon;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Creates a JSON-String, needed to send a Request to the Server.
+ *
+ */
 public class JSONWriter {
 
     private static final String TAG = "JSONWriter";
@@ -37,10 +41,21 @@ public class JSONWriter {
     private static final String MULTIPOINT = "multipoint";
     private static final String MULTIPOLYGON = "multipolygon";
 
-    private JSONWriter(){
+    /**
+     * Constructor.
+     */
+    private JSONWriter()
+    {
 
     }
 
+    /**
+     * Converts PolyObject to JSONObject.
+     *
+     * @param polyObject PolyObject
+     *
+     * @return JSONObject
+     */
     public static JSONObject createJSONObjectFromPolyObject(PolyObject polyObject) {
 
         JSONObject jsonObject = new JSONObject();
@@ -77,9 +92,16 @@ public class JSONWriter {
         return jsonObject;
     }
 
-    private static JSONObject createValidDatesObject(){
+    /**
+     * Creates an JSONObject with valid Period.
+     *
+     * @return JSONObject
+     */
+    private static JSONObject createValidDatesObject()
+    {
         JSONObject validDatesObject = new JSONObject();
 
+        // TODO VALID_FROM and VALID_TO should be @params to set them variable
         try {
             validDatesObject.put("since",VALID_FROM);
             validDatesObject.put("until",VALID_TO);
@@ -90,6 +112,13 @@ public class JSONWriter {
         return validDatesObject;
     }
 
+    /**
+     * Extracts the GeoPoints from the PolyObjects and adds them to an new JSONObject.
+     *
+     * @param polyObject PolyObject
+     *
+     * @return JSONObject
+     */
     private static JSONObject createGeometryObject(PolyObject polyObject) {
 
         JSONObject jsonObject = new JSONObject();
@@ -120,19 +149,26 @@ public class JSONWriter {
         return jsonObject;
     }
 
-    private static MultiPolygon convertPolyGonToMultiPolygon(PolyObject polyObject) {
+    /**
+     * Converts an PolyGon to a PostGIS-MultiPolygon.
+     *
+     * @param polyGon PolyObject
+     *
+     * @return MultiPolygon
+     */
+    private static MultiPolygon convertPolyGonToMultiPolygon(PolyObject polyGon) {
 
-        Point[] points = convertGeoPointListToPoints(polyObject.getPoints());
+        Point[] points = convertGeoPointListToPoints(polyGon.getPoints());
 
         for(int i=0; i<points.length-1; i++){
             Log.d(TAG,"points "+i+": "+points[i]);
         }
 
-
         //TODO: remove hack below
         Point[] points2 = new Point[points.length+1];
 
-        for(int i=0; i<points.length; i++){
+        for(int i=0; i<points.length; i++)
+        {
             points2[i] = points[i];
         }
         points2[points2.length-1] = points[0];
@@ -149,8 +185,15 @@ public class JSONWriter {
         return multiPolygon;
     }
 
-    private static MultiLineString convertPolyLineToMultiLineString(PolyObject polyObject) {
-        Point[] points = convertGeoPointListToPoints(polyObject.getPoints());
+    /**
+     * Converts an PolyLine to a PostGIS-MultiLineString.
+     *
+     * @param polyLine PolyObject
+     *
+     * @return MultiLineString
+     */
+    private static MultiLineString convertPolyLineToMultiLineString(PolyObject polyLine) {
+        Point[] points = convertGeoPointListToPoints(polyLine.getPoints());
         LineString lineString = new LineString(points);
         MultiLineString multiLineString = new MultiLineString(new LineString[]{lineString});
         multiLineString.setSrid(SRID);
@@ -158,8 +201,15 @@ public class JSONWriter {
         return multiLineString;
     }
 
-    private static MultiPoint convertPolyPointToMultiPoint(PolyObject polyObject) {
-        Point[] points = convertGeoPointListToPoints(polyObject.getPoints());
+    /**
+     * Converts an PolyPoint to a PostGIS-MultiPoint.
+     *
+     * @param polyPoint PolyObject
+     *
+     * @return MultiPoint
+     */
+    private static MultiPoint convertPolyPointToMultiPoint(PolyObject polyPoint) {
+        Point[] points = convertGeoPointListToPoints(polyPoint.getPoints());
         //Only the "last" point in a PolyPoint is the actual Point. the other points are there for the undo function
         MultiPoint multiPoint = new MultiPoint(new Point[]{points[points.length - 1]});
         multiPoint.setSrid(SRID);
@@ -167,6 +217,13 @@ public class JSONWriter {
         return multiPoint;
     }
 
+    /**
+     * Converts an OSMDROID-GeoPoint-List to a PostGIS-Point-Array.
+     *
+     * @param geoPoints List<GeoPoint>
+     *
+     * @return Point[]
+     */
     private static Point[] convertGeoPointListToPoints(List<GeoPoint> geoPoints) {
 
         Point[] points = new Point[geoPoints.size()];
@@ -180,6 +237,13 @@ public class JSONWriter {
         return points;
     }
 
+    /**
+     * Gets all Tags from the PolyObject and adds them to the new created JSONObject.
+     *
+     * @param polyObject PolyObject
+     *
+     * @return JSONObject
+     */
     private static JSONObject createTagDatesObject(PolyObject polyObject) {
 
         HashMap<String, String> tagDates = polyObject.getTags();
@@ -197,12 +261,11 @@ public class JSONWriter {
     }
 
     /**
-     * Ließt aus dem PolyObject die Attribute heraus und
-     * wandelt diese in ein JSONObject um.
-     * Funktion fast gleich zu createTagDatesObject.
-     * Getter ein anderer.
-     * @param polyObject
-     * @return
+     * Gets all Attributes from the PolyObject and adds them to the new created JSONObject.
+     *
+     * @param polyObject PolyObject
+     *
+     * @return JSONObject
      */
     private static JSONObject createAttrObject(PolyObject polyObject) {
 
@@ -219,4 +282,5 @@ public class JSONWriter {
 
         return tagDatesObject;
     }
+
 }

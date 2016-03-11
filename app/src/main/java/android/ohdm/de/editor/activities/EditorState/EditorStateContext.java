@@ -6,8 +6,11 @@ import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
-public class EditorStateContext {
-
+/**
+ * Handle for the ADD, SELECT, EDIT and VIEW States.
+ */
+public class EditorStateContext
+{
     private static final String TAG = "EditorStateContext";
 
     private PolyObjectManager polyObjectManager;
@@ -15,6 +18,13 @@ public class EditorStateContext {
     private EditorState viewMode;
     private EditorState.State state;
 
+    /**
+     * Constructor.
+     *
+     * @param state EditorState.State
+     * @param polyObjectManager PolyObjectManager
+     * @param context Context
+     */
     public EditorStateContext(EditorState.State state, PolyObjectManager polyObjectManager, Context context) {
 
         this.polyObjectManager = polyObjectManager;
@@ -23,6 +33,11 @@ public class EditorStateContext {
         setState(state);
     }
 
+    /**
+     * Setter.
+     *
+     * @param state EditorState.State
+     */
     public void setState(EditorState.State state){
 
         this.state = state;
@@ -47,30 +62,57 @@ public class EditorStateContext {
         viewMode.change();
     }
 
+    /**
+     * Getter.
+     *
+     * @return state
+     */
     public EditorState.State getState(){
         return this.state;
     }
 
+    /**
+     * Handle SileTap-Event.
+     *
+     * @param geoPoint GeoPoint
+     */
     public void singleTap(GeoPoint geoPoint){
         viewMode.singleTap(geoPoint);
     }
 
+    /**
+     * Add-Button-Event cancel.
+     */
     public void buttonAddCancel(){
         viewMode.buttonAddCancel();
     }
 
+    /**
+     * Add-Button-Event accept.
+     */
     public void buttonAddAccept(){
         viewMode.buttonAddAccept();
     }
 
+    /**
+     * Edit-Button-Event delete.
+     */
     public void buttonEditDelete(){
         viewMode.buttonEditDelete();
     }
 
+    /**
+     * Add-Button-Event undo.
+     */
     public void buttonAddUndo(){
         viewMode.buttonAddUndo();
     }
 
+    /**
+     * Handle LongPress-Event.
+     *
+     * @param geoPoint GeoPoint
+     */
     public void longPress(GeoPoint geoPoint) {
         viewMode.longPress(geoPoint);
     }

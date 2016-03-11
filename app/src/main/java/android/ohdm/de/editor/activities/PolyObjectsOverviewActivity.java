@@ -6,6 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.ohdm.de.editor.R;
 
+/**
+ *
+ */
 public class PolyObjectsOverviewActivity extends Activity {
 
     @Override

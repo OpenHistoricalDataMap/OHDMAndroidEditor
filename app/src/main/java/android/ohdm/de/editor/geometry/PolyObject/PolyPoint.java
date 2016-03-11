@@ -11,7 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class PolyPoint extends PolyObject {
+/**
+ * Basic Element that can be drawn on the MapView.
+ *
+ */
+public class PolyPoint extends PolyObject
+{
 
     private static final long serialVersionUID = 0L;
 
@@ -22,14 +27,25 @@ public class PolyPoint extends PolyObject {
     private transient ExtendedPointOverlay point;
     private List<GeoPoint> points = new ArrayList<GeoPoint>();
 
-    PolyPoint(Context context){
+    /**
+     * Constructor.
+     *
+     * @param context Context Interface to global information about an application environment.
+     */
+    PolyPoint(Context context)
+    {
         super(PolyObjectType.POINT);
         this.internId = UUID.randomUUID();
         create(context);
     }
 
-    @Override
-    protected void create(Context context) {
+    /**
+     * Draws the PolyGon on the MapView.
+     *
+     * @param context Context Interface to global information about an application environment.
+     */
+    protected void create(Context context)
+    {
         point = new ExtendedPointOverlay(context);
         point.subscribe(this);
 
@@ -37,21 +53,41 @@ public class PolyPoint extends PolyObject {
         point.setStrokeWidth(4);
     }
 
+    /**
+     * //TODO needed to implement Icons on the map
+     *
+     * @return point ExtendedPointOverlay
+     */
     @Override
-    public OverlayWithIW getOverlay() {
+    public OverlayWithIW getOverlay()
+    {
         return point;
     }
 
+    /**
+     * Goes through the given list and adds them to the PolyPoint.
+     *
+     * @param points List<GeoPoints>
+     */
     @Override
     public void setPoints(List<GeoPoint> points) {
         this.points = points;
         point.setPoints(this.points);
     }
 
+    /**
+     * Getter for points.
+     *
+     * @return List<GeoPoint>
+     */
     public List<GeoPoint> getPoints(){
         return this.points;
     }
 
+    /**
+     * Removes the last Point added to the MapView.
+     *
+     */
     @Override
     public void removeLastPoint() {
         if(!points.isEmpty()){
@@ -61,18 +97,32 @@ public class PolyPoint extends PolyObject {
         setPoints(this.points);
     }
 
+    /**
+     * Adds a GeoPoint to to PolyPoint.points list.
+     *
+     * @param geoPoint GeoPoint
+     */
     @Override
     public void addPoint(GeoPoint geoPoint) {
         points.add(geoPoint);
-
         setPoints(this.points);
     }
 
+    /**
+     * Sets the ClickEvent on the PolyPoint.
+     *
+     * @param clickable boolean
+     */
     @Override
     public void setClickable(boolean clickable) {
         point.setClickable(clickable);
     }
 
+    /**
+     * Changes the appearance of the PolyPoint if selected or not selected.
+     *
+     * @param selected boolean
+     */
     @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
@@ -84,6 +134,12 @@ public class PolyPoint extends PolyObject {
         }
     }
 
+    /**
+     * Sets Point to the state editable or
+     * removes  PolyPoint from the MapView.
+     *
+     * @param editing boolean
+     */
     @Override
     public void setEditing(boolean editing) {
         this.editing = editing;
@@ -95,6 +151,11 @@ public class PolyPoint extends PolyObject {
         }
     }
 
+    /**
+     * Manages the ClickEvent on the Object that was clicked.
+     *
+     * @param clickObject Object
+     */
     @Override
     public void onClick(Object clickObject) {
         for(PolyObjectClickListener listener : listeners){
@@ -102,8 +163,14 @@ public class PolyPoint extends PolyObject {
         }
     }
 
+    /**
+     * No functionality.
+     *
+     * @return
+     */
     @Override
-    public boolean removeSelectedEditPoint() {
+    public boolean removeSelectedEditPoint()
+    {
         //nothing to do here...
         return true;
     }

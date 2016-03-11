@@ -12,41 +12,67 @@ import org.osmdroid.views.MapView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OHDMMapView extends MapView implements ZoomPublisher{
-
+/**
+ *
+ */
+public class OHDMMapView extends MapView implements ZoomPublisher
+{
     private static final String TAG = "OHDMMapView";
 
     private List<ZoomSubscriber> subscribers;
 
-    public OHDMMapView(Context context, int tileSizePixels, ResourceProxy resourceProxy, MapTileProviderBase aTileProvider) {
+    /**
+     * Constructor.
+     *
+     * @param context Context
+     * @param tileSizePixels int
+     * @param resourceProxy ResourceProxy
+     * @param aTileProvider MapTileProviderBase
+     */
+    public OHDMMapView(Context context,
+                       int tileSizePixels,
+                       ResourceProxy resourceProxy,
+                       MapTileProviderBase aTileProvider)
+    {
         super(context, tileSizePixels, resourceProxy, aTileProvider);
-
         subscribers = new ArrayList<ZoomSubscriber>();
 
-        setMapListener(new MapListener() {
-
-            @Override
-            public boolean onScroll(ScrollEvent event) {
-                return false;
-            }
-
-            @Override
-            public boolean onZoom(ZoomEvent event) {
-
-                for(ZoomSubscriber subscriber : subscribers){
-                    subscriber.onZoom();
+        setMapListener(new MapListener()
+            {
+                @Override
+                public boolean onScroll(ScrollEvent event) {
+                    return false;
                 }
 
-                return false;
+                @Override
+                public boolean onZoom(ZoomEvent event)
+                {
+                    for(ZoomSubscriber subscriber : subscribers)
+                    {
+                        subscriber.onZoom();
+                    }
+
+                    return false;
+                }
             }
-        });
+        );
     }
 
+    /**
+     * Add subscriber.
+     *
+     * @param subscriber ZoomSubscriber
+     */
     @Override
     public void subscribe(ZoomSubscriber subscriber) {
         subscribers.add(subscriber);
     }
 
+    /**
+     * Remove Subscriber.
+     *
+     * @param subscriber ZoomSubscriber
+     */
     @Override
     public void remove(ZoomSubscriber subscriber) {
         subscribers.remove(subscriber);

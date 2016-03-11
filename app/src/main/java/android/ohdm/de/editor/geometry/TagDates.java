@@ -1,5 +1,8 @@
 package android.ohdm.de.editor.geometry;
 
+/**
+ * //TODO needed to draw Icons based on attributes downloaded from the server
+ */
 public enum TagDates {
     id,
     highway,

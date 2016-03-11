@@ -56,15 +56,15 @@ import java.util.UUID;
 
 public class MainActivity extends Activity implements MapEventsReceiver {
 
-    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
+    public static final String OHDMAPI_SERVER_ADDRESS = "http://ohdm.f4.htw-berlin.de:8080/OhdmApi/geographicObject/";
     public static final String EXTRA_SELECTED_POLYOBJECT_INTERNID = "polyobject_internid";
     public static final String MAP_DATA = "map_data";
 
     public static final String EXTRA_NEAR_VALID_SINCE = "extra_near_valid_since";
     public static final String EXTRA_NEAR_VALID_UNTIL = "extra_near_valid_until";
-    public static final String EXTRA_NEAR_DISTANCE = "extra_near_distance";
+    public static final String EXTRA_NEAR_DISTANCE    = "extra_near_distance";
     public static final String EXTRA_NEAR_GEOPOINT_LONG = "extra_near_geopoint_long";
-    public static final String EXTRA_NEAR_GEOPOINT_LAT = "extra_near_geopoint_lat";
+    public static final String EXTRA_NEAR_GEOPOINT_LAT  = "extra_near_geopoint_lat";
 
     private static final String TAG = "MainActivity";
 
@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static final String EXTRA_POLYOBJECTID = "polyobjectid";
 
-    private static final String WMS_GEOSERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/ohsm/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev1&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
+    private static final String WMS_GEOSERVER_ADDRESS = "http://ohdm.f4.htw-berlin.de:8080/geoserver/ohsm/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev1&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
     private static final String WMS_GEOSERVER_CACHED_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/gwc/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev2&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
 
     private static final String BUNDLE_MAP_ZOOMLEVEL = "map_zoom_level";
@@ -108,7 +108,7 @@ public class MainActivity extends Activity implements MapEventsReceiver {
     public void onCreate(Bundle savedInstanceState) {
 
         double longitude = 13.52400;
-        double latitude = 52.49688;
+        double latitude  = 52.49688;
         trackingActive = false;
         GeoPoint startGeoPoint;
         geoList = new ArrayList<GeoPoint>();
@@ -716,8 +716,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
             PolyObject loadedPolyObject = PolyObjectFactory.buildObjectFromJSON(jsonObject, map);
 
-            if (loadedPolyObject != null) {
-
+            if (loadedPolyObject != null)
+            {
                 map.getController().setCenter(loadedPolyObject.getPoints().get(0));
 
                 polyObjectManager.addObject(loadedPolyObject);
