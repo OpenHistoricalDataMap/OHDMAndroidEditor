@@ -74,8 +74,8 @@ public class MainActivity extends Activity implements MapEventsReceiver {
 
     private static final String EXTRA_POLYOBJECTID = "polyobjectid";
 
-    private static final String WMS_GEOSERVER_ADDRESS = "http://ohdm.f4.htw-berlin.de:8080/geoserver/ohsm/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev1&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
-    private static final String WMS_GEOSERVER_CACHED_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/gwc/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev2&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
+    private static final String WMS_GEOSERVER_ADDRESS = "http://ohsm.f4.htw-berlin.de:8080/geoserver/ohsm/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev2&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
+    private static final String WMS_GEOSERVER_CACHED_ADDRESS = "http://ohdm.f4.htw-berlin.de:8080/geoserver/gwc/wms?service=WMS&version=1.1.0&request=GetMap&layers=ohdm_berlin_dev2&styles=&srs=EPSG:900913&format=image%2Fjpeg&TRANSPARENT=true&TILED=true&WIDTH=256&HEIGHT=256&bbox=";
 
     private static final String BUNDLE_MAP_ZOOMLEVEL = "map_zoom_level";
     private static final String BUNDLE_MAP_WMS = "map_wms_overlay";
