@@ -7,36 +7,22 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import com.example.justin.editor.R;
 import com.example.justin.editor.listener.Gps;
-
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.TilesOverlay;
-
-import android.app.Activity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
 
 public class Map extends AppCompatActivity {
     public static final String[] LAYERS =
@@ -131,8 +117,6 @@ public class Map extends AppCompatActivity {
             mMapView.getOverlays().add(tilesOverlay);
         }
 
-
-        //mMapView.setTileSource(getTilesource("ohdm_t%3Anatural_polygons"));
         mMapView.setBuiltInZoomControls(true);
         GeoPoint gPt = new GeoPoint(52.520007, 13.404953999999975);
         mMapController.setCenter(gPt);
@@ -142,31 +126,13 @@ public class Map extends AppCompatActivity {
     List<GeoPoint> pts = new ArrayList<>();
     List<GeoPoint> ptssave = new ArrayList<>();
 
-    //
-    //* URL = new URL();
-    //* ULL.setAction(POST);
-    //* Webaction.doURL(url);
-    //
-
     public void setOverlayPoints(GeoPoint gpt1) {
-        //GeoPoint gPt0 = new GeoPoint(52.4559828, 13.378583);
-        //GeoPoint gPt1 = new GeoPoint(gPt0.getLatitudeE6()+ mIncr, gPt0.getLongitudeE6());
-        //GeoPoint gPt2 = new GeoPoint(gPt0.getLatitudeE6()+ mIncr, gPt0.getLongitudeE6() + mIncr);
-        //GeoPoint gPt3 = new GeoPoint(gPt0.getLatitudeE6(), gPt0.getLongitudeE6() + mIncr);
-        //mMapController.setCenter(gPt0);
         pts.add(gpt1);
-        //print(""+pts);
     }
 
     Polyline line = new Polyline();
 
     public void drawOverlay() {
-        /**pts.add(new GeoPoint(52.4557948, 13.383958));
-        pts.add(new GeoPoint(52.4557948 + mIncr, 13.383958));
-        pts.add(new GeoPoint(52.4557948 + mIncr, 13.383958 + mIncr));
-        pts.add(new GeoPoint(52.4557948, 13.383958 + mIncr));
-        pts.add(new GeoPoint(52.4557948, 13.383958));**/
-
         print(""+pts);
 
         line.setWidth(5f);
@@ -225,16 +191,9 @@ public class Map extends AppCompatActivity {
             public String getTileURLString(MapTile aTile) {
 
                 double[] bbox = getBoundingBox(aTile.getX(), aTile.getY(), aTile.getZoomLevel());
-
-                // String url = getBaseUrl() + aTile.getY() + "%2C" + aTile.getX() + "%2C"  + aTile.getZoomLevel() + mImageFilenameEnding;
-
                 String url = getBaseUrl() + bbox[0] + "%2C" + bbox[1] + "%2C" + bbox[2] + "%2C" + bbox[3] + mImageFilenameEnding;
-                // http://ohm.f4.htw-berlin.de:8080/geoserver/ohdm_p/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ohdm_t%3Aboundaries_admin_2&format=image%2Fpng&date=2017-01-01&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=1467590.943075385%2C6887893.4928338025%2C1487158.82231639%2C6907461.372074808
-                // http://ohm.f4.htw-berlin.de:8080/geoserver/ohdm_p/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ohdm_p%3Aboundaries_admin_2&format=image%2Fpng&date=2017-01-01&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=2682%2C4397%2C13
                 Log.d("GENERATED URL", url);
                 return url;
-// url = "http://ohm.f4.htw-berlin.de:8080/geoserver/ohdm_p/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ohdm_p%3Aboundaries_admin_2&format=image%2Fpng&date=2017-01-01&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=1467590.943075385%2C6887893.4928338025%2C1487158.82231639%2C6907461.372074808";
-
             }
         };
     }
@@ -266,7 +225,6 @@ public class Map extends AppCompatActivity {
                 print(e.getMessage());
             }
         }
-        //gps.onLocationChanged();
     }
 
     public void save(View v)
@@ -276,7 +234,6 @@ public class Map extends AppCompatActivity {
         pts.clear();
         drawOverlay();
         refreshMap();
-        //mMapView.getOverlayManager().remove(line);
     }
 
     private void print(String msg){
@@ -288,10 +245,7 @@ public class Map extends AppCompatActivity {
         this.posY = lat;
         setCamera(lat,lon);
         setOverlayPoints(new GeoPoint(lat, lon));
-        //setOverlayPoints(new GeoPoint(52.4557948, 13.383958));
-        //setOverlayPoints(new GeoPoint(52.4557948 + mIncr, 13.383958));
         drawOverlay();
-        print("test");
     }
 
     public void setCamera(double x, double y)
