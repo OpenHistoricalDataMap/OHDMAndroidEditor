@@ -5,9 +5,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.justin.editor.R;
+import com.example.justin.editor.json.jsonService;
 import com.example.justin.editor.listener.Gps;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
@@ -92,13 +94,16 @@ public class Map extends AppCompatActivity {
     double mIncr = 0.01;
     private boolean gpsActive;
     private double posX = 0, posY = 0;
+    private String json;
     Gps gps;
+    jsonService js;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         gps = new Gps(this);
         gpsActive = false;
+        js = new jsonService(this);
         mMapView = (MapView) findViewById(R.id.mapview);
         btnst = (Button) findViewById(R.id.btn_start_stop);
 
@@ -133,7 +138,7 @@ public class Map extends AppCompatActivity {
     Polyline line = new Polyline();
 
     public void drawOverlay() {
-        print(""+pts);
+        //print(""+pts);
 
         line.setWidth(5f);
         line.setColor(Color.RED);
@@ -231,6 +236,12 @@ public class Map extends AppCompatActivity {
     {
         print("save");
         ptssave = pts;
+        try {
+            json = js.createJson(ptssave,"LineString");
+            showAlert(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         pts.clear();
         drawOverlay();
         refreshMap();
@@ -256,5 +267,14 @@ public class Map extends AppCompatActivity {
     public void refreshMap()
     {
         this.mMapView.invalidate();
+    }
+
+    public void showAlert(String msg){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("JSON");
+        builder.setMessage(msg);
+        builder.setPositiveButton("Check",null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
