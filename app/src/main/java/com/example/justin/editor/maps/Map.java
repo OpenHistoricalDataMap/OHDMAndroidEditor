@@ -1,6 +1,7 @@
 package com.example.justin.editor.maps;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.justin.editor.R;
 import com.example.justin.editor.json.jsonService;
+import com.example.justin.editor.listener.DialogListener;
 import com.example.justin.editor.listener.Gps;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
@@ -23,10 +25,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Map extends AppCompatActivity {
+
+    DialogListener dl;
+    /**
+     * -OHDM LAYER
+     */
     public static final String[] LAYERS =
             {/*"ohdm_t%3Aboundaries_admin_2",
             "ohdm_t%3Aboundaries_admin_3",
@@ -101,6 +118,7 @@ public class Map extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        dl = new DialogListener(this);
         gps = new Gps(this);
         gpsActive = false;
         js = new jsonService(this);
@@ -163,6 +181,11 @@ public class Map extends AppCompatActivity {
         return bbox;
     }
 
+    /**
+     *
+     * @param map
+     * @return -URL
+     */
     private OnlineTileSourceBase getTilesource(String map) {
         String baseURL = "http://ohm.f4.htw-berlin.de:8080/geoserver/ohdm_t/wms?";
         String version = "1.3.0";
@@ -203,6 +226,10 @@ public class Map extends AppCompatActivity {
         };
     }
 
+    /**
+     * -Start/Stop GPS LocationChange request
+     * @param v
+     */
     public void start_stop_gps(View v) {
 
         if(gpsActive)
@@ -236,20 +263,37 @@ public class Map extends AppCompatActivity {
     {
         print("save");
         ptssave = pts;
+        //print(pts.toString());
         try {
-            json = js.createJson(ptssave,"LineString");
-            showAlert(json);
+            showGeoRe();
+            //sendRequest(json); //Send Post Request
         } catch (Exception e) {
             e.printStackTrace();
         }
-        pts.clear();
+
         drawOverlay();
         refreshMap();
     }
 
+    public void cont()
+    {
+        try {
+            String geo = "";
+            geo = dl.getResult();
+            //print(ptssave.toString());
+            json = js.createJson(ptssave,geo); //Create JSON
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        showJSON(json);
+        pts.clear();
+    }
+
     private void print(String msg){
+
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
+
     public void setGPS(double lon, double lat)
     {
         this.posX = lon;
@@ -269,7 +313,11 @@ public class Map extends AppCompatActivity {
         this.mMapView.invalidate();
     }
 
-    public void showAlert(String msg){
+    /**
+     * -print JSON String on Screen
+     * @param msg JSON String
+     */
+    public void showJSON(String msg){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("JSON");
         builder.setMessage(msg);
@@ -277,4 +325,51 @@ public class Map extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    /**
+     * -geometry user selection
+     */
+    public void showGeoRe(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Geometry");
+        String[] geometry = {"polygon", "lineString", "point"};
+        builder.setItems(geometry, dl);
+        //builder.setMultiChoiceItems()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    /**
+     * -POST REQUEST
+     * @param request -JSON String
+     */
+    public void sendRequest(String request){
+        try {
+            URL url = new URL("http://example.net/new-message.php");
+            byte[] requestBytes = request.getBytes("UTF-8");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Length", String.valueOf(requestBytes.length));
+            //conn.setRequestProperty("Value",request);
+            conn.setDoOutput(true);
+            conn.getOutputStream().write(requestBytes);
+
+            Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+            for (int c; (c = in.read()) >= 0;) {
+                System.out.print((char) c);
+            }
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //@Override
+    //public void onLandscapeChange
 }

@@ -14,6 +14,8 @@ import com.example.justin.editor.maps.Map;
 
 public class Gps extends AppCompatActivity implements LocationListener {
     private Map map;
+    private boolean TESTMODE = true;
+    private double lastLong=0,lastLat=0,dif=0.00001;
 
     public Gps(Map map){
         this.map = map;
@@ -21,10 +23,18 @@ public class Gps extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+            if(!TESTMODE) {
+                Toast.makeText(map, "Lon:   " + location.getLongitude() + " Lat:    " + location.getLatitude(), Toast.LENGTH_LONG).show();
+                map.setGPS(location.getLongitude(), location.getLatitude());
+            }
+            else{
 
-            Toast.makeText(map, "Lon:   " + location.getLongitude() + " Lat:    " + location.getLatitude(), Toast.LENGTH_LONG).show();
-            map.setGPS(location.getLongitude(), location.getLatitude());
-
+                if(lastLong-location.getLongitude() > dif || lastLat - location.getLatitude() > dif || location.getLongitude()-lastLong > dif || location.getLatitude() - lastLat > dif) {
+                    map.setGPS(location.getLongitude(), location.getLatitude());
+                    lastLat = location.getLatitude();
+                    lastLong = location.getLongitude();
+                }
+            }
     }
 
     @Override

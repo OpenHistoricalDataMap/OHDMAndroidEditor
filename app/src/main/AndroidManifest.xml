@@ -36,7 +36,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".maps.Map" />
+        <activity android:name=".maps.Map"
+            android:screenOrientation="portrait"/>
         <activity android:name=".config.Config"></activity>
     </application>
 
