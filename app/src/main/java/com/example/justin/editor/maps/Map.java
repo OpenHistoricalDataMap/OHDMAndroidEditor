@@ -105,6 +105,7 @@ public class Map extends AppCompatActivity {
 
     private MapView mMapView;
     private Button btnst;
+    private Button btnsa;
     private MapController mMapController;
     private static final double[] TILE_ORIGIN = {-20037508.34789244, 20037508.34789244};
     private static final double MAP_SIZE = 20037508.34789244 * 2;
@@ -124,7 +125,8 @@ public class Map extends AppCompatActivity {
         js = new jsonService(this);
         mMapView = (MapView) findViewById(R.id.mapview);
         btnst = (Button) findViewById(R.id.btn_start_stop);
-
+        btnsa = (Button) findViewById(R.id.btn_save);
+        btnsa.setVisibility(View.INVISIBLE);
         List tilesSources = new ArrayList<TilesOverlay>();
 
         mMapController = (MapController) mMapView.getController();
@@ -239,6 +241,7 @@ public class Map extends AppCompatActivity {
             locationManager.removeUpdates(gps);
             gpsActive = false;
             btnst.setText("start");
+            btnsa.setVisibility(View.VISIBLE);
         }
         else{
             print("starting GPS");
@@ -251,6 +254,7 @@ public class Map extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gps);
             gpsActive = true;
             btnst.setText("stop");
+            btnsa.setVisibility(View.INVISIBLE);
             try {
                 drawOverlay();
             }catch (Exception e){
@@ -270,9 +274,10 @@ public class Map extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        btnsa.setVisibility(View.INVISIBLE);
+        //drawOverlay();
+        //refreshMap();
 
-        drawOverlay();
-        refreshMap();
     }
 
     public void cont()
@@ -287,6 +292,8 @@ public class Map extends AppCompatActivity {
         }
         showJSON(json);
         pts.clear();
+        drawOverlay();
+        refreshMap();
     }
 
     private void print(String msg){
